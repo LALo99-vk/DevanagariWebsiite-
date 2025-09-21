@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "razorpay-server.js",
+  "scripts": {
+    "dev": "nodemon razorpay-server.js",
+    "start": "node razorpay-server.js",
+    "server": "node razorpay-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "razorpay": "^2.9.6",
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "keywords": [],
+  "type": "commonjs"
+}
