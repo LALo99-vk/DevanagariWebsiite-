@@ -1,8 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
-require('dotenv').config();
+
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -12,6 +15,12 @@ const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
+
+const path = require('path');
+
+
+
+// Removed duplicate app.listen; the server starts at the bottom of this file
 
 app.use(cors({
   origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
@@ -538,6 +547,16 @@ app.get('/health', (req, res) => {
     configured: isConfigured,
     timestamp: new Date().toISOString()
   });
+});
+
+// Serve frontend build (production)
+const distPath = path.join(__dirname, '..', 'dist');
+app.use(express.static(distPath));
+
+// SPA fallback for non-API routes (Express 5 compatible)
+// Excludes /api and /health paths
+app.get(/^\/(?!api|health).*/, (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 // Error handling middleware
