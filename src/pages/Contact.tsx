@@ -57,9 +57,9 @@ const Contact = () => {
                 <div className="flex items-start p-4 space-x-3 bg-white shadow-lg sm:space-x-4 sm:p-6 rounded-xl">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#4A5C3D] rounded-full flex items-center justify-center flex-shrink-0">
                     <MapPin
-                      className="text-white"
+                      className="text-white sm:w-5 sm:h-5"
                       size={18}
-                      className="sm:w-5 sm:h-5"
+                      
                     />
                   </div>
                   <div>
@@ -76,9 +76,9 @@ const Contact = () => {
                 <div className="flex items-start p-4 space-x-3 bg-white shadow-lg sm:space-x-4 sm:p-6 rounded-xl">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#A88B67] rounded-full flex items-center justify-center flex-shrink-0">
                     <Mail
-                      className="text-white"
+                      className="text-white sm:w-5 sm:h-5"
                       size={18}
-                      className="sm:w-5 sm:h-5"
+                      
                     />
                   </div>
                   <div>
@@ -94,9 +94,9 @@ const Contact = () => {
                 <div className="flex items-start p-4 space-x-3 bg-white shadow-lg sm:space-x-4 sm:p-6 rounded-xl">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#4A5C3D] rounded-full flex items-center justify-center flex-shrink-0">
                     <Phone
-                      className="text-white"
+                      className="text-white sm:w-5 sm:h-5"
                       size={18}
-                      className="sm:w-5 sm:h-5"
+                    
                     />
                   </div>
                   <div>

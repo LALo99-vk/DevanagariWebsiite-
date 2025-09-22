@@ -267,9 +267,9 @@ const Shop = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-center">
             <div className="flex items-center justify-center space-x-2">
               <CheckCircle
-                className="text-green-500"
+                className="text-green-500 sm:w-6 sm:h-6"
                 size={20}
-                className="sm:w-6 sm:h-6"
+                
               />
               <span className="text-sm sm:text-base text-gray-700">
                 Free shipping on orders over ₹500
@@ -277,9 +277,9 @@ const Shop = () => {
             </div>
             <div className="flex items-center justify-center space-x-2">
               <CheckCircle
-                className="text-green-500"
+                className="text-green-500 sm:w-6 sm:h-6"
                 size={20}
-                className="sm:w-6 sm:h-6"
+              
               />
               <span className="text-sm sm:text-base text-gray-700">
                 30-day money-back guarantee
@@ -287,9 +287,9 @@ const Shop = () => {
             </div>
             <div className="flex items-center justify-center space-x-2 sm:col-span-2 lg:col-span-1">
               <CheckCircle
-                className="text-green-500"
+                className="text-green-500 sm:w-6 sm:h-6"
                 size={20}
-                className="sm:w-6 sm:h-6"
+          
               />
               <span className="text-sm sm:text-base text-gray-700">
                 Made from 100% natural ingredients
