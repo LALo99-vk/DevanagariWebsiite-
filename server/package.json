@@ -4,7 +4,7 @@
   "main": "razorpay-server.js",
   "scripts": {
     "dev": "nodemon razorpay-server.js",
-    "start": "node razorpay-server.js",
+    "start": "node server/razorpay-server.js",
     "server": "node razorpay-server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
