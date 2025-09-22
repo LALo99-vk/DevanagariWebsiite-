@@ -1,4 +1,5 @@
 import { useState } from "react";
+import placeholderImg from "../assets/shop/ingredients.png";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -469,20 +470,16 @@ const Cart = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:space-x-6">
                     {/* Product Image */}
                     <div className="flex-shrink-0 mx-auto sm:mx-0">
-                      {item.product?.image_url ? (
-                        <img
-                          src={item.product.image_url}
-                          alt={item.product.name}
-                          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg"
-                        />
-                      ) : (
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#E6D9C5] rounded-lg flex items-center justify-center">
-                          <ShoppingBag
-                            size={20}
-                            className="sm:w-6 sm:h-6 text-[#4A5C3D]"
-                          />
-                        </div>
-                      )}
+                      <img
+                        src={
+                          typeof item.product?.image_url === "string" &&
+                          /^https?:\/\//i.test(item.product.image_url)
+                            ? item.product.image_url
+                            : placeholderImg
+                        }
+                        alt={item.product?.name || "Product"}
+                        className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg"
+                      />
                     </div>
 
                     {/* Product Info */}

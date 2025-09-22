@@ -17,6 +17,7 @@ import {
   DatabaseStatus,
 } from "../utils/databaseSetupHelper";
 import "../utils/verifyDatabase"; // Import verification utility
+import placeholderImg from "../assets/shop/ingredients.png";
 
 interface Product {
   id: string;
@@ -320,6 +321,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [quantity, setQuantity] = useState(1);
 
+  const resolveImageSrc = (url?: string): string => {
+    if (typeof url === "string" && /^https?:\/\//i.test(url)) return url;
+    return placeholderImg;
+  };
+
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
@@ -328,7 +334,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       {/* Product Image */}
       <div className="aspect-square overflow-hidden">
         <img
-          src={product.image_url || "/src/assets/shop/First page Flipkart.png"}
+          src={resolveImageSrc(product.image_url)}
           alt={`${product.name} ${product.weight}g`}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
