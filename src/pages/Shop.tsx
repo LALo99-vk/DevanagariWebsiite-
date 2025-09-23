@@ -273,7 +273,7 @@ const Shop = () => {
                 
               />
               <span className="text-sm sm:text-base text-gray-700">
-                Free shipping on orders over ₹500
+                Np refunds 
               </span>
             </div>
             <div className="flex items-center justify-center space-x-2">
@@ -283,7 +283,7 @@ const Shop = () => {
               
               />
               <span className="text-sm sm:text-base text-gray-700">
-                30-day money-back guarantee
+                Questions? Reach out to us 
               </span>
             </div>
             <div className="flex items-center justify-center space-x-2 sm:col-span-2 lg:col-span-1">
