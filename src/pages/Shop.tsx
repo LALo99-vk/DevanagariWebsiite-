@@ -273,7 +273,7 @@ const Shop = () => {
                 
               />
               <span className="text-sm sm:text-base text-gray-700">
-                Np refunds 
+                No refunds!
               </span>
             </div>
             <div className="flex items-center justify-center space-x-2">
