@@ -11,7 +11,7 @@ import {
 import millets from "../assets/millet.png";
 import grinding from "../assets/grinding1.png";
 import finepowder from "../assets/powderMix.png .png";
-import heromain3 from "../assets/heromain3.png";
+import heromain3 from "../assets/sreeshivanihero.png";
 import heroVideo from "../assets/videos/compressed-hero-bg.mp4";
 
 const Home = () => {
@@ -153,7 +153,7 @@ const Home = () => {
                   <img
                     src={heromain3}
                     alt="Devanagari Health Mix Product"
-                    className="rounded-2xl shadow-2xl max-w-full h-auto transform hover:scale-105 transition-transform duration-500"
+                    className="rounded-2xl shadow-2xl w-full h-auto transform hover:scale-105 transition-transform duration-500"
                   />
 
                   {/* Floating Elements */}

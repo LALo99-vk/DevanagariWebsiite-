@@ -14,10 +14,10 @@ const Footer = () => {
               Wellness, rooted in tradition. Fueling your health with nature's finest ingredients.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.facebook.com/profile.php?id=61580180758661" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.instagram.com/sreeshivanifoods?igsh=M3JsbzB1bXdtcXNy" className="text-gray-300 hover:text-white transition-colors">
                 <Instagram size={20} />
               </a>
               
@@ -53,9 +53,7 @@ const Footer = () => {
               <a href="#" className="block text-gray-300 hover:text-white transition-colors">
                 Shipping Info
               </a>
-              <a href="#" className="block text-gray-300 hover:text-white transition-colors">
-                Returns
-              </a>
+              
               <a href="#" className="block text-gray-300 hover:text-white transition-colors">
                 Privacy Policy
               </a>

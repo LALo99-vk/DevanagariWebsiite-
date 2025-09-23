@@ -11,7 +11,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
-import logo from "../assets/logo.png";
+import logo from "../assets/sreeshivanilogo.png";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
