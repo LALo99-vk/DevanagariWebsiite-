@@ -100,6 +100,13 @@ app.post('/api/razorpay/create-order', validateRazorpayConfig, async (req, res) 
     };
 
     // Create order with Razorpay
+    console.log('📦 Creating Razorpay order with options:', {
+      amount: options.amount,
+      currency: options.currency,
+      receipt: options.receipt,
+      notes: options.notes
+    });
+
     const order = await razorpay.orders.create(options);
 
     console.log('📦 Created Razorpay order:', {
@@ -591,11 +598,18 @@ app.post('/api/webhooks/razorpay', async (req, res) => {
 
 // Get Razorpay Configuration (for frontend)
 app.get('/api/razorpay/config', (req, res) => {
-  res.json({
+  const config = {
     key_id: process.env.RAZORPAY_KEY_ID,
     currency: 'INR',
     environment: process.env.NODE_ENV || 'development'
+  };
+
+  console.log('🔑 Razorpay config requested:', {
+    key_id: config.key_id ? `${config.key_id.substring(0, 8)}...` : 'NOT_SET',
+    environment: config.environment
   });
+
+  res.json(config);
 });
 
 // Health check
