@@ -11,6 +11,18 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: RAZORPAY_KEY_ID
+        value: ${RAZORPAY_KEY_ID}
+      - key: RAZORPAY_KEY_SECRET
+        value: ${RAZORPAY_KEY_SECRET}
+      - key: RAZORPAY_WEBHOOK_SECRET
+        value: ${RAZORPAY_WEBHOOK_SECRET}
+      - key: SUPABASE_URL
+        value: ${SUPABASE_URL}
+      - key: SUPABASE_ANON_KEY
+        value: ${SUPABASE_ANON_KEY}
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        value: ${SUPABASE_SERVICE_ROLE_KEY}
     autoDeploy: true
 
   - type: web
