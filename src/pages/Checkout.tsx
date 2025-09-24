@@ -5,6 +5,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import razorpayService from "../services/razorpay";
+import { ordersService } from "../services/supabase";
 import AddressManagement from "../components/AddressManagement";
 import BackButton from "../components/BackButton";
 
@@ -97,18 +98,11 @@ const Checkout = () => {
     setLoading(true);
     try {
       // First create a Razorpay order
-      const order = await razorpayService.createOrder({
-        amount: total * 100, // Convert to paise
-        currency: "INR",
-        receipt: `receipt_${Date.now()}`,
-        notes: {
-          items: JSON.stringify(cartItems),
-          shipping_address: JSON.stringify(shippingAddress),
-          promo_code: promoApplied ? promoCode : null,
-          discount: discount,
-          shipping: shipping,
-        },
-      });
+      const order = await razorpayService.createOrder(
+        total, // Amount in INR (includes shipping)
+        cartItems,
+        user.email
+      );
 
       // Then open payment modal
       await razorpayService.openPaymentModal(
@@ -116,13 +110,51 @@ const Checkout = () => {
         user.email,
         user.user_metadata?.full_name || user.email,
         user.user_metadata?.phone,
-        (response) => {
-          showSuccess(
-            "Payment Successful",
-            "Your order has been placed successfully!"
-          );
-          clearCart();
-          navigate("/orders");
+        async (response) => {
+          try {
+            console.log("🔄 Payment successful, verifying payment...");
+
+            // Verify payment with Razorpay
+            const verificationResult = await razorpayService.verifyPayment(
+              response
+            );
+
+            if (!verificationResult.isValid) {
+              throw new Error("Payment verification failed");
+            }
+
+            console.log("✅ Payment verified, creating order in database...");
+
+            // Create order in database
+            const order = await ordersService.createOrder(
+              user.id,
+              cartItems,
+              {
+                payment_id: verificationResult.payment_id,
+                payment_order_id: verificationResult.order_id,
+                payment_signature: response.razorpay_signature,
+                payment_status: "paid",
+                payment_method: "razorpay",
+                currency: "INR",
+              },
+              shipping
+            );
+
+            console.log("✅ Order created successfully:", order.id);
+
+            showSuccess(
+              "Payment Successful",
+              "Your order has been placed successfully!"
+            );
+            clearCart();
+            navigate("/profile");
+          } catch (error) {
+            console.error("❌ Error processing order:", error);
+            showError(
+              "Order Processing Error",
+              "Payment was successful but there was an error processing your order. Please contact support."
+            );
+          }
         },
         (error) => {
           showError("Payment Failed", error.message);

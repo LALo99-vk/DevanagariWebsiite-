@@ -1,4 +1,17 @@
 
+    -- =====================================================
+    -- DEVANAGARI WEB DATABASE SCHEMA
+    -- =====================================================
+    -- This script creates the complete database schema for Devanagari Web
+    -- 
+    -- IMPORTANT FIXES INCLUDED:
+    -- - Order totals now properly include shipping_amount (FIXED in update_order_totals function)
+    -- - Currency defaults to INR instead of USD
+    -- - All triggers and functions are optimized for the e-commerce platform
+    --
+    -- Run this script once to set up the complete database structure
+    -- =====================================================
+
     -- Drop all existing policies first
     DO $$ 
     DECLARE
@@ -424,21 +437,30 @@ CREATE POLICY "Admins can manage all orders" ON public.orders
     $$ LANGUAGE plpgsql;
 
     -- Function to update order totals when order items change
+    -- FIXED: Now properly includes shipping_amount in total calculation
     CREATE OR REPLACE FUNCTION public.update_order_totals()
     RETURNS TRIGGER AS $$
     DECLARE
         order_total DECIMAL(10,2);
         order_subtotal DECIMAL(10,2);
+        order_shipping DECIMAL(10,2);
     BEGIN
-        -- Calculate totals for the affected order
-        SELECT 
-            COALESCE(SUM(total_price), 0),
-            COALESCE(SUM(total_price), 0)
-        INTO order_subtotal, order_total
+        -- Calculate subtotal from order items
+        SELECT COALESCE(SUM(total_price), 0)
+        INTO order_subtotal
         FROM public.order_items
         WHERE order_id = COALESCE(NEW.order_id, OLD.order_id);
         
-        -- Update the order
+        -- Get the shipping amount from the order
+        SELECT COALESCE(shipping_amount, 0)
+        INTO order_shipping
+        FROM public.orders
+        WHERE id = COALESCE(NEW.order_id, OLD.order_id);
+        
+        -- Calculate total as subtotal + shipping
+        order_total := order_subtotal + order_shipping;
+        
+        -- Update the order with correct totals
         UPDATE public.orders
         SET 
             subtotal = order_subtotal,

@@ -171,6 +171,13 @@ const Refunds: React.FC = () => {
     }
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(amount);
+  };
+
   const filteredRefunds = refunds.filter((refund) => {
     const matchesSearch =
       refund.refund_id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -188,15 +195,10 @@ const Refunds: React.FC = () => {
     return matchesSearch && matchesStatus;
   });
 
-  // Convert INR refund amounts to USD for display
-  const usdToInrRate = 83; // Same rate used in Razorpay service
+  // Calculate total refund amount in INR
   const totalRefundAmount = refunds.reduce((sum, refund) => {
     const refundAmount = refund.refund_amount || 0;
-    // If the amount seems to be in INR (large values), convert to USD
-    if (refundAmount > 100) {
-      return sum + refundAmount / usdToInrRate;
-    }
-    // If it's already in USD (small values), use as is
+    // Amounts are stored in INR, so use directly
     return sum + refundAmount;
   }, 0);
 
@@ -330,7 +332,7 @@ const Refunds: React.FC = () => {
                 Total Refunded
               </p>
               <p className="text-2xl font-bold text-gray-900">
-                ${totalRefundAmount.toFixed(2)} USD
+                {formatCurrency(totalRefundAmount)}
               </p>
             </div>
           </div>
@@ -461,15 +463,7 @@ const Refunds: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    $
-                    {(() => {
-                      const amount = refund.refund_amount || 0;
-                      // Convert INR to USD if amount seems to be in INR
-                      const displayAmount =
-                        amount > 100 ? amount / usdToInrRate : amount;
-                      return displayAmount.toFixed(2);
-                    })()}{" "}
-                    USD
+                    {formatCurrency(refund.refund_amount || 0)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -551,15 +545,8 @@ const Refunds: React.FC = () => {
                         {selectedRefund.refund_id || "N/A"}
                       </p>
                       <p>
-                        <strong>Amount:</strong> $
-                        {(() => {
-                          const amount = selectedRefund.refund_amount || 0;
-                          // Convert INR to USD if amount seems to be in INR
-                          const displayAmount =
-                            amount > 100 ? amount / usdToInrRate : amount;
-                          return displayAmount.toFixed(2);
-                        })()}{" "}
-                        USD
+                        <strong>Amount:</strong>{" "}
+                        {formatCurrency(selectedRefund.refund_amount || 0)}
                       </p>
                       <p>
                         <strong>Status:</strong>{" "}
@@ -599,15 +586,8 @@ const Refunds: React.FC = () => {
                       <strong>Payment ID:</strong> {selectedRefund.payment_id}
                     </p>
                     <p>
-                      <strong>Original Amount:</strong> $
-                      {(() => {
-                        const amount = selectedRefund.total || 0;
-                        // Convert INR to USD if amount seems to be in INR
-                        const displayAmount =
-                          amount > 100 ? amount / usdToInrRate : amount;
-                        return displayAmount.toFixed(2);
-                      })()}{" "}
-                      USD
+                      <strong>Original Amount:</strong>{" "}
+                      {formatCurrency(selectedRefund.total || 0)}
                     </p>
                     <p>
                       <strong>Order Status:</strong> {selectedRefund.status}
