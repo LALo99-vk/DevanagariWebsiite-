@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: devanagari-backend
+    name: devanagari-app
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: node server/razorpay-server.js
     healthCheckPath: /health
     envVars:
@@ -23,15 +23,4 @@ services:
         value: ${SUPABASE_ANON_KEY}
       - key: SUPABASE_SERVICE_ROLE_KEY
         value: ${SUPABASE_SERVICE_ROLE_KEY}
-    autoDeploy: true
-
-  - type: web
-    name: devanagari-frontend
-    env: static
-    plan: free
-    buildCommand: npm run build
-    staticPublishPath: ./dist
-    envVars:
-      - key: NODE_ENV
-        value: production
     autoDeploy: true
