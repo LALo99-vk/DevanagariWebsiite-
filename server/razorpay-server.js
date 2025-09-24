@@ -51,7 +51,7 @@ const validateRazorpayConfig = (req, res, next) => {
       error: 'Razorpay configuration missing. Please set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET in environment variables.'
     });
   }
-  
+
   // Check if using test keys in production
   if (process.env.NODE_ENV === 'production' && process.env.RAZORPAY_KEY_ID.startsWith('rzp_test_')) {
     console.warn('⚠️ WARNING: Using TEST Razorpay key in PRODUCTION!');
@@ -60,7 +60,7 @@ const validateRazorpayConfig = (req, res, next) => {
       details: 'Cannot use test keys in production environment'
     });
   }
-  
+
   next();
 };
 
@@ -157,7 +157,7 @@ app.post('/api/razorpay/create-order', validateRazorpayConfig, async (req, res) 
         code: error.error?.code,
         field: error.error?.field
       });
-      
+
       return res.status(error.statusCode).json({
         error: error.error?.description || 'Razorpay API error',
         code: error.error?.code,
@@ -166,9 +166,9 @@ app.post('/api/razorpay/create-order', validateRazorpayConfig, async (req, res) 
       });
     }
 
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to create order',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -631,18 +631,18 @@ app.get('/api/razorpay/config', (req, res) => {
     currency: 'INR',
     environment: process.env.NODE_ENV || 'development'
   };
-  
+
   console.log('🔑 Razorpay config requested:', {
     key_id: config.key_id ? `${config.key_id.substring(0, 8)}...` : 'NOT_SET',
     environment: config.environment,
     isTestKey: config.key_id ? config.key_id.startsWith('rzp_test_') : false
   });
-  
+
   // Warn if using test key in production
   if (config.environment === 'production' && config.key_id && config.key_id.startsWith('rzp_test_')) {
     console.warn('⚠️ WARNING: Using TEST Razorpay key in PRODUCTION environment!');
   }
-  
+
   res.json(config);
 });
 
