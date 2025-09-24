@@ -658,6 +658,17 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Debug endpoint to check environment variables (remove in production)
+app.get('/api/debug/env', (req, res) => {
+  res.json({
+    NODE_ENV: process.env.NODE_ENV,
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID ? `${process.env.RAZORPAY_KEY_ID.substring(0, 8)}...` : 'NOT_SET',
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET ? 'SET' : 'NOT_SET',
+    SUPABASE_URL: process.env.SUPABASE_URL ? 'SET' : 'NOT_SET',
+    isTestKey: process.env.RAZORPAY_KEY_ID ? process.env.RAZORPAY_KEY_ID.startsWith('rzp_test_') : false
+  });
+});
+
 // Serve frontend build (production)
 const distPath = path.join(__dirname, '..', 'dist');
 app.use(express.static(distPath));
