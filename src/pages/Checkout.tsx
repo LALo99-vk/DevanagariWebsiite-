@@ -62,7 +62,10 @@ const Checkout = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ code: promoCode }),
+          body: JSON.stringify({
+            code: promoCode,
+            orderAmount: subtotal,
+          }),
         }
       );
 

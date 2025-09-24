@@ -244,7 +244,7 @@ const razorpayService = {
     onSuccess?: (response: RazorpayPaymentResponse) => void,
     onError?: (error: Error) => void
   ): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (!window.Razorpay) {
         const error = new Error(
           "Razorpay SDK not loaded. Please refresh the page and try again."
@@ -255,8 +255,19 @@ const razorpayService = {
         return;
       }
 
+      // Get Razorpay configuration from server
+      let config: RazorpayConfig;
+      try {
+        config = await this.getConfig();
+      } catch (error) {
+        console.error("❌ Failed to get Razorpay config:", error);
+        onError?.(error as Error);
+        reject(error);
+        return;
+      }
+
       const options: RazorpayOptions = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key: config.key_id,
         amount: order.amount,
         currency: order.currency,
         name: "Devanagari Web",
