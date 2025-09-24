@@ -671,6 +671,18 @@ app.get('/api/debug/env', (req, res) => {
 
 // Serve frontend build (production)
 const distPath = path.join(__dirname, '..', 'dist');
+console.log('📁 Serving static files from:', distPath);
+
+// Check if dist directory exists
+const fs = require('fs');
+if (!fs.existsSync(distPath)) {
+  console.error('❌ Dist directory does not exist:', distPath);
+} else {
+  console.log('✅ Dist directory exists');
+  const files = fs.readdirSync(distPath);
+  console.log('📄 Files in dist:', files);
+}
+
 app.use(express.static(distPath, {
   setHeaders: (res, path) => {
     if (path.endsWith('.js')) {
