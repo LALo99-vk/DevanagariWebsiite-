@@ -684,6 +684,16 @@ app.post('/api/promo/validate', async (req, res) => {
 
     // Import Supabase client
     const { createClient } = require('@supabase/supabase-js');
+
+    // Check if Supabase environment variables are configured
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('❌ Supabase environment variables not configured');
+      return res.status(500).json({
+        error: 'Server configuration error',
+        valid: false
+      });
+    }
+
     const supabase = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -697,7 +707,15 @@ app.post('/api/promo/validate', async (req, res) => {
       .eq('is_active', true)
       .single();
 
-    if (error || !promoCode) {
+    if (error) {
+      console.error('❌ Supabase query error:', error);
+      return res.status(500).json({
+        error: 'Database error',
+        valid: false
+      });
+    }
+
+    if (!promoCode) {
       return res.status(400).json({
         error: 'Invalid promo code',
         valid: false
