@@ -1,17 +1,4 @@
 
-    -- =====================================================
-    -- DEVANAGARI WEB DATABASE SCHEMA
-    -- =====================================================
-    -- This script creates the complete database schema for Devanagari Web
-    -- 
-    -- IMPORTANT FIXES INCLUDED:
-    -- - Order totals now properly include shipping_amount (FIXED in update_order_totals function)
-    -- - Currency defaults to INR instead of USD
-    -- - All triggers and functions are optimized for the e-commerce platform
-    --
-    -- Run this script once to set up the complete database structure
-    -- =====================================================
-
     -- Drop all existing policies first
     DO $$ 
     DECLARE
@@ -42,7 +29,7 @@
     -- =====================================================
 
     -- Users table - extends auth.users with additional profile data
-    CREATE TABLE public.users (
+    CREATE TABLE IF NOT EXISTS public.users (
         id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
         email TEXT NOT NULL UNIQUE,
         name TEXT,
@@ -60,7 +47,7 @@
     );
 
     -- Products table - store product information
-    CREATE TABLE public.products (
+    CREATE TABLE IF NOT EXISTS public.products (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         name TEXT NOT NULL,
         description TEXT,
@@ -79,7 +66,7 @@
     );
 
     -- User addresses table - store user shipping addresses
-    CREATE TABLE public.user_addresses (
+    CREATE TABLE IF NOT EXISTS public.user_addresses (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
         name TEXT NOT NULL, -- Full name for the address
@@ -96,7 +83,7 @@
     );
 
     -- Cart items table - user shopping cart
-    CREATE TABLE public.cart_items (
+    CREATE TABLE IF NOT EXISTS public.cart_items (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
         product_id UUID REFERENCES public.products(id) ON DELETE CASCADE NOT NULL,
@@ -107,7 +94,7 @@
     );
 
     -- Orders table - order information
-    CREATE TABLE public.orders (
+    CREATE TABLE IF NOT EXISTS public.orders (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         user_id UUID REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
         order_number TEXT UNIQUE, -- Human-readable order number
@@ -146,7 +133,7 @@
     );
 
     -- Order items table - individual items in an order
-    CREATE TABLE public.order_items (
+    CREATE TABLE IF NOT EXISTS public.order_items (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE NOT NULL,
         product_id UUID REFERENCES public.products(id) ON DELETE CASCADE NOT NULL,
@@ -158,7 +145,7 @@
     );
 
     -- Promo codes table - store promotional codes and discounts
-    CREATE TABLE public.promo_codes (
+    CREATE TABLE IF NOT EXISTS public.promo_codes (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         code TEXT NOT NULL UNIQUE,
         description TEXT NOT NULL,
@@ -177,7 +164,7 @@
     );
 
     -- Admin actions table - audit log for admin activities
-    CREATE TABLE public.admin_actions (
+    CREATE TABLE IF NOT EXISTS public.admin_actions (
         id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
         admin_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
         action_type TEXT NOT NULL, -- 'create', 'update', 'delete', 'view'
@@ -195,54 +182,54 @@
     -- =====================================================
 
     -- Users table indexes
-    CREATE INDEX idx_users_email ON public.users(email);
-    CREATE INDEX idx_users_role ON public.users(role);
-    CREATE INDEX idx_users_is_admin ON public.users(is_admin);
-    CREATE INDEX idx_users_is_active ON public.users(is_active);
+    CREATE INDEX IF NOT EXISTS idx_users_email ON public.users(email);
+    CREATE INDEX IF NOT EXISTS idx_users_role ON public.users(role);
+    CREATE INDEX IF NOT EXISTS idx_users_is_admin ON public.users(is_admin);
+    CREATE INDEX IF NOT EXISTS idx_users_is_active ON public.users(is_active);
 
     -- Products table indexes
-    CREATE INDEX idx_products_name ON public.products(name);
-    CREATE INDEX idx_products_category ON public.products(category);
-    CREATE INDEX idx_products_is_active ON public.products(is_active);
-    CREATE INDEX idx_products_is_featured ON public.products(is_featured);
-    CREATE INDEX idx_products_weight ON public.products(weight);
-    CREATE INDEX idx_products_price ON public.products(price);
+    CREATE INDEX IF NOT EXISTS idx_products_name ON public.products(name);
+    CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+    CREATE INDEX IF NOT EXISTS idx_products_is_active ON public.products(is_active);
+    CREATE INDEX IF NOT EXISTS idx_products_is_featured ON public.products(is_featured);
+    CREATE INDEX IF NOT EXISTS idx_products_weight ON public.products(weight);
+    CREATE INDEX IF NOT EXISTS idx_products_price ON public.products(price);
 
     -- User addresses indexes
-    CREATE INDEX idx_user_addresses_user_id ON public.user_addresses(user_id);
-    CREATE INDEX idx_user_addresses_is_default ON public.user_addresses(is_default);
+    CREATE INDEX IF NOT EXISTS idx_user_addresses_user_id ON public.user_addresses(user_id);
+    CREATE INDEX IF NOT EXISTS idx_user_addresses_is_default ON public.user_addresses(is_default);
 
     -- Cart items indexes
-    CREATE INDEX idx_cart_items_user_id ON public.cart_items(user_id);
-    CREATE INDEX idx_cart_items_product_id ON public.cart_items(product_id);
+    CREATE INDEX IF NOT EXISTS idx_cart_items_user_id ON public.cart_items(user_id);
+    CREATE INDEX IF NOT EXISTS idx_cart_items_product_id ON public.cart_items(product_id);
 
     -- Orders table indexes
-    CREATE INDEX idx_orders_user_id ON public.orders(user_id);
-    CREATE INDEX idx_orders_status ON public.orders(status);
-    CREATE INDEX idx_orders_payment_status ON public.orders(payment_status);
-    CREATE INDEX idx_orders_payment_id ON public.orders(payment_id);
-    CREATE INDEX idx_orders_payment_order_id ON public.orders(payment_order_id);
-    CREATE INDEX idx_orders_created_at ON public.orders(created_at);
-    CREATE INDEX idx_orders_order_number ON public.orders(order_number);
-    CREATE INDEX idx_orders_refund_id ON public.orders(refund_id);
-    CREATE INDEX idx_orders_refund_status ON public.orders(refund_status);
-    CREATE INDEX idx_orders_refunded_at ON public.orders(refunded_at);
+    CREATE INDEX IF NOT EXISTS idx_orders_user_id ON public.orders(user_id);
+    CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(status);
+    CREATE INDEX IF NOT EXISTS idx_orders_payment_status ON public.orders(payment_status);
+    CREATE INDEX IF NOT EXISTS idx_orders_payment_id ON public.orders(payment_id);
+    CREATE INDEX IF NOT EXISTS idx_orders_payment_order_id ON public.orders(payment_order_id);
+    CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at);
+    CREATE INDEX IF NOT EXISTS idx_orders_order_number ON public.orders(order_number);
+    CREATE INDEX IF NOT EXISTS idx_orders_refund_id ON public.orders(refund_id);
+    CREATE INDEX IF NOT EXISTS idx_orders_refund_status ON public.orders(refund_status);
+    CREATE INDEX IF NOT EXISTS idx_orders_refunded_at ON public.orders(refunded_at);
 
     -- Order items indexes
-    CREATE INDEX idx_order_items_order_id ON public.order_items(order_id);
-    CREATE INDEX idx_order_items_product_id ON public.order_items(product_id);
+    CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items(order_id);
+    CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON public.order_items(product_id);
 
     -- Promo codes indexes
-    CREATE INDEX idx_promo_codes_code ON public.promo_codes(code);
-    CREATE INDEX idx_promo_codes_is_active ON public.promo_codes(is_active);
-    CREATE INDEX idx_promo_codes_valid_from ON public.promo_codes(valid_from);
-    CREATE INDEX idx_promo_codes_valid_until ON public.promo_codes(valid_until);
-    CREATE INDEX idx_promo_codes_discount_type ON public.promo_codes(discount_type);
+    CREATE INDEX IF NOT EXISTS idx_promo_codes_code ON public.promo_codes(code);
+    CREATE INDEX IF NOT EXISTS idx_promo_codes_is_active ON public.promo_codes(is_active);
+    CREATE INDEX IF NOT EXISTS idx_promo_codes_valid_from ON public.promo_codes(valid_from);
+    CREATE INDEX IF NOT EXISTS idx_promo_codes_valid_until ON public.promo_codes(valid_until);
+    CREATE INDEX IF NOT EXISTS idx_promo_codes_discount_type ON public.promo_codes(discount_type);
 
     -- Admin actions indexes
-    CREATE INDEX idx_admin_actions_admin_id ON public.admin_actions(admin_id);
-    CREATE INDEX idx_admin_actions_resource_type ON public.admin_actions(resource_type);
-    CREATE INDEX idx_admin_actions_created_at ON public.admin_actions(created_at);
+    CREATE INDEX IF NOT EXISTS idx_admin_actions_admin_id ON public.admin_actions(admin_id);
+    CREATE INDEX IF NOT EXISTS idx_admin_actions_resource_type ON public.admin_actions(resource_type);
+    CREATE INDEX IF NOT EXISTS idx_admin_actions_created_at ON public.admin_actions(created_at);
 
     -- =====================================================
     -- 4. ENABLE ROW LEVEL SECURITY
