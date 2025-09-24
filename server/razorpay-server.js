@@ -685,6 +685,7 @@ if (!fs.existsSync(distPath)) {
 
 app.use(express.static(distPath, {
   setHeaders: (res, path) => {
+    console.log('📄 Serving static file:', path);
     if (path.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
     } else if (path.endsWith('.css')) {
@@ -692,6 +693,21 @@ app.use(express.static(distPath, {
     }
   }
 }));
+
+// Add a specific route for assets debugging
+app.get('/assets/*', (req, res) => {
+  console.log('🔍 Assets route hit:', req.path);
+  const filePath = path.join(distPath, req.path);
+  console.log('📁 Looking for file:', filePath);
+  
+  if (fs.existsSync(filePath)) {
+    console.log('✅ File exists, serving:', filePath);
+    res.sendFile(filePath);
+  } else {
+    console.log('❌ File not found:', filePath);
+    res.status(404).json({ error: 'File not found', path: req.path });
+  }
+});
 
 // Sitemap for Sreeshivanifoods
 const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
