@@ -384,6 +384,24 @@ app.post('/api/razorpay/payment/:paymentId/refund', validateRazorpayConfig, asyn
       receipt
     });
 
+    // First, let's check the payment details to see what was actually captured
+    let actualCapturedAmount = null;
+    try {
+      const payment = await razorpay.payments.fetch(paymentId);
+      console.log('💳 Payment details for refund:', {
+        payment_id: payment.id,
+        amount: payment.amount,
+        amount_captured: payment.amount_captured,
+        status: payment.status,
+        currency: payment.currency
+      });
+
+      // Use the actual captured amount if available
+      actualCapturedAmount = payment.amount_captured || payment.amount;
+    } catch (fetchError) {
+      console.error('⚠️ Could not fetch payment details:', fetchError);
+    }
+
     const refundData = {
       payment_id: paymentId,
       notes: {
@@ -393,7 +411,15 @@ app.post('/api/razorpay/payment/:paymentId/refund', validateRazorpayConfig, asyn
       }
     };
 
-    if (amount) refundData.amount = amount;
+    // Use the actual captured amount if available, otherwise use the provided amount
+    if (actualCapturedAmount) {
+      refundData.amount = actualCapturedAmount;
+      console.log('💸 Using actual captured amount for refund:', actualCapturedAmount);
+    } else if (amount) {
+      refundData.amount = amount;
+      console.log('💸 Using provided amount for refund:', amount);
+    }
+
     if (speed) refundData.speed = speed;
     if (receipt) refundData.receipt = receipt;
 

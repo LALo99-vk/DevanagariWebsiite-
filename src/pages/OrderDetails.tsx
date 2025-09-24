@@ -15,7 +15,6 @@ import {
   Calendar,
   AlertCircle,
   Download,
-  RotateCcw,
   X,
 } from "lucide-react";
 import { ordersService } from "../services/supabase";
@@ -124,6 +123,15 @@ const OrderDetails: React.FC = () => {
     }
 
     try {
+      // Debug: Log the refund amount being sent
+      console.log("🔄 Processing refund for order:", {
+        order_id: order.id,
+        payment_id: order.payment_id,
+        order_total: order.total,
+        refund_amount_inr: order.total,
+        refund_amount_paise: Math.round(order.total * 100),
+      });
+
       // Process refund through Razorpay
       const refund = await razorpayService.processRefund(
         order.payment_id,
@@ -256,10 +264,6 @@ const OrderDetails: React.FC = () => {
 
   const canCancel = (order: Order) => {
     return order.status === "pending" || order.status === "processing";
-  };
-
-  const canReturn = (order: Order) => {
-    return order.status === "delivered" && order.payment_status === "paid";
   };
 
   const canTrack = (order: Order) => {
@@ -764,21 +768,6 @@ const OrderDetails: React.FC = () => {
                       <X className="w-4 h-4" />
                     )}
                     <span>Cancel Order</span>
-                  </button>
-                )}
-
-                {canReturn(order) && (
-                  <button
-                    onClick={() => handleOrderAction("return")}
-                    disabled={actionLoading === "return"}
-                    className="w-full border-2 border-[#4A5C3D] text-[#4A5C3D] py-2 rounded-lg font-semibold hover:bg-[#4A5C3D] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                  >
-                    {actionLoading === "return" ? (
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <RotateCcw className="w-4 h-4" />
-                    )}
-                    <span>Request Return</span>
                   </button>
                 )}
 

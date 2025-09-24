@@ -555,7 +555,7 @@ export const ordersService = {
       payment_status: (paymentData?.payment_status ||
         "pending") as Order["payment_status"],
       payment_method: paymentData?.payment_method || "razorpay",
-      currency: paymentData?.currency || "USD",
+      currency: paymentData?.currency || "INR",
     };
 
     console.log("💾 Creating order in database...");

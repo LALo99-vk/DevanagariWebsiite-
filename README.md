@@ -21,6 +21,13 @@ This e-commerce platform provides a complete solution for selling and managing D
 
 ## ✨ Key Features
 
+### 🔧 **Recent Fixes & Improvements**
+
+- **✅ Shipping Amount Fix**: Order totals now correctly include shipping charges (₹99)
+- **✅ Currency Consistency**: All amounts display in INR with proper formatting
+- **✅ Database Optimization**: Fixed triggers to prevent order total calculation issues
+- **✅ Admin Panel**: Enhanced order management with accurate total calculations
+
 ### 🛍️ **Customer Features**
 
 - **Modern UI/UX**: Responsive design with smooth animations using Framer Motion
@@ -254,6 +261,14 @@ The platform uses a comprehensive PostgreSQL schema with the following main tabl
 - **order_items** - Individual order line items
 - **user_addresses** - Customer shipping addresses
 - **admin_actions** - Admin activity logging
+
+### 🔧 **Important Database Fixes Included**
+
+The database schema includes important fixes for order total calculations:
+
+- **✅ Shipping Amount Fix**: The `update_order_totals()` trigger now properly includes shipping amounts in order totals
+- **✅ Currency Consistency**: All monetary fields default to INR
+- **✅ Optimized Triggers**: Database triggers are optimized for accurate calculations
 
 For the complete schema, see [database-schema.sql](./database-schema.sql).
 

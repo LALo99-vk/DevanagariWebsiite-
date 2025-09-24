@@ -458,6 +458,11 @@ const razorpayService = {
       if (amount) {
         // Amount is already in INR from database, just convert to paise
         refundData.amount = Math.round(amount * 100); // Convert INR to paise
+        console.log("💸 Refund amount conversion:", {
+          amount_inr: amount,
+          amount_paise: refundData.amount,
+          payment_id: paymentId,
+        });
       }
 
       const response = await fetch(

@@ -150,7 +150,8 @@ RAZORPAY_WEBHOOK_SECRET=your_webhook_secret
 PORT=3001
 FRONTEND_URL=http://localhost:5173
 BACKEND_URL=http://localhost:3001
-ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+ALLOWED_ORIGINS=http://localhost:5173,http://localhost:5174,http://localhost:3000
+ALLOW_ALL_ORIGINS=false
 NODE_ENV=development
 ```
 
@@ -170,7 +171,7 @@ npm run server
 
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:3001
-- Health Check: http://localhost:3001/health
+- Health Check: http://localhost:3001/health or http://localhost:3001/api/health
 
 ---
 
@@ -212,7 +213,7 @@ RAZORPAY_WEBHOOK_SECRET=your_webhook_secret  # From your Razorpay webhook
 FRONTEND_URL=https://your-frontend.vercel.app  # Your frontend URL after deployment
 BACKEND_URL=https://your-backend.railway.app  # Your backend URL after deployment
 ALLOWED_ORIGINS=https://your-frontend.vercel.app,https://your-frontend.netlify.app
-JWT_SECRET=your_strong_jwt_secret_here  # Generate a random string
+ALLOW_ALL_ORIGINS=false  # Set to true only if you need to allow all origins
 NODE_ENV=production
 ```
 
@@ -245,6 +246,16 @@ NODE_ENV=production
 
 ### **8.5 Deploy to Production**
 
+**Deployment Configuration Files Included:**
+
+The project now includes ready-to-use deployment configuration files:
+
+- `vercel.json` - For Vercel deployment (frontend + backend)
+- `netlify.toml` - For Netlify deployment (frontend only)
+- `railway.json` - For Railway deployment (backend)
+- `render.yaml` - For Render deployment (both frontend and backend)
+- `Dockerfile` - For containerized deployment
+
 **You have 3 options for deployment:**
 
 #### **Option 1: Single Domain (Recommended)**
@@ -273,8 +284,9 @@ NODE_ENV=production
 
 1. Connect your GitHub repository to Vercel
 2. Go to **Settings** → **Environment Variables**
-3. Add all frontend environment variables
-4. Deploy (get free subdomain like `your-app.vercel.app`)
+3. Add all frontend and backend environment variables
+4. The `vercel.json` file will automatically configure the deployment
+5. Deploy (get free subdomain like `your-app.vercel.app`)
 
 **Netlify Deployment:**
 
@@ -291,16 +303,16 @@ NODE_ENV=production
 1. Connect your GitHub repository to Railway
 2. Go to **Variables** tab
 3. Add all backend environment variables
-4. Deploy (get free subdomain like `your-app.railway.app`)
+4. The `railway.json` file will automatically configure the deployment
+5. Deploy (get free subdomain like `your-app.railway.app`)
 
 **Render Deployment:**
 
 1. Create new **Web Service**
 2. Connect GitHub repository
-3. Set build command: `npm install`
-4. Set start command: `node razorpay-server.cjs`
-5. Add environment variables
-6. Deploy (get free subdomain like `your-app.onrender.com`)
+3. The `render.yaml` file will automatically configure the deployment
+4. Add environment variables
+5. Deploy (get free subdomain like `your-app.onrender.com`)
 
 #### **Post-Deployment Verification**
 

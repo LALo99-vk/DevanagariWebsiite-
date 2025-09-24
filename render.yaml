@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: devanagari-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server/razorpay-server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    autoDeploy: true
+
+  - type: web
+    name: devanagari-frontend
+    env: static
+    plan: free
+    buildCommand: npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: NODE_ENV
+        value: production
+    autoDeploy: true
