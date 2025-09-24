@@ -671,7 +671,15 @@ app.get('/api/debug/env', (req, res) => {
 
 // Serve frontend build (production)
 const distPath = path.join(__dirname, '..', 'dist');
-app.use(express.static(distPath));
+app.use(express.static(distPath, {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
 
 // Sitemap for Sreeshivanifoods
 const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -718,8 +726,8 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 // SPA fallback for non-API routes (Express 5 compatible)
-// Excludes /api and /health paths
-app.get(/^\/(?!api|health).*/, (req, res) => {
+// Excludes /api, /health, and static assets
+app.get(/^\/(?!api|health|assets).*/, (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
 
