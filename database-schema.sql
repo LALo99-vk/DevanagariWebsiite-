@@ -533,43 +533,46 @@ CREATE POLICY "Admins can manage all orders" ON public.orders
     -- 7. INSERT SAMPLE DATA
     -- =====================================================
 
-    -- Insert sample products
-    INSERT INTO public.products (name, description, short_description, price, image_url, stock, weight, category, is_featured) VALUES
-    (
-        'Devanagari Health Mix 200g',
-        'A premium blend of 21 natural grains, millets, and pulses, carefully crafted to provide complete nutrition. This 200g pack is perfect for trying our signature health mix.',
-        'Premium 21-grain health mix - 200g pack',
-        200.00,
-        '/src/assets/shop/First page Flipkart.png',
-        100,
-        200,
-        'health_mix',
-        true
-    ),
-    (
-        'Devanagari Health Mix 450g',
-        'A premium blend of 21 natural grains, millets, and pulses, carefully crafted to provide complete nutrition. This 450g pack offers great value for regular consumption.',
-        'Premium 21-grain health mix - 450g pack',
-        400.00,
-        '/src/assets/shop/First page Flipkart.png',
-        100,
-        450,
-        'health_mix',
-        true
-    ),
-    (
-        'Devanagari Health Mix 900g',
-        'A premium blend of 21 natural grains, millets, and pulses, carefully crafted to provide complete nutrition. This 900g family pack is perfect for households.',
-        'Premium 21-grain health mix - 900g family pack',
-        800.00,
-        '/src/assets/shop/First page Flipkart.png',
-        100,
-        900,
-        'health_mix',
-        true
-    );
+    -- Insert sample products (only if they don't exist)
+    INSERT INTO public.products (name, description, short_description, price, image_url, stock, weight, category, is_featured) 
+    SELECT * FROM (VALUES
+        (
+            'Devanagari Health Mix 200g',
+            'A premium blend of 21 natural grains, millets, and pulses, carefully crafted to provide complete nutrition. This 200g pack is perfect for trying our signature health mix.',
+            'Premium 21-grain health mix - 200g pack',
+            200.00,
+            '/src/assets/shop/First page Flipkart.png',
+            100,
+            200,
+            'health_mix',
+            true
+        ),
+        (
+            'Devanagari Health Mix 450g',
+            'A premium blend of 21 natural grains, millets, and pulses, carefully crafted to provide complete nutrition. This 450g pack offers great value for regular consumption.',
+            'Premium 21-grain health mix - 450g pack',
+            400.00,
+            '/src/assets/shop/First page Flipkart.png',
+            100,
+            450,
+            'health_mix',
+            true
+        ),
+        (
+            'Devanagari Health Mix 900g',
+            'A premium blend of 21 natural grains, millets, and pulses, carefully crafted to provide complete nutrition. This 900g family pack is perfect for households.',
+            'Premium 21-grain health mix - 900g family pack',
+            800.00,
+            '/src/assets/shop/First page Flipkart.png',
+            100,
+            900,
+            'health_mix',
+            true
+        )
+    ) AS v(name, description, short_description, price, image_url, stock, weight, category, is_featured)
+    WHERE NOT EXISTS (SELECT 1 FROM public.products WHERE products.name = v.name);
 
-    -- Insert sample promo codes
+    -- Insert sample promo codes (ignore if already exist)
     INSERT INTO public.promo_codes (code, description, discount_type, discount_value, min_order_amount, max_discount_amount, usage_limit, is_active) VALUES
     (
         'WELCOME10',
@@ -610,7 +613,8 @@ CREATE POLICY "Admins can manage all orders" ON public.orders
         150.00,
         2000,
         true
-    );
+    )
+    ON CONFLICT (code) DO NOTHING;
 
     -- Sync existing auth.users to public.users
     INSERT INTO public.users (id, email, name, full_name, avatar_url, is_admin, role, is_active, last_login)
