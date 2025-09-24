@@ -86,7 +86,7 @@ const Contact = () => {
                       Email
                     </h3>
                     <p className="text-sm text-gray-700 sm:text-base">
-                      sreeshivanifoods@gamil.com
+                      sreeshivanifoods@gmail.com
                     </p>
                   </div>
                 </div>
