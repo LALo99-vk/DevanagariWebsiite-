@@ -35,7 +35,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// Express 5: use a RegExp for catch-all OPTIONS (preflight)
+app.options(/^\/.*/, cors(corsOptions));
 // Basic request logger (method + path)
 app.use((req, res, next) => {
   console.log(`${req.method} ${req.path}`);
