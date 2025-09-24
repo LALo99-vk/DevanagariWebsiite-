@@ -15,6 +15,10 @@ const headers = {
   Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
 };
 
+// Backend API base URL: prefer env; fallback to current origin
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || `${window.location.origin}/api`;
+
 export const supabaseRestApi = {
   // Get products
   async getProducts() {
@@ -170,8 +174,8 @@ export const supabaseRestApi = {
           }
         );
 
-        let refunds = [];
-        let cancelled = [];
+        let refunds = [] as any[];
+        let cancelled = [] as any[];
 
         if (refundsResponse.ok) {
           refunds = await refundsResponse.json();
@@ -197,8 +201,12 @@ export const supabaseRestApi = {
         );
         return uniqueRefunds;
       } catch (fallbackError) {
+        const message =
+          fallbackError instanceof Error
+            ? fallbackError.message
+            : String(fallbackError);
         console.error("Both queries failed:", fallbackError);
-        throw new Error(`Refunds fetch failed: ${fallbackError.message}`);
+        throw new Error(`Refunds fetch failed: ${message}`);
       }
     }
   },
@@ -257,7 +265,7 @@ export const testRestApi = async () => {
     // Log order details for debugging
     if (orders.length > 0) {
       console.log("📋 Order details:");
-      orders.forEach((order, index) => {
+      orders.forEach((order: any, index: number) => {
         console.log(`  Order ${index + 1}:`, {
           id: order.id,
           status: order.status,
@@ -280,7 +288,7 @@ export const testRestApi = async () => {
     // Log refund details for debugging
     if (refunds.length > 0) {
       console.log("💰 Refund details:");
-      refunds.forEach((refund, index) => {
+      refunds.forEach((refund: any, index: number) => {
         console.log(`  Refund ${index + 1}:`, {
           id: refund.id,
           status: refund.status,
@@ -326,25 +334,25 @@ export const testRefundsQuery = async () => {
 
     if (orders.length > 0) {
       console.log("📋 All orders status breakdown:");
-      const statusCounts = orders.reduce((acc, order) => {
+      const statusCounts = orders.reduce((acc: any, order: any) => {
         acc[order.status] = (acc[order.status] || 0) + 1;
         return acc;
-      }, {});
+      }, {} as any);
       console.log("Status counts:", statusCounts);
 
       // Show orders with refund data
-      const ordersWithRefunds = orders.filter((order) => order.refund_id);
+      const ordersWithRefunds = orders.filter((order: any) => order.refund_id);
       console.log(`💰 Orders with refund_id: ${ordersWithRefunds.length}`);
 
       // Show cancelled orders
       const cancelledOrders = orders.filter(
-        (order) => order.status === "cancelled"
+        (order: any) => order.status === "cancelled"
       );
       console.log(`❌ Cancelled orders: ${cancelledOrders.length}`);
 
       if (cancelledOrders.length > 0) {
         console.log("Cancelled order details:");
-        cancelledOrders.forEach((order, index) => {
+        cancelledOrders.forEach((order: any, index: number) => {
           console.log(`  ${index + 1}. Order ${order.id}:`, {
             status: order.status,
             payment_status: order.payment_status,
@@ -375,7 +383,7 @@ export const testRefundsQuery = async () => {
 
     if (refunds.length > 0) {
       console.log("💰 Refund query results:");
-      refunds.forEach((refund, index) => {
+      refunds.forEach((refund: any, index: number) => {
         console.log(`  ${index + 1}. Order ${refund.id}:`, {
           status: refund.status,
           payment_status: refund.payment_status,
@@ -395,7 +403,7 @@ export const testRefundsQuery = async () => {
     return refunds;
   } catch (error) {
     console.error("❌ Refunds test failed:", error);
-    return [];
+    return [] as any[];
   }
 };
 
@@ -485,15 +493,11 @@ export const testRazorpayServer = async () => {
   console.log("=========================");
 
   try {
-    const API_BASE_URL =
-      import.meta.env.VITE_API_BASE_URL || "http://localhost:3001/api";
     console.log("🔗 API Base URL:", API_BASE_URL);
 
     // Test 1: Health check
     console.log("1. Testing server health...");
-    const healthResponse = await fetch(
-      `${API_BASE_URL.replace("/api", "")}/health`
-    );
+    const healthResponse = await fetch(`${API_BASE_URL.replace("/api", "")}/health`);
     if (healthResponse.ok) {
       const healthData = await healthResponse.json();
       console.log("✅ Server health:", healthData);
