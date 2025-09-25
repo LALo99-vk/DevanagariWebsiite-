@@ -140,7 +140,8 @@ const Checkout = () => {
                 payment_method: "razorpay",
                 currency: "INR",
               },
-              shipping
+              shipping,
+              shippingAddress
             );
 
             console.log("✅ Order created successfully:", order.id);

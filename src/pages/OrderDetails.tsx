@@ -34,6 +34,7 @@ const OrderDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -70,8 +71,11 @@ const OrderDetails: React.FC = () => {
     try {
       if (action === "cancel") {
         await handleOrderCancellation();
+      } else if (action === "track") {
+        // Show tracking modal
+        setShowTrackingModal(true);
       } else {
-        // Handle other actions (return, track, etc.)
+        // Handle other actions (return, etc.)
         await new Promise((resolve) => setTimeout(resolve, 1000));
         showSuccess(
           "Request Submitted",
@@ -267,7 +271,7 @@ const OrderDetails: React.FC = () => {
   };
 
   const canTrack = (order: Order) => {
-    return order.status === "shipped" || order.status === "delivered";
+    return order.status !== "cancelled";
   };
 
   if (loading) {
@@ -564,29 +568,51 @@ const OrderDetails: React.FC = () => {
             </div>
 
             {/* Shipping Information */}
-            {order.shipping_address && (
+            {order.shipping_address ? (
               <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
                 <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
                   Shipping Information
                 </h2>
                 <div className="flex items-start space-x-3">
                   <MapPin className="w-5 h-5 text-[#4A5C3D] mt-1" />
-                  <div>
+                  <div className="space-y-2">
                     <p className="font-medium text-gray-900">
                       {order.shipping_address.name || "Recipient Name"}
                     </p>
+                    {order.shipping_address.phone && (
+                      <p className="text-gray-600 flex items-center">
+                        <Phone className="w-4 h-4 mr-1" />
+                        {order.shipping_address.phone}
+                      </p>
+                    )}
                     <p className="text-gray-600">
-                      {order.shipping_address.address || "Address not provided"}
+                      {order.shipping_address.address_line_1 ||
+                        "Address not provided"}
                     </p>
+                    {order.shipping_address.address_line_2 && (
+                      <p className="text-gray-600 pl-4">
+                        {order.shipping_address.address_line_2}
+                      </p>
+                    )}
                     <p className="text-gray-600">
                       {order.shipping_address.city},{" "}
                       {order.shipping_address.state}{" "}
-                      {order.shipping_address.zip}
+                      {order.shipping_address.postal_code}
                     </p>
                     <p className="text-gray-600">
-                      {order.shipping_address.country}
+                      {order.shipping_address.country || "India"}
                     </p>
                   </div>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+                  Shipping Information
+                </h2>
+                <div className="flex items-center space-x-3 text-gray-500">
+                  <MapPin className="w-5 h-5" />
+                  <p>Shipping address not provided for this order</p>
                 </div>
               </div>
             )}
@@ -823,6 +849,300 @@ const OrderDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Professional Order Tracking Modal */}
+      {showTrackingModal && order && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              onClick={() => setShowTrackingModal(false)}
+            />
+            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    Track Your Package
+                  </h3>
+                  <button
+                    onClick={() => setShowTrackingModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="mb-6">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="flex items-center">
+                      <Package className="h-5 w-5 text-blue-600 mr-2" />
+                      <div>
+                        <p className="font-medium text-blue-900">
+                          Order #{order.order_number || order.id.slice(-8)}
+                        </p>
+                        <p className="text-sm text-blue-700">
+                          Expected delivery:{" "}
+                          {(() => {
+                            const deliveryDate = new Date(order.created_at);
+                            deliveryDate.setDate(deliveryDate.getDate() + 5); // 5 days from order
+                            return deliveryDate.toLocaleDateString("en-IN", {
+                              weekday: "long",
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            });
+                          })()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Professional Tracking Timeline */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900 mb-4">
+                    Package Status
+                  </h4>
+
+                  {/* Order Placed */}
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">Order Placed</p>
+                      <p className="text-sm text-gray-500">
+                        {new Date(order.created_at).toLocaleString("en-IN")}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Payment */}
+                  <div className="flex items-center space-x-4">
+                    <div className="flex-shrink-0">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          order.payment_status === "paid"
+                            ? "bg-green-100"
+                            : order.payment_status === "failed"
+                            ? "bg-red-100"
+                            : "bg-yellow-100"
+                        }`}
+                      >
+                        <CreditCard
+                          className={`w-4 h-4 ${
+                            order.payment_status === "paid"
+                              ? "text-green-600"
+                              : order.payment_status === "failed"
+                              ? "text-red-600"
+                              : "text-yellow-600"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">
+                        Payment{" "}
+                        {order.payment_status === "paid"
+                          ? "Confirmed"
+                          : "Pending"}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {order.payment_method || "Razorpay"} • ₹
+                        {order.total.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Processing */}
+                  {order.status !== "pending" && (
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            order.status === "processing"
+                              ? "bg-blue-100"
+                              : "bg-green-100"
+                          }`}
+                        >
+                          <Package
+                            className={`w-4 h-4 ${
+                              order.status === "processing"
+                                ? "text-blue-600"
+                                : "text-green-600"
+                            }`}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">Processing</p>
+                        <p className="text-sm text-gray-500">
+                          Your order is being prepared for shipment
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shipped */}
+                  {order.status === "shipped" && (
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                          <Truck className="w-4 h-4 text-purple-600" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">Shipped</p>
+                        <p className="text-sm text-gray-500">
+                          Your package is on its way to you
+                        </p>
+                        <div className="mt-2 bg-purple-50 border border-purple-200 rounded-lg p-3">
+                          <p className="text-sm text-purple-800">
+                            <strong>Tracking Number:</strong> DHM
+                            {order.id.slice(-8).toUpperCase()}
+                          </p>
+                          <p className="text-sm text-purple-700 mt-1">
+                            You can track your package using this number with
+                            our delivery partner.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Delivered */}
+                  {order.status === "delivered" && (
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">Delivered</p>
+                        <p className="text-sm text-gray-500">
+                          Your package has been successfully delivered
+                        </p>
+                        <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-3">
+                          <p className="text-sm text-green-800">
+                            Thank you for choosing Devanagari Health Mix! We
+                            hope you enjoy your products.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Cancelled */}
+                  {order.status === "cancelled" && (
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                          <XCircle className="w-4 h-4 text-red-600" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">
+                          Order Cancelled
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          This order has been cancelled
+                        </p>
+                        {order.refund_id && (
+                          <div className="mt-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                            <p className="text-sm text-yellow-800">
+                              <strong>Refund Status:</strong>{" "}
+                              {order.refund_status || "Processing"}
+                            </p>
+                            <p className="text-sm text-yellow-700">
+                              Refund ID: {order.refund_id}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Shipping Address in Tracking */}
+                {order.shipping_address && (
+                  <div className="mt-6">
+                    <h4 className="font-medium text-gray-900 mb-3">
+                      Delivery Address
+                    </h4>
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-start space-x-3">
+                        <MapPin className="w-5 h-5 text-gray-600 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {order.shipping_address.name}
+                          </p>
+                          {order.shipping_address.phone && (
+                            <p className="text-sm text-gray-600">
+                              {order.shipping_address.phone}
+                            </p>
+                          )}
+                          <p className="text-sm text-gray-600">
+                            {order.shipping_address.address_line_1}
+                          </p>
+                          {order.shipping_address.address_line_2 && (
+                            <p className="text-sm text-gray-600">
+                              {order.shipping_address.address_line_2}
+                            </p>
+                          )}
+                          <p className="text-sm text-gray-600">
+                            {order.shipping_address.city},{" "}
+                            {order.shipping_address.state}{" "}
+                            {order.shipping_address.postal_code}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            {order.shipping_address.country || "India"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Support Information */}
+                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start space-x-3">
+                    <Phone className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-blue-900">Need Help?</p>
+                      <p className="text-sm text-blue-800 mt-1">
+                        If you have any questions about your order or delivery,
+                        please contact our support team.
+                      </p>
+                      <button
+                        onClick={() => {
+                          setShowTrackingModal(false);
+                          navigate("/contact");
+                        }}
+                        className="mt-2 text-sm text-blue-600 hover:text-blue-800 underline"
+                      >
+                        Contact Support
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button
+                  type="button"
+                  onClick={() => setShowTrackingModal(false)}
+                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

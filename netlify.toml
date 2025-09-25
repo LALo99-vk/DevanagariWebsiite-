@@ -5,23 +5,26 @@
 [build.environment]
   NODE_VERSION = "18"
 
-[[redirects]]
-  from = "/api/*"
-  to = "https://your-backend-domain.com/api/:splat"
-  status = 200
-  force = true
+# Note: Update these URLs with your actual backend domain when deploying
+# For now, these redirects are commented out as they point to placeholder URLs
 
-[[redirects]]
-  from = "/health"
-  to = "https://your-backend-domain.com/health"
-  status = 200
-  force = true
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://your-backend-domain.com/api/:splat"
+#   status = 200
+#   force = true
 
-[[redirects]]
-  from = "/sitemap.xml"
-  to = "https://your-backend-domain.com/sitemap.xml"
-  status = 200
-  force = true
+# [[redirects]]
+#   from = "/health"
+#   to = "https://your-backend-domain.com/health"
+#   status = 200
+#   force = true
+
+# [[redirects]]
+#   from = "/sitemap.xml"
+#   to = "https://your-backend-domain.com/sitemap.xml"
+#   status = 200
+#   force = true
 
 [[redirects]]
   from = "/*"

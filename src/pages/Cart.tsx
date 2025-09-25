@@ -306,7 +306,8 @@ const Cart = () => {
         user.id,
         cartItems,
         paymentData,
-        99 // Default shipping charge
+        99, // Default shipping charge
+        selectedAddress
       );
 
       try {
