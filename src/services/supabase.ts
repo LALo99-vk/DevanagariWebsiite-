@@ -505,7 +505,8 @@ export const ordersService = {
       payment_method?: string;
       currency?: string;
     },
-    shippingAmount: number = 99
+    shippingAmount: number = 99,
+    shippingAddress?: any
   ): Promise<Order> {
     // If payment_id is provided, check if an order with this payment_id already exists
     if (paymentData?.payment_id) {
@@ -556,6 +557,7 @@ export const ordersService = {
         "pending") as Order["payment_status"],
       payment_method: paymentData?.payment_method || "razorpay",
       currency: paymentData?.currency || "INR",
+      shipping_address: shippingAddress,
     };
 
     console.log("💾 Creating order in database...");

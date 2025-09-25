@@ -685,6 +685,7 @@ if (!fs.existsSync(distPath)) {
 
 app.use(express.static(distPath, {
   setHeaders: (res, path) => {
+    console.log('📄 Serving static file:', path);
     if (path.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
     } else if (path.endsWith('.css')) {
@@ -692,6 +693,8 @@ app.use(express.static(distPath, {
     }
   }
 }));
+
+// Static file serving is already handled by the middleware above
 
 // Sitemap for Sreeshivanifoods
 const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>

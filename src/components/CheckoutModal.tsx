@@ -304,7 +304,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                 payment_method: "razorpay",
                 currency: "INR",
               },
-              shipping
+              shipping,
+              selectedAddress
             );
 
             console.log("✅ Order created successfully:", order.id);
