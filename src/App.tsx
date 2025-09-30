@@ -12,6 +12,7 @@ import Checkout from "./pages/Checkout";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import OrderDetails from "./pages/OrderDetails";
@@ -151,6 +152,18 @@ function App() {
                         <Navbar />
                         <main className="flex-1">
                           <Terms />
+                        </main>
+                        <Footer />
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/privacy"
+                    element={
+                      <>
+                        <Navbar />
+                        <main className="flex-1">
+                          <Privacy />
                         </main>
                         <Footer />
                       </>

@@ -39,7 +39,7 @@ const Checkout = () => {
   const isFreeDelivery =
     shippingAddress && freeDeliveryPincodes.includes(shippingAddress.pincode);
   const shipping = isFreeDelivery ? 0 : shippingCharge;
-  const discount = promoApplied ? Math.round(subtotal * 0.1) : 0;
+  const discount = promoApplied ? promoDiscount : 0;
   const total = subtotal + shipping - discount;
 
   useEffect(() => {
@@ -141,17 +141,39 @@ const Checkout = () => {
                 currency: "INR",
               },
               shipping,
-              shippingAddress
+              shippingAddress,
+              discount
             );
 
             console.log("✅ Order created successfully:", order.id);
 
-            showSuccess(
-              "Payment Successful",
-              "Your order has been placed successfully!"
-            );
+            // Fire-and-forget email notification
+            try {
+              fetch(
+                `${
+                  import.meta.env.VITE_API_BASE_URL
+                }/notify/order-confirmation`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    to: user.email,
+                    orderId: order.id,
+                    amount: order.total,
+                    currency: order.currency || "INR",
+                    etaDays: "3-4",
+                  }),
+                }
+              ).catch(() => {});
+            } catch {}
             clearCart();
-            navigate("/profile");
+            try {
+              sessionStorage.setItem(
+                "orderSuccess",
+                JSON.stringify({ id: order.id, amount: order.total })
+              );
+            } catch {}
+            setTimeout(() => navigate("/profile"), 800);
           } catch (error) {
             console.error("❌ Error processing order:", error);
             showError(

@@ -3,6 +3,12 @@ const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
+let nodemailer = null;
+try {
+  nodemailer = require('nodemailer');
+} catch (e) {
+  console.warn('✉️ Nodemailer not installed. Email sending will be disabled until installed.');
+}
 
 
 
@@ -863,6 +869,60 @@ app.post('/api/promo/validate', async (req, res) => {
       error: 'Failed to validate promo code',
       valid: false
     });
+  }
+});
+
+// Send order confirmation email
+app.post('/api/notify/order-confirmation', async (req, res) => {
+  try {
+    const { to, orderId, amount, currency = 'INR', etaDays = '3-4' } = req.body || {};
+
+    if (!to) {
+      return res.status(400).json({ error: 'Recipient email (to) is required' });
+    }
+
+    // If nodemailer not installed or SMTP not configured, no-op success
+    if (!nodemailer || !process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      console.log('✉️ Email not sent (missing nodemailer or SMTP env). Simulating success for:', {
+        to,
+        orderId,
+        amount,
+      });
+      return res.json({ sent: false, simulated: true });
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 587),
+      secure: Boolean(process.env.SMTP_SECURE === 'true'),
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const from = process.env.SMTP_FROM || 'no-reply@sreeshivanifoods.com';
+    const subject = 'Congratulations! Your order has been placed';
+    const totalStr = typeof amount === 'number' ? `${currency} ${amount.toFixed(2)}` : `${currency} ${amount}`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; color: #111;">
+        <h2 style="color:#4A5C3D;">Your order is confirmed 🎉</h2>
+        <p>Thank you for shopping with <strong>Devanagari (Sree Shivani Foods)</strong>.</p>
+        <p><strong>Order ID:</strong> ${orderId || 'N/A'}</p>
+        <p><strong>Total Paid:</strong> ${totalStr}</p>
+        <p>Your order will be delivered in ${etaDays} working days.</p>
+        <p>If you have any questions, reply to this email.</p>
+        <hr />
+        <p style="font-size:12px;color:#666;">This is an automated message. Please do not reply.</p>
+      </div>
+    `;
+
+    const info = await transporter.sendMail({ from, to, subject, html });
+    console.log('✉️ Order confirmation email sent:', info.messageId);
+    res.json({ sent: true, messageId: info.messageId });
+  } catch (error) {
+    console.error('❌ Failed to send confirmation email:', error);
+    res.status(500).json({ error: 'Failed to send email' });
   }
 });
 

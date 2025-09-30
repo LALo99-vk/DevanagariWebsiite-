@@ -305,19 +305,43 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                 currency: "INR",
               },
               shipping,
-              selectedAddress
+              selectedAddress,
+              discount
             );
 
             console.log("✅ Order created successfully:", order.id);
 
-            showSuccess(
-              "Payment Successful",
-              "Your order has been placed successfully!"
-            );
+            // Fire-and-forget email notification
+            try {
+              fetch(
+                `${
+                  import.meta.env.VITE_API_BASE_URL
+                }/notify/order-confirmation`,
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    to: user.email,
+                    orderId: order.id,
+                    amount: order.total,
+                    currency: order.currency || "INR",
+                    etaDays: "3-4",
+                  }),
+                }
+              ).catch(() => {});
+            } catch {}
             clearCart();
             onClose();
-            // Navigate to profile page to view order history
-            window.location.href = "/profile";
+            // Navigate to profile page to view order history after short delay
+            try {
+              sessionStorage.setItem(
+                "orderSuccess",
+                JSON.stringify({ id: order.id, amount: order.total })
+              );
+            } catch {}
+            setTimeout(() => {
+              window.location.href = "/profile";
+            }, 800);
           } catch (error) {
             console.error("❌ Error processing order:", error);
             showError(
