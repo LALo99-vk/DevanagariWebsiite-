@@ -1107,8 +1107,10 @@ const Orders: React.FC = () => {
                         <div className="flex items-center flex-1">
                           <img
                             src={
-                              item.product?.image_url ||
-                              "/src/assets/shop/First page Flipkart.png"
+                              (typeof item.product?.image_url === "string" &&
+                                /^https?:\/\//i.test(item.product.image_url) &&
+                                item.product.image_url) ||
+                              "/src/assets/shop/ingredients.png"
                             }
                             alt={item.product?.name}
                             className="h-12 w-12 rounded-lg object-cover mr-4"
