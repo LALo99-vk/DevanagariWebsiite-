@@ -506,7 +506,8 @@ export const ordersService = {
       currency?: string;
     },
     shippingAmount: number = 99,
-    shippingAddress?: any
+    shippingAddress?: any,
+    discountAmount: number = 0
   ): Promise<Order> {
     // If payment_id is provided, check if an order with this payment_id already exists
     if (paymentData?.payment_id) {
@@ -539,7 +540,8 @@ export const ordersService = {
     }, 0);
 
     // Use the provided shipping amount (calculated in frontend based on pincode)
-    const total = subtotal + shippingAmount;
+    // Subtract any applied discount amount
+    const total = subtotal + shippingAmount - (discountAmount || 0);
 
     // Create order with payment information
     const orderData = {
@@ -547,6 +549,7 @@ export const ordersService = {
       subtotal,
       total,
       shipping_amount: shippingAmount,
+      discount_amount: discountAmount || 0,
       status: (paymentData?.payment_status === "paid"
         ? "processing"
         : "pending") as Order["status"],
@@ -633,6 +636,28 @@ export const ordersService = {
       throw new Error(
         `Failed to create order items: ${orderItemsError.message}`
       );
+    }
+
+    // Enforce discounted total after trigger recalculations
+    try {
+      const finalTotals = {
+        subtotal, // keep original subtotal from items
+        shipping_amount: shippingAmount,
+        discount_amount: discountAmount || 0,
+        total: subtotal + shippingAmount - (discountAmount || 0),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { error: enforceError } = await supabase
+        .from("orders")
+        .update(finalTotals)
+        .eq("id", order.id);
+
+      if (enforceError) {
+        console.warn("⚠️ Failed to enforce discounted totals:", enforceError);
+      }
+    } catch (e) {
+      console.warn("⚠️ Post-insert totals enforcement error:", e);
     }
 
     console.log("✅ Order and order items created successfully!");

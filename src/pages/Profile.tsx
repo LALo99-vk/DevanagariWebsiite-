@@ -6,6 +6,7 @@ import { ordersService, Order, OrderItem } from "../services/supabase";
 import { supabase } from "../lib/supabaseClient";
 import AddressManagement from "../components/AddressManagement";
 import BackButton from "../components/BackButton";
+import ConfirmationModal from "../components/ConfirmationModal";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -15,6 +16,8 @@ const Profile = () => {
   >([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showOrderModal, setShowOrderModal] = useState(false);
+  const [orderModalText, setOrderModalText] = useState<string>("");
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -42,6 +45,20 @@ const Profile = () => {
     };
 
     fetchOrders();
+
+    // Show order success modal if present in session
+    try {
+      const raw = sessionStorage.getItem("orderSuccess");
+      if (raw) {
+        const data = JSON.parse(raw);
+        const shortId = data?.id ? `#${String(data.id).slice(0, 8)}` : "";
+        setOrderModalText(
+          `Congratulations! Your order ${shortId} has been placed. It will be delivered in 3-4 working days.`
+        );
+        setShowOrderModal(true);
+        sessionStorage.removeItem("orderSuccess");
+      }
+    } catch {}
   }, [user]);
 
   const refreshOrders = async () => {
@@ -77,6 +94,18 @@ const Profile = () => {
   return (
     <div className="bg-[#FDFBF8] pt-16 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {showOrderModal && (
+          <ConfirmationModal
+            isOpen={showOrderModal}
+            onClose={() => setShowOrderModal(false)}
+            onConfirm={() => setShowOrderModal(false)}
+            title="Order Placed"
+            message={orderModalText}
+            confirmText="OK"
+            cancelText="Close"
+            type="success"
+          />
+        )}
         <div className="mb-6">
           <BackButton text="Back to Home" />
         </div>
