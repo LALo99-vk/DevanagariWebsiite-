@@ -314,9 +314,7 @@ export const cartService = {
               productData.description ||
               "A premium blend of 21 natural grains, millets, and pulses",
             price: productData.price,
-            image_url:
-              productData.image_url ||
-              "/src/assets/shop/First page Flipkart.png",
+            image_url: productData.image_url || "",
             stock: 100,
             weight: productData.weight,
           })

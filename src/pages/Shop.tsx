@@ -17,7 +17,7 @@ import {
   DatabaseStatus,
 } from "../utils/databaseSetupHelper";
 import "../utils/verifyDatabase"; // Import verification utility
-import placeholderImg from "../assets/shop/ingredients.png";
+import firstPageFlipkart from "../assets/shop/First page Flipkart.png";
 
 interface Product {
   id: string;
@@ -267,31 +267,19 @@ const Shop = () => {
         <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-center">
             <div className="flex items-center justify-center space-x-2">
-              <CheckCircle
-                className="text-green-500 sm:w-6 sm:h-6"
-                size={20}
-                
-              />
+              <CheckCircle className="text-green-500 sm:w-6 sm:h-6" size={20} />
               <span className="text-sm sm:text-base text-gray-700">
                 No refunds!
               </span>
             </div>
             <div className="flex items-center justify-center space-x-2">
-              <CheckCircle
-                className="text-green-500 sm:w-6 sm:h-6"
-                size={20}
-              
-              />
+              <CheckCircle className="text-green-500 sm:w-6 sm:h-6" size={20} />
               <span className="text-sm sm:text-base text-gray-700">
-                Questions? Reach out to us 
+                Questions? Reach out to us
               </span>
             </div>
             <div className="flex items-center justify-center space-x-2 sm:col-span-2 lg:col-span-1">
-              <CheckCircle
-                className="text-green-500 sm:w-6 sm:h-6"
-                size={20}
-          
-              />
+              <CheckCircle className="text-green-500 sm:w-6 sm:h-6" size={20} />
               <span className="text-sm sm:text-base text-gray-700">
                 Made from 100% natural ingredients
               </span>
@@ -323,7 +311,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const resolveImageSrc = (url?: string): string => {
     if (typeof url === "string" && /^https?:\/\//i.test(url)) return url;
-    return placeholderImg;
+    return firstPageFlipkart;
   };
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);

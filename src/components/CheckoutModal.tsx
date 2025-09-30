@@ -19,6 +19,8 @@ import {
 } from "../services/supabase";
 import { supabase } from "../lib/supabaseClient";
 import razorpayService from "../services/razorpay";
+import logo from "../assets/sreeshivanilogo.png";
+import placeholderImg from "../assets/shop/ingredients.png";
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -452,11 +454,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <img
-              src="/src/assets/logo.png"
-              alt="Logo"
-              className="h-6 w-6 sm:h-8 sm:w-8"
-            />
+            <img src={logo} alt="Logo" className="h-6 w-6 sm:h-8 sm:w-8" />
             <h2 className="text-lg sm:text-xl font-bold text-[#4A5C3D]">
               Devanagari
             </h2>
@@ -549,7 +547,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                     className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 bg-gray-50 rounded-lg"
                   >
                     <img
-                      src={item.product?.image_url || "/src/assets/logo.png"}
+                      src={
+                        (typeof item.product?.image_url === "string" &&
+                          /^https?:\/\//i.test(item.product.image_url) &&
+                          item.product.image_url) ||
+                        placeholderImg
+                      }
                       alt={item.product?.name || "Product"}
                       className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded"
                     />
