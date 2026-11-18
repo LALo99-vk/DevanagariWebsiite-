@@ -422,7 +422,7 @@ const Settings = () => {
 
   if (!user) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600">Please sign in to view settings</p>
         </div>
@@ -431,13 +431,13 @@ const Settings = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-6">
           <BackButton text="Back to Profile" />
         </div>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#4A5C3D] mb-2">Settings</h1>
+          <h1 className="font-display text-3xl font-bold text-[#14402E] mb-2">Settings</h1>
           <p className="text-gray-600">Manage your profile and addresses</p>
         </div>
 
@@ -449,7 +449,7 @@ const Settings = () => {
                 onClick={() => setActiveTab("profile")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "profile"
-                    ? "border-[#4A5C3D] text-[#4A5C3D]"
+                    ? "border-[#14402E] text-[#14402E]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -459,7 +459,7 @@ const Settings = () => {
                 onClick={() => setActiveTab("addresses")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "addresses"
-                    ? "border-[#4A5C3D] text-[#4A5C3D]"
+                    ? "border-[#14402E] text-[#14402E]"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -472,7 +472,7 @@ const Settings = () => {
         {/* Profile Settings Tab */}
         {activeTab === "profile" && (
           <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
-            <h2 className="text-xl font-semibold text-[#4A5C3D] mb-6">
+            <h2 className="text-xl font-semibold text-[#14402E] mb-6">
               Profile Information
             </h2>
 
@@ -488,7 +488,7 @@ const Settings = () => {
                       <img
                         src={avatarPreview}
                         alt="Profile"
-                        className="h-20 w-20 rounded-full border-2 border-[#4A5C3D] object-cover"
+                        className="h-20 w-20 rounded-full border-2 border-[#14402E] object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
                           e.currentTarget.nextElementSibling?.classList.remove(
@@ -498,11 +498,11 @@ const Settings = () => {
                       />
                     ) : null}
                     <div
-                      className={`h-20 w-20 rounded-full bg-gray-200 border-2 border-[#4A5C3D] flex items-center justify-center flex-shrink-0 ${
+                      className={`h-20 w-20 rounded-full bg-gray-200 border-2 border-[#14402E] flex items-center justify-center flex-shrink-0 ${
                         avatarPreview ? "hidden" : ""
                       }`}
                     >
-                      <span className="text-2xl font-bold text-[#4A5C3D]">
+                      <span className="text-2xl font-bold text-[#14402E]">
                         {profileData.full_name.charAt(0).toUpperCase() || "U"}
                       </span>
                     </div>
@@ -512,7 +512,7 @@ const Settings = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleAvatarChange}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#4A5C3D] file:text-white hover:file:bg-[#3a4a2f]"
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#14402E] file:text-white hover:file:bg-[#0B2118]"
                     />
                     <p className="text-xs text-gray-500 mt-1">
                       JPG, PNG or GIF. Max size 2MB.
@@ -535,7 +535,7 @@ const Settings = () => {
                       full_name: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -567,7 +567,7 @@ const Settings = () => {
                   onChange={(e) =>
                     setProfileData({ ...profileData, phone: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                   placeholder="Enter your phone number"
                 />
               </div>
@@ -577,7 +577,7 @@ const Settings = () => {
                 <button
                   onClick={updateProfile}
                   disabled={saving}
-                  className="bg-[#4A5C3D] text-white px-6 py-2 rounded-lg hover:bg-[#3a4a2f] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="bg-[#14402E] text-white px-6 py-2 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -591,7 +591,7 @@ const Settings = () => {
           <div className="space-y-6">
             {/* Add Address Button */}
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-[#4A5C3D]">
+              <h2 className="text-xl font-semibold text-[#14402E]">
                 Address Management
               </h2>
               <button
@@ -610,7 +610,7 @@ const Settings = () => {
                     is_default: false,
                   });
                 }}
-                className="bg-[#4A5C3D] text-white px-4 py-2 rounded-lg hover:bg-[#3a4a2f] transition-colors"
+                className="bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors"
               >
                 Add New Address
               </button>
@@ -622,7 +622,7 @@ const Settings = () => {
                 <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
                   <div className="p-6">
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold text-[#4A5C3D]">
+                      <h3 className="text-lg font-semibold text-[#14402E]">
                         {editingAddress ? "Edit Address" : "Add New Address"}
                       </h3>
                       <button
@@ -651,7 +651,7 @@ const Settings = () => {
                               name: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                           placeholder="Enter full name"
                         />
                       </div>
@@ -670,7 +670,7 @@ const Settings = () => {
                               phone: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                           placeholder="Enter phone number"
                         />
                       </div>
@@ -689,7 +689,7 @@ const Settings = () => {
                               address_line_1: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                           placeholder="Street address, P.O. box, etc."
                         />
                       </div>
@@ -707,7 +707,7 @@ const Settings = () => {
                               address_line_2: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                           placeholder="Apartment, suite, unit, building, floor, etc."
                         />
                       </div>
@@ -727,7 +727,7 @@ const Settings = () => {
                                 city: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                             placeholder="City"
                           />
                         </div>
@@ -746,7 +746,7 @@ const Settings = () => {
                                 state: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                             placeholder="State"
                           />
                         </div>
@@ -767,7 +767,7 @@ const Settings = () => {
                                 postal_code: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                             placeholder="Postal code"
                           />
                         </div>
@@ -785,7 +785,7 @@ const Settings = () => {
                                 country: e.target.value,
                               })
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                           >
                             <option value="India">India</option>
                             <option value="United States">United States</option>
@@ -809,7 +809,7 @@ const Settings = () => {
                               is_default: e.target.checked,
                             })
                           }
-                          className="h-4 w-4 text-[#4A5C3D] focus:ring-[#4A5C3D] border-gray-300 rounded"
+                          className="h-4 w-4 text-[#14402E] focus:ring-[#14402E] border-gray-300 rounded"
                         />
                         <label
                           htmlFor="is_default"
@@ -823,7 +823,7 @@ const Settings = () => {
                         <button
                           type="submit"
                           disabled={saving}
-                          className="flex-1 bg-[#4A5C3D] text-white py-2 rounded-lg hover:bg-[#3a4a2f] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          className="flex-1 bg-[#14402E] text-white py-2 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                         >
                           {saving
                             ? "Saving..."
@@ -851,7 +851,7 @@ const Settings = () => {
             {/* Addresses List */}
             {loading ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A5C3D] mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E] mx-auto mb-4"></div>
                 <p className="text-gray-600">Loading addresses...</p>
               </div>
             ) : addresses.length === 0 ? (
@@ -870,7 +870,7 @@ const Settings = () => {
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="font-semibold text-[#4A5C3D]">
+                        <h3 className="font-semibold text-[#14402E]">
                           {address.name}
                         </h3>
                         {address.is_default && (
@@ -882,7 +882,7 @@ const Settings = () => {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => editAddress(address)}
-                          className="text-[#4A5C3D] hover:text-[#3a4a2f] text-sm"
+                          className="text-[#14402E] hover:text-[#0B2118] text-sm"
                         >
                           Edit
                         </button>
@@ -910,7 +910,7 @@ const Settings = () => {
                     {!address.is_default && (
                       <button
                         onClick={() => setDefaultAddress(address.id)}
-                        className="mt-4 text-sm text-[#4A5C3D] hover:text-[#3a4a2f] font-medium"
+                        className="mt-4 text-sm text-[#14402E] hover:text-[#0B2118] font-medium"
                       >
                         Set as Default
                       </button>

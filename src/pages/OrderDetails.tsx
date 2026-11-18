@@ -276,9 +276,9 @@ const OrderDetails: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4A5C3D] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14402E] mx-auto mb-4"></div>
           <p className="text-gray-600">Loading order details...</p>
         </div>
       </div>
@@ -287,15 +287,15 @@ const OrderDetails: React.FC = () => {
 
   if (error || !order) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <XCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="font-display text-2xl font-bold text-gray-900 mb-4">
             {error || "Order not found"}
           </h1>
           <button
             onClick={() => navigate("/profile")}
-            className="inline-flex items-center px-4 py-2 bg-[#4A5C3D] text-white rounded-lg hover:bg-[#3a4a2f] transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-[#14402E] text-white rounded-lg hover:bg-[#0B2118] transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -306,13 +306,13 @@ const OrderDetails: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate("/profile")}
-            className="inline-flex items-center text-[#4A5C3D] hover:text-[#3a4a2f] transition-colors mb-4"
+            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -320,7 +320,7 @@ const OrderDetails: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-[#4A5C3D]">
+              <h1 className="font-display text-3xl font-bold text-[#14402E]">
                 Order Details
               </h1>
               <p className="text-gray-600 mt-1">
@@ -347,7 +347,7 @@ const OrderDetails: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Order Timeline */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-6">
+              <h2 className="text-xl font-bold text-[#14402E] mb-6">
                 Order Timeline
               </h2>
               <div className="space-y-4">
@@ -533,7 +533,7 @@ const OrderDetails: React.FC = () => {
 
             {/* Order Items */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-6">
+              <h2 className="text-xl font-bold text-[#14402E] mb-6">
                 Order Items
               </h2>
               <div className="space-y-4">
@@ -542,8 +542,8 @@ const OrderDetails: React.FC = () => {
                     key={item.id}
                     className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg"
                   >
-                    <div className="w-16 h-16 bg-[#E6D9C5] rounded-lg flex items-center justify-center">
-                      <Package className="w-8 h-8 text-[#4A5C3D]" />
+                    <div className="w-16 h-16 bg-[#ECE2CE] rounded-lg flex items-center justify-center">
+                      <Package className="w-8 h-8 text-[#14402E]" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900">
@@ -552,13 +552,13 @@ const OrderDetails: React.FC = () => {
                       <p className="text-sm text-gray-600">
                         Quantity: {item.quantity}
                       </p>
-                      <p className="text-sm font-medium text-[#4A5C3D]">
+                      <p className="text-sm font-medium text-[#14402E]">
                         ₹{item.product_price.toFixed(2)}{" "}
                         {order.currency || "INR"} each
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-[#4A5C3D]">
+                      <p className="font-bold text-[#14402E]">
                         ₹{item.total_price.toFixed(2)} {order.currency || "INR"}
                       </p>
                     </div>
@@ -570,11 +570,11 @@ const OrderDetails: React.FC = () => {
             {/* Shipping Information */}
             {order.shipping_address ? (
               <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+                <h2 className="text-xl font-bold text-[#14402E] mb-4">
                   Shipping Information
                 </h2>
                 <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-[#4A5C3D] mt-1" />
+                  <MapPin className="w-5 h-5 text-[#14402E] mt-1" />
                   <div className="space-y-2">
                     <p className="font-medium text-gray-900">
                       {order.shipping_address.name || "Recipient Name"}
@@ -607,7 +607,7 @@ const OrderDetails: React.FC = () => {
               </div>
             ) : (
               <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+                <h2 className="text-xl font-bold text-[#14402E] mb-4">
                   Shipping Information
                 </h2>
                 <div className="flex items-center space-x-3 text-gray-500">
@@ -620,7 +620,7 @@ const OrderDetails: React.FC = () => {
             {/* Payment Information */}
             {order.payment_id && (
               <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+                <h2 className="text-xl font-bold text-[#14402E] mb-4">
                   Payment Information
                 </h2>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -740,7 +740,7 @@ const OrderDetails: React.FC = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 sticky top-24">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-6">
+              <h2 className="text-xl font-bold text-[#14402E] mb-6">
                 Order Summary
               </h2>
 
@@ -772,8 +772,8 @@ const OrderDetails: React.FC = () => {
 
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-lg font-bold">
-                    <span className="text-[#4A5C3D]">Total:</span>
-                    <span className="text-[#A88B67]">
+                    <span className="text-[#14402E]">Total:</span>
+                    <span className="text-[#A37C38]">
                       ₹{order.total.toFixed(2)} {order.currency || "INR"}
                     </span>
                   </div>

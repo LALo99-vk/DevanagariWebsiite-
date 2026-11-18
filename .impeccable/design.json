@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-19T00:00:00Z",
+  "title": "Design System: Devanagari Health Mix",
+  "extensions": {
+    "colorMeta": {
+      "emerald-ground": {
+        "role": "neutral",
+        "displayName": "Emerald Night",
+        "canonical": "#0A1F16",
+        "tonalRamp": [
+          "#0A1F16",
+          "#0F2A1F",
+          "#14352A",
+          "#1B4434",
+          "#245A45",
+          "#2E7256",
+          "#4FA37C",
+          "#8CCBA9"
+        ]
+      },
+      "emerald-raised": {
+        "role": "neutral",
+        "displayName": "Raised Emerald",
+        "canonical": "#0F2A1F",
+        "tonalRamp": [
+          "#0A1F16",
+          "#0F2A1F",
+          "#14352A",
+          "#1B4434",
+          "#245A45",
+          "#2E7256",
+          "#4FA37C",
+          "#8CCBA9"
+        ]
+      },
+      "emerald-well": {
+        "role": "neutral",
+        "displayName": "Image-Well Emerald",
+        "canonical": "#14352A",
+        "tonalRamp": [
+          "#0A1F16",
+          "#0F2A1F",
+          "#14352A",
+          "#1B4434",
+          "#245A45",
+          "#2E7256",
+          "#4FA37C",
+          "#8CCBA9"
+        ]
+      },
+      "gold-ink": {
+        "role": "primary",
+        "displayName": "Pouch Gold Ink",
+        "canonical": "#C9A45C",
+        "tonalRamp": [
+          "#5E4820",
+          "#8F6F33",
+          "#B08B45",
+          "#C9A45C",
+          "#DCC089",
+          "#E6D09D",
+          "#F3E6C6",
+          "#FBF6EA"
+        ]
+      },
+      "gold-light": {
+        "role": "primary",
+        "displayName": "Polished Gold",
+        "canonical": "#DCC089",
+        "tonalRamp": [
+          "#5E4820",
+          "#8F6F33",
+          "#B08B45",
+          "#C9A45C",
+          "#DCC089",
+          "#E6D09D",
+          "#F3E6C6",
+          "#FBF6EA"
+        ]
+      },
+      "gold-pale": {
+        "role": "primary",
+        "displayName": "Pale Leaf Gold",
+        "canonical": "#E6D09D",
+        "tonalRamp": [
+          "#5E4820",
+          "#8F6F33",
+          "#B08B45",
+          "#C9A45C",
+          "#DCC089",
+          "#E6D09D",
+          "#F3E6C6",
+          "#FBF6EA"
+        ]
+      },
+      "gold-cream": {
+        "role": "primary",
+        "displayName": "Gold Cream",
+        "canonical": "#F3E6C6",
+        "tonalRamp": [
+          "#5E4820",
+          "#8F6F33",
+          "#B08B45",
+          "#C9A45C",
+          "#DCC089",
+          "#E6D09D",
+          "#F3E6C6",
+          "#FBF6EA"
+        ]
+      },
+      "gold-pressed": {
+        "role": "primary",
+        "displayName": "Pressed Gold",
+        "canonical": "#B08B45",
+        "tonalRamp": [
+          "#5E4820",
+          "#8F6F33",
+          "#B08B45",
+          "#C9A45C",
+          "#DCC089",
+          "#E6D09D",
+          "#F3E6C6",
+          "#FBF6EA"
+        ]
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Pouch Cream",
+        "canonical": "#EFE6D2",
+        "tonalRamp": [
+          "#2B2618",
+          "#4A4232",
+          "#7A705C",
+          "#B3A78F",
+          "#ECE2CE",
+          "#F6F0E4",
+          "#FBF8F1",
+          "#FFFDF8"
+        ]
+      },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Sage Mist",
+        "canonical": "#B7C2B1",
+        "tonalRamp": [
+          "#1E2A22",
+          "#35453A",
+          "#526456",
+          "#748576",
+          "#96A596",
+          "#B7C2B1",
+          "#D4DCD0",
+          "#EEF2EC"
+        ]
+      },
+      "mint-note": {
+        "role": "neutral",
+        "displayName": "Mint Note",
+        "canonical": "#8CCBA9",
+        "tonalRamp": [
+          "#0A1F16",
+          "#0F2A1F",
+          "#14352A",
+          "#1B4434",
+          "#245A45",
+          "#2E7256",
+          "#4FA37C",
+          "#8CCBA9"
+        ]
+      },
+      "ivory": {
+        "role": "neutral",
+        "displayName": "Ivory Paper",
+        "canonical": "#F6F0E4",
+        "tonalRamp": [
+          "#2B2618",
+          "#4A4232",
+          "#7A705C",
+          "#B3A78F",
+          "#ECE2CE",
+          "#F6F0E4",
+          "#FBF8F1",
+          "#FFFDF8"
+        ]
+      },
+      "forest-ink": {
+        "role": "secondary",
+        "displayName": "Forest Ink",
+        "canonical": "#14402E",
+        "tonalRamp": [
+          "#06140E",
+          "#0B2118",
+          "#14402E",
+          "#1F5A42",
+          "#2E7A5A",
+          "#5FA084",
+          "#A3C9B6",
+          "#E2EFE8"
+        ]
+      },
+      "forest-ink-deep": {
+        "role": "secondary",
+        "displayName": "Deep Forest",
+        "canonical": "#0B2118",
+        "tonalRamp": [
+          "#06140E",
+          "#0B2118",
+          "#14402E",
+          "#1F5A42",
+          "#2E7A5A",
+          "#5FA084",
+          "#A3C9B6",
+          "#E2EFE8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Page-opening h1 only; one phrase in gold italic."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section h2s beside a mist paragraph."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card, step and benefit titles; footer column heads."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Lead paragraphs in mist, max ~34rem."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Card copy, lists, contact lines."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Uppercase gold label cells of the About pack panel only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-menu",
+        "value": "0 12px 32px -8px rgba(0,0,0,0.5)",
+        "purpose": "Navbar user dropdown only; the dark world is otherwise flat."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-quart",
+        "value": "cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "The single easing for every entrance, reveal, rangoli draw and label print."
+      },
+      {
+        "name": "rise",
+        "value": "0.7s cubic-bezier(0.25, 1, 0.5, 1), translateY 14px to 0 with fade",
+        "purpose": "Hero copy and page-heading entrances."
+      },
+      {
+        "name": "line-up",
+        "value": "0.9s cubic-bezier(0.25, 1, 0.5, 1), per-line mask",
+        "purpose": "Home h1 lines slide up out of their masks."
+      },
+      {
+        "name": "reveal",
+        "value": "0.7s cubic-bezier(0.25, 1, 0.5, 1), translateY 12px, staggered by --d",
+        "purpose": "Scroll reveal for rows and images; clip reveal 1.1s for images."
+      },
+      {
+        "name": "rangoli-draw",
+        "value": "1.6s cubic-bezier(0.25, 1, 0.5, 1) stroke draw, then 240s linear turn",
+        "purpose": "Rangoli drawn in like chalk around the hero photo."
+      },
+      {
+        "name": "label-print",
+        "value": "0.6s cubic-bezier(0.25, 1, 0.5, 1), 0.1s row stagger",
+        "purpose": "About pack-panel label cells fill left to right."
+      },
+      {
+        "name": "licking-cycle",
+        "value": "5.2s cycle, spline 0.45 0 0.2 1",
+        "purpose": "Navbar wordmark smile, milk drop and lick."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "finished state",
+        "purpose": "All motion resolves to its end state under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Gold Primary Button",
+      "kind": "button",
+      "refersTo": "button-gold",
+      "description": "The one solid gold action per view (Shop Now, Add to cart).",
+      "html": "<button class=\"ds-btn-gold\">Shop Now <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn-gold{display:inline-flex;align-items:center;gap:8px;background:#C9A45C;color:#0A1F16;border:0;border-radius:9999px;padding:14px 28px;font:600 15px/1 Figtree,system-ui,sans-serif;cursor:pointer;transition:background-color .2s}.ds-btn-gold svg{transition:transform .2s}.ds-btn-gold:hover{background:#DCC089}.ds-btn-gold:hover svg{transform:translateX(4px)}.ds-btn-gold:active{background:#B08B45}.ds-btn-gold:focus-visible{outline:2px solid #C9A45C;outline-offset:3px}"
+    },
+    {
+      "name": "Gold Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline-gold",
+      "description": "Secondary action on emerald.",
+      "html": "<button class=\"ds-btn-outline\">Explore the mix</button>",
+      "css": ".ds-btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#E6D09D;border:1px solid rgba(201,164,92,.6);border-radius:9999px;padding:12px 24px;font:600 14px/1 Figtree,system-ui,sans-serif;cursor:pointer;transition:border-color .2s,background-color .2s}.ds-btn-outline:hover{border-color:#DCC089;background:rgba(201,164,92,.1)}.ds-btn-outline:focus-visible{outline:2px solid #C9A45C;outline-offset:3px}"
+    },
+    {
+      "name": "Gold Text Link",
+      "kind": "custom",
+      "refersTo": "link-gold",
+      "description": "Underlined gold link paired with an arrow.",
+      "html": "<a href=\"#\" class=\"ds-link-gold\">Get in Touch &rarr;</a>",
+      "css": ".ds-link-gold{font:600 14px Figtree,system-ui,sans-serif;color:#DCC089;text-decoration:underline;text-decoration-color:rgba(201,164,92,.4);text-underline-offset:6px;transition:color .2s}.ds-link-gold:hover{color:#E6D09D;text-decoration-color:#DCC089}.ds-link-gold:focus-visible{outline:2px solid #C9A45C;outline-offset:3px}"
+    },
+    {
+      "name": "Underline Field",
+      "kind": "input",
+      "refersTo": "field-dark",
+      "description": "Underline-only text field on emerald.",
+      "html": "<div class=\"ds-field-wrap\"><input class=\"ds-field\" placeholder=\"Your name\"></div>",
+      "css": ".ds-field-wrap{background:#0A1F16;padding:24px}.ds-field{width:100%;border:0;border-bottom:1px solid rgba(201,164,92,.3);background:transparent;padding:12px 0;font:400 16px Figtree,system-ui,sans-serif;color:#EFE6D2;transition:border-color .2s}.ds-field::placeholder{color:rgba(183,194,177,.7)}.ds-field:focus{outline:none;border-bottom-color:#DCC089}"
+    },
+    {
+      "name": "Product Card",
+      "kind": "card",
+      "refersTo": "product-card",
+      "description": "Shop card: image well, Fraunces name, gold price, pill actions.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-img\"><span class=\"ds-badge\">Save 10%</span></div><div class=\"ds-card-body\"><h3>Health Mix</h3><p>21 natural ingredients in one mix.</p><div class=\"ds-price\">&#8377;349</div></div></article>",
+      "css": ".ds-card{max-width:300px;overflow:hidden;border-radius:14px;border:1px solid rgba(201,164,92,.2);background:#0F2A1F;transition:border-color .2s}.ds-card:hover{border-color:rgba(201,164,92,.45)}.ds-card-img{position:relative;aspect-ratio:1;background:#14352A}.ds-badge{position:absolute;left:12px;top:12px;background:#C9A45C;color:#0A1F16;border-radius:9999px;padding:4px 12px;font:600 12px Figtree,system-ui,sans-serif}.ds-card-body{padding:24px}.ds-card h3{margin:0;font:350 24px/1.25 Fraunces,Georgia,serif;color:#EFE6D2}.ds-card p{margin:8px 0 0;font:400 15px/1.6 Figtree,system-ui,sans-serif;color:#B7C2B1}.ds-price{margin-top:20px;font:350 30px Fraunces,Georgia,serif;color:#DCC089;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Navigation Bar",
+      "kind": "nav",
+      "refersTo": "",
+      "description": "Fixed emerald bar with gold hairline and cream links.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-nav-mark\">Devanagari</span><div class=\"ds-nav-links\"><a href=\"#\">Home</a><a href=\"#\">Shop</a><a href=\"#\" aria-current=\"page\">About Us</a><a href=\"#\">Contact</a></div></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;justify-content:space-between;height:80px;padding:0 32px;background:#0A1F16;border-bottom:1px solid rgba(201,164,92,.25)}.ds-nav-mark{font:italic 300 32px/1 Fraunces,Georgia,serif;letter-spacing:-.03em;background:linear-gradient(100deg,#a37c38 0%,#e6c987 25%,#f3e6c6 40%,#d9b26a 58%,#a37c38 80%,#e6c987 100%);-webkit-background-clip:text;background-clip:text;color:transparent}.ds-nav-links{display:flex;gap:32px}.ds-nav-links a{font:500 15px Figtree,system-ui,sans-serif;color:rgba(239,230,210,.85);text-decoration:none;transition:color .2s}.ds-nav-links a:hover,.ds-nav-links a[aria-current]{color:#DCC089}.ds-nav-links a:focus-visible{outline:2px solid #C9A45C;outline-offset:3px}"
+    },
+    {
+      "name": "Certification Chip",
+      "kind": "chip",
+      "refersTo": "",
+      "description": "Gold-outlined credential chip (FSSAI, ISO).",
+      "html": "<span class=\"ds-chip\">ISO Certified</span>",
+      "css": ".ds-chip{display:inline-block;border:1px solid rgba(201,164,92,.7);border-radius:8px;padding:6px 12px;font:600 14px Figtree,system-ui,sans-serif;color:#E6D09D;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Pack Panel Row",
+      "kind": "custom",
+      "refersTo": "pack-label-cell",
+      "description": "About signature: gold label cell beside a cream value, in a 2px gold frame.",
+      "html": "<dl class=\"ds-pack\"><div class=\"ds-pack-row\"><dt>Product</dt><dd>Devanagari Health Mix</dd></div><div class=\"ds-pack-row\"><dt>Certified</dt><dd>FSSAI &middot; ISO</dd></div></dl>",
+      "css": ".ds-pack{margin:0;max-width:560px;overflow:hidden;border:2px solid #C9A45C;border-radius:14px;background:#0F2A1F}.ds-pack-row{display:grid;grid-template-columns:12.5rem 1fr;align-items:baseline}.ds-pack-row+.ds-pack-row{border-top:1px solid rgba(201,164,92,.35)}.ds-pack dt{align-self:stretch;background:#C9A45C;color:#0A1F16;padding:20px;font:700 13px Figtree,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}.ds-pack dd{margin:0;padding:20px 28px;font:300 22px/1.3 Fraunces,Georgia,serif;color:#EFE6D2}"
+    },
+    {
+      "name": "Ivory Primary Button",
+      "kind": "button",
+      "refersTo": "button-ivory-primary",
+      "description": "Primary action on the ivory transactional register.",
+      "html": "<div class=\"ds-ivory\"><button class=\"ds-btn-ivory\">Proceed to Checkout</button></div>",
+      "css": ".ds-ivory{background:#F6F0E4;padding:24px}.ds-btn-ivory{background:#14402E;color:#F6F0E4;border:0;border-radius:8px;padding:12px 24px;font:600 15px Figtree,system-ui,sans-serif;cursor:pointer;transition:background-color .2s}.ds-btn-ivory:hover{background:#0B2118}.ds-btn-ivory:focus-visible{outline:2px solid #C9A45C;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Gold Ink on the Emerald Pouch",
+    "overview": "The customer site is the pack itself, opened up: a deep, solid emerald ground with gold used the way a printer uses foil ink, for headings, hairline rules, icons and the one primary action. Nothing glows, nothing is frosted, nothing floats on a shadow. Depth comes from two close steps of emerald and from gold 1px rules at low opacity, so the page reads as printed matter rather than as an app.\n\nThe world is client-pinned (Dark Emerald & Gold) and carries Indian craft through drawn geometry rather than texture: a gold line rangoli that draws itself in like chalk around the hero product photo, a pointy-top honeycomb that holds the 21 ingredients, and the animated \"Devanagari\" wordmark whose gold smile licks a drop of milk. Type pairs Fraunces (light, with one gold italic turn per heading) with Figtree for everything a family has to read or tap.\n\nTransactional pages (Cart, Checkout, Profile, Orders, Terms) step out of the dark into a light ivory register with forest-green ink, so forms and order details read like a receipt. Admin is out of scope.",
+    "keyCharacteristics": [
+      "Solid emerald surfaces, two steps only; gold as ink, never as light.",
+      "Fraunces light display with a single gold italic phrase; Figtree body.",
+      "Hairline gold rules (15-35% opacity) separate everything; no shadows on the dark world.",
+      "Pill-shaped actions, 14px panels, circular product frame inside the rangoli.",
+      "One easing curve for all entrances; reduced motion shows the finished state."
+    ],
+    "rules": [
+      {
+        "name": "The Gold Is Ink Rule",
+        "body": "Gold is applied as text, strokes, 1px rules, icons and the primary button fill. It is never a glow, a wash, or a gradient over a surface. The two gradient exceptions are native to the world and fixed: the gold foil on the \"Devanagari\" wordmark (navbar LickingWordmark, and the incumbent Contact page), and the honey that rises into a highlighted honeycomb cell.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Steps of Emerald Rule",
+        "body": "A dark page uses emerald-ground and emerald-raised, nothing else for surfaces. If a third level seems needed, use a gold rule instead.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Gold Turn Rule",
+        "body": "Each display or headline heading turns into gold italic once, on its key phrase (\"Rooted in\", \"Us More\", \"Health Mix\"). Never two gold phrases in one heading, never gold italic in body copy.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Prices, counts, FSSAI numbers, phone numbers and honeycomb indices use tabular numerals.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Border Rule",
+        "body": "A surface is defined by one border and one tone step. If it needs a shadow to separate from the ground, it is not a dark-world surface; floating menus are the only exception.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep every dark page on emerald-ground with emerald-raised as the only surface step.",
+      "Do separate sections and rows with 1px gold-ink rules at 15-35% opacity.",
+      "Do give each heading exactly one gold italic phrase.",
+      "Do use pill shapes for actions and 14px corners for containers.",
+      "Do animate entrances with cubic-bezier(0.25, 1, 0.5, 1) and let reduced motion show the finished state.",
+      "Do put Cart, Checkout, Profile, Orders and Terms on the ivory register with forest-ink."
+    ],
+    "donts": [
+      "Don't add drop shadows, blur, glass or glows to dark-world surfaces; the floating menu shadow is the only one.",
+      "Don't apply the gold foil gradient to any new text; it belongs to the \"Devanagari\" wordmark.",
+      "Don't put small uppercase tracked eyebrows above headings; uppercase tracked text is reserved for the pack-panel label cells.",
+      "Don't introduce a third emerald surface tier or a new accent hue.",
+      "Don't set body copy, form labels or button text in Fraunces; those are Figtree."
+    ]
+  }
+}

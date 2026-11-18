@@ -227,7 +227,7 @@ const Cart = () => {
           address_id: selectedAddress.id,
         },
         theme: {
-          color: "#4A5C3D",
+          color: "#14402E",
         },
         modal: {
           ondismiss: () => {
@@ -370,9 +370,9 @@ const Cart = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4A5C3D] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14402E] mx-auto mb-4"></div>
           <p className="text-gray-600">Loading cart...</p>
         </div>
       </div>
@@ -382,11 +382,11 @@ const Cart = () => {
   // Show different messages based on authentication status
   if (!user) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <ShoppingBag size={64} className="mx-auto text-gray-400 mb-6" />
-            <h1 className="text-3xl font-bold text-[#4A5C3D] mb-4">
+            <h1 className="font-display text-3xl font-bold text-[#14402E] mb-4">
               Sign In to View Your Cart
             </h1>
             <p className="text-lg text-gray-600 mb-8">
@@ -398,13 +398,13 @@ const Cart = () => {
                   // This will trigger the Google sign-in
                   window.location.href = "/";
                 }}
-                className="inline-flex items-center px-6 py-3 bg-[#4A5C3D] text-white rounded-lg font-semibold hover:bg-[#3a4a2f] transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 bg-[#14402E] text-white rounded-lg font-semibold hover:bg-[#0B2118] transition-colors duration-200"
               >
                 Sign In with Google
               </button>
               <Link
                 to="/shop"
-                className="inline-flex items-center px-6 py-3 border-2 border-[#4A5C3D] text-[#4A5C3D] rounded-lg font-semibold hover:bg-[#4A5C3D] hover:text-white transition-colors duration-200"
+                className="inline-flex items-center px-6 py-3 border-2 border-[#14402E] text-[#14402E] rounded-lg font-semibold hover:bg-[#14402E] hover:text-white transition-colors duration-200"
               >
                 <ArrowLeft size={20} className="mr-2" />
                 Continue Shopping
@@ -418,11 +418,11 @@ const Cart = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <ShoppingBag size={64} className="mx-auto text-gray-400 mb-6" />
-            <h1 className="text-3xl font-bold text-[#4A5C3D] mb-4">
+            <h1 className="font-display text-3xl font-bold text-[#14402E] mb-4">
               Your Cart is Empty
             </h1>
             <p className="text-lg text-gray-600 mb-8">
@@ -430,7 +430,7 @@ const Cart = () => {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center px-6 py-3 bg-[#4A5C3D] text-white rounded-lg font-semibold hover:bg-[#3a4a2f] transition-colors duration-200"
+              className="inline-flex items-center px-6 py-3 bg-[#14402E] text-white rounded-lg font-semibold hover:bg-[#0B2118] transition-colors duration-200"
             >
               <ArrowLeft size={20} className="mr-2" />
               Continue Shopping
@@ -442,16 +442,16 @@ const Cart = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#4A5C3D]">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-[#14402E]">
             Shopping Cart
           </h1>
           <Link
             to="/shop"
-            className="inline-flex items-center text-[#4A5C3D] hover:text-[#3a4a2f] transition-colors text-sm sm:text-base"
+            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors text-sm sm:text-base"
           >
             <ArrowLeft size={18} className="mr-2" />
             Continue Shopping
@@ -485,14 +485,14 @@ const Cart = () => {
 
                     {/* Product Info */}
                     <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-lg sm:text-xl font-semibold text-[#4A5C3D] mb-2">
+                      <h3 className="text-lg sm:text-xl font-semibold text-[#14402E] mb-2">
                         {item.product?.name || "Product"}
                       </h3>
                       <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-600">
-                        <span className="bg-[#E6D9C5] px-2 sm:px-3 py-1 rounded-full font-medium text-xs sm:text-sm text-center inline-block">
+                        <span className="bg-[#ECE2CE] px-2 sm:px-3 py-1 rounded-full font-medium text-xs sm:text-sm text-center inline-block">
                           {item.product?.weight}g pack
                         </span>
-                        <span className="text-base sm:text-lg font-bold text-[#A88B67]">
+                        <span className="text-base sm:text-lg font-bold text-[#A37C38]">
                           ₹{item.product?.price?.toFixed(2) || "0.00"} each
                         </span>
                       </div>
@@ -542,11 +542,11 @@ const Cart = () => {
                               );
                             }
                           }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#4A5C3D] flex items-center justify-center text-[#4A5C3D] hover:bg-[#4A5C3D] hover:text-white transition-colors"
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#14402E] flex items-center justify-center text-[#14402E] hover:bg-[#14402E] hover:text-white transition-colors"
                         >
                           <Minus size={14} className="sm:w-4 sm:h-4" />
                         </button>
-                        <span className="text-lg sm:text-xl font-semibold text-[#4A5C3D] w-6 sm:w-8 text-center">
+                        <span className="text-lg sm:text-xl font-semibold text-[#14402E] w-6 sm:w-8 text-center">
                           {item.quantity}
                         </span>
                         <button
@@ -589,7 +589,7 @@ const Cart = () => {
                               );
                             }
                           }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#4A5C3D] flex items-center justify-center text-[#4A5C3D] hover:bg-[#4A5C3D] hover:text-white transition-colors"
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#14402E] flex items-center justify-center text-[#14402E] hover:bg-[#14402E] hover:text-white transition-colors"
                         >
                           <Plus size={14} className="sm:w-4 sm:h-4" />
                         </button>
@@ -597,7 +597,7 @@ const Cart = () => {
 
                       {/* Subtotal */}
                       <div className="text-center sm:text-right min-w-[80px] sm:min-w-[100px]">
-                        <div className="text-base sm:text-lg font-bold text-[#4A5C3D]">
+                        <div className="text-base sm:text-lg font-bold text-[#14402E]">
                           ₹
                           {getSubtotal(
                             item.product?.price || 0,
@@ -637,22 +637,22 @@ const Cart = () => {
           {/* Cart Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100 sticky top-24">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#4A5C3D] mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#14402E] mb-4 sm:mb-6">
                 Order Summary
               </h2>
 
               <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                 <div className="flex justify-between text-base sm:text-lg">
                   <span className="text-gray-700">Items ({totalItems})</span>
-                  <span className="font-semibold text-[#4A5C3D]">
+                  <span className="font-semibold text-[#14402E]">
                     ₹{totalPrice.toFixed(2)}
                   </span>
                 </div>
 
                 <div className="border-t border-gray-200 pt-3 sm:pt-4">
                   <div className="flex justify-between text-lg sm:text-xl font-bold">
-                    <span className="text-[#4A5C3D]">Total</span>
-                    <span className="text-[#A88B67]">
+                    <span className="text-[#14402E]">Total</span>
+                    <span className="text-[#A37C38]">
                       ₹{totalPrice.toFixed(2)}
                     </span>
                   </div>
@@ -671,7 +671,7 @@ const Cart = () => {
                 <button
                   onClick={handlePaymentInitiation}
                   disabled={placingOrder || checkingAddress}
-                  className="w-full bg-[#4A5C3D] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:bg-[#3a4a2f] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-base sm:text-lg shadow-lg hover:shadow-xl"
+                  className="w-full bg-[#14402E] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-base sm:text-lg shadow-lg hover:shadow-xl"
                 >
                   {placingOrder ? (
                     <span>Processing Order...</span>
@@ -690,7 +690,7 @@ const Cart = () => {
               <div className="mt-6">
                 <Link
                   to="/shop"
-                  className="block w-full text-center py-3 border-2 border-[#4A5C3D] text-[#4A5C3D] rounded-lg font-semibold hover:bg-[#4A5C3D] hover:text-white transition-colors duration-200"
+                  className="block w-full text-center py-3 border-2 border-[#14402E] text-[#14402E] rounded-lg font-semibold hover:bg-[#14402E] hover:text-white transition-colors duration-200"
                 >
                   Continue Shopping
                 </Link>
@@ -706,7 +706,7 @@ const Cart = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-semibold text-[#4A5C3D]">
+                <h3 className="text-xl font-semibold text-[#14402E]">
                   Select Delivery Address
                 </h3>
                 <button
@@ -723,7 +723,7 @@ const Cart = () => {
                     key={address.id}
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${
                       selectedAddress?.id === address.id
-                        ? "border-[#4A5C3D] bg-green-50"
+                        ? "border-[#14402E] bg-green-50"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                     onClick={() => handleAddressSelection(address)}
@@ -757,7 +757,7 @@ const Cart = () => {
                         <div
                           className={`w-4 h-4 rounded-full border-2 ${
                             selectedAddress?.id === address.id
-                              ? "border-[#4A5C3D] bg-[#4A5C3D]"
+                              ? "border-[#14402E] bg-[#14402E]"
                               : "border-gray-300"
                           }`}
                         >
@@ -774,7 +774,7 @@ const Cart = () => {
               <div className="flex space-x-3">
                 <Link
                   to="/checkout"
-                  className="flex-1 bg-[#4A5C3D] text-white py-2 rounded-lg hover:bg-[#3a4a2f] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-center"
+                  className="flex-1 bg-[#14402E] text-white py-2 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-center"
                 >
                   Go to Checkout
                 </Link>
@@ -789,7 +789,7 @@ const Cart = () => {
               <div className="mt-4 text-center">
                 <Link
                   to="/settings?tab=addresses"
-                  className="text-[#4A5C3D] hover:text-[#3a4a2f] text-sm"
+                  className="text-[#14402E] hover:text-[#0B2118] text-sm"
                 >
                   Manage Addresses
                 </Link>

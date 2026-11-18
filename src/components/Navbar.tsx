@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   ShoppingCart,
-  User,
   Menu,
   X,
   ChevronDown,
@@ -11,7 +10,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
-import logo from "../assets/sreeshivanilogo.png";
+import { LickingWordmark } from "./LickingWordmark";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -76,363 +75,214 @@ const Navbar = () => {
     { name: "Contact", path: "/contact" },
   ];
 
-  const userNavLinks = [
-    { name: "My Profile", path: "/profile" },
-    { name: "Orders", path: "/profile?tab=orders" },
-  ];
+  const avatar = (size: string) =>
+    user ? (
+      <>
+        {user.user_metadata?.avatar_url ? (
+          <img
+            src={user.user_metadata.avatar_url}
+            alt={user.user_metadata.full_name || "User avatar"}
+            className={`${size} rounded-full border border-gold-400/50 object-cover`}
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+              e.currentTarget.nextElementSibling?.classList.remove("hidden");
+            }}
+          />
+        ) : null}
+        <div
+          className={`${size} rounded-full bg-gold-400/15 border border-gold-400/40 flex items-center justify-center ${
+            user.user_metadata?.avatar_url ? "hidden" : ""
+          }`}
+        >
+          <span className="text-sm font-semibold text-gold-200">
+            {(user.user_metadata?.full_name || user.email || "U")
+              .charAt(0)
+              .toUpperCase()}
+          </span>
+        </div>
+      </>
+    ) : null;
+
+  const cartButton = (
+    <Link
+      to="/cart"
+      className="relative grid h-10 w-10 place-items-center rounded-full text-cream/85 transition-colors duration-200 hover:bg-gold-400/10 hover:text-gold-200"
+      aria-label="Cart"
+    >
+      <ShoppingCart size={19} strokeWidth={1.6} />
+      {totalItems > 0 && (
+        <span className="absolute -top-0.5 -right-0.5 grid h-5 min-w-[1.25rem] place-items-center rounded-full bg-gold-400 px-1 text-[10px] font-bold text-emerald-950 ring-2 ring-emerald-950">
+          {totalItems}
+        </span>
+      )}
+    </Link>
+  );
+
+  const menuItemClass =
+    "block px-4 py-2.5 text-sm text-cream/85 hover:bg-gold-400/10 hover:text-gold-100 transition-colors";
 
   return (
-    <nav
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/95 backdrop-blur-sm shadow-lg" : "bg-white"
-      }`}
-    >
-      {/* Mobile Layout */}
-      <div className="md:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Mobile Logo/Back Button - Show logo on home page, back button on other pages */}
-          {location.pathname === "/" ? (
-            <Link to="/" className="flex items-center space-x-2">
-              <img src={logo} alt="Company Logo" className="h-8 w-auto" />
-              <span className="text-xl font-bold text-[#4A5C3D]">
-                Devanagari
-              </span>
-            </Link>
-          ) : (
-            <Link
-              to="/"
-              className="flex items-center space-x-2 text-[#4A5C3D] hover:text-[#3a4a2f] transition-colors"
-            >
-              <ArrowLeft size={20} />
-              <span className="text-lg font-semibold">Home</span>
-            </Link>
-          )}
-
-          {/* Mobile Right Side Icons */}
-          <div className="flex items-center space-x-2">
-            <Link
-              to="/cart"
-              className="relative p-2 text-gray-700 hover:text-[#4A5C3D] transition-colors duration-200"
-              aria-label="Cart"
-            >
-              <ShoppingCart size={20} />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#4A5C3D] text-white text-xs rounded-full h-5 min-w-[1.25rem] px-1 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-gray-700"
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Desktop Layout - Full Width Grid */}
-      <div className="hidden md:grid grid-cols-3 items-center h-16 w-full">
-        {/* Left Column - Logo */}
-        <div className="flex justify-start px-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src={logo} alt="Company Logo" className="h-10 w-auto" />
-            <span className="text-2xl font-bold text-[#4A5C3D]">
-              Devanagari
-            </span>
-          </Link>
-        </div>
-
-        {/* Center Column - Navigation Links */}
-        <div className="flex justify-center">
-          <div className="flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  location.pathname === link.path
-                    ? "text-[#4A5C3D] border-b-2 border-[#4A5C3D] pb-1"
-                    : "text-gray-700 hover:text-[#4A5C3D]"
-                }`}
-              >
-                {link.name}
+    <nav className="fixed w-full top-0 z-50">
+      <div
+        className={`border-b bg-emerald-950 transition-colors duration-300 ${
+          isScrolled ? "border-gold-400/25" : "border-gold-400/15"
+        }`}
+      >
+        {/* Mobile Layout */}
+        <div className="md:hidden px-4 sm:px-6">
+          <div className="flex justify-between items-center h-24">
+            {location.pathname === "/" ? (
+              <Link to="/" className="flex items-center pb-2" aria-label="Devanagari home">
+                <LickingWordmark className="text-[36px]" k={1.7} />
               </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Column - Cart and User Menu */}
-        <div className="flex justify-end px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-4">
-            <Link
-              to="/cart"
-              className="relative p-2 text-gray-700 hover:text-[#4A5C3D] transition-colors duration-200"
-              aria-label="Cart"
-            >
-              <ShoppingCart size={20} />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#4A5C3D] text-white text-xs rounded-full h-5 min-w-[1.25rem] px-1 flex items-center justify-center">
-                  {totalItems}
-                </span>
-              )}
-            </Link>
-
-            {loading && (
-              <div className="h-8 w-28 rounded-md bg-gray-200 animate-pulse" />
+            ) : (
+              <Link
+                to="/"
+                className="flex items-center gap-2 text-gold-200 hover:text-gold-100 transition-colors"
+              >
+                <ArrowLeft size={18} />
+                <span className="text-sm font-semibold tracking-wide">Home</span>
+              </Link>
             )}
 
-            {!loading && !user && (
+            <div className="flex items-center gap-1">
+              {cartButton}
               <button
-                onClick={loginWithGoogle}
-                className="px-3 py-2 rounded-md bg-[#4A5C3D] text-white text-sm hover:opacity-90"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="grid h-10 w-10 place-items-center rounded-full text-cream/85 hover:text-gold-200"
+                aria-label="Toggle menu"
               >
-                Sign in with Google
+                {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
-            )}
-
-            {!loading && user && (
-              <div
-                className="relative"
-                onMouseEnter={() => {
-                  if (userMenuCloseTimer.current) {
-                    clearTimeout(userMenuCloseTimer.current);
-                    userMenuCloseTimer.current = null;
-                  }
-                  setIsUserMenuOpen(true);
-                }}
-                onMouseLeave={() => {
-                  if (userMenuCloseTimer.current) {
-                    clearTimeout(userMenuCloseTimer.current);
-                  }
-                  userMenuCloseTimer.current = window.setTimeout(() => {
-                    setIsUserMenuOpen(false);
-                  }, 150);
-                }}
-              >
-                <button className="flex items-center space-x-2 group">
-                  {user.user_metadata?.avatar_url ? (
-                    <img
-                      src={user.user_metadata.avatar_url}
-                      alt={user.user_metadata.full_name || "User avatar"}
-                      className="h-8 w-8 rounded-full border border-gray-200"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                        e.currentTarget.nextElementSibling?.classList.remove(
-                          "hidden"
-                        );
-                      }}
-                    />
-                  ) : null}
-                  <div
-                    className={`h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center ${
-                      user.user_metadata?.avatar_url ? "hidden" : ""
-                    }`}
-                  >
-                    <span className="text-sm font-bold text-gray-600">
-                      {(user.user_metadata?.full_name || user.email || "U")
-                        .charAt(0)
-                        .toUpperCase()}
-                    </span>
-                  </div>
-                  <span className="text-sm text-gray-700 group-hover:text-[#4A5C3D]">
-                    {user.user_metadata?.full_name || user.email}
-                  </span>
-                  <ChevronDown size={16} className="text-gray-500" />
-                </button>
-                {isUserMenuOpen && (
-                  <div
-                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-50"
-                    onMouseEnter={() => {
-                      if (userMenuCloseTimer.current) {
-                        clearTimeout(userMenuCloseTimer.current);
-                        userMenuCloseTimer.current = null;
-                      }
-                      setIsUserMenuOpen(true);
-                    }}
-                    onMouseLeave={() => {
-                      if (userMenuCloseTimer.current) {
-                        clearTimeout(userMenuCloseTimer.current);
-                      }
-                      userMenuCloseTimer.current = window.setTimeout(() => {
-                        setIsUserMenuOpen(false);
-                      }, 150);
-                    }}
-                  >
-                    <Link
-                      to="/profile"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      My Profile
-                    </Link>
-                    <Link
-                      to="/profile?tab=orders"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                    >
-                      Orders
-                    </Link>
-                    {isAdmin && (
-                      <Link
-                        to="/admin"
-                        onClick={() => setIsUserMenuOpen(false)}
-                        className="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 font-medium"
-                      >
-                        Admin Panel
-                      </Link>
-                    )}
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        logout();
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 border-t border-gray-200">
-          <div className="flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`text-sm font-medium ${
-                  location.pathname === link.path
-                    ? "text-[#4A5C3D] font-semibold"
-                    : "text-gray-700"
-                }`}
-              >
-                {link.name}
-              </Link>
-            ))}
+        {/* Desktop Layout */}
+        <div className="hidden md:grid grid-cols-3 items-center h-24 mx-auto max-w-7xl px-6 lg:px-8">
+          {/* Left — navigation */}
+          <div className="flex items-center gap-8">
+            {navLinks.map((link) => {
+              const active = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`group relative py-2 text-[15px] font-medium tracking-wide transition-colors duration-200 ${
+                    active ? "text-gold-200" : "text-mist hover:text-cream"
+                  }`}
+                >
+                  {link.name}
+                  <span
+                    className={`absolute -bottom-0.5 left-0 h-px bg-gold-400 transition-all duration-300 ${
+                      active ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </Link>
+              );
+            })}
+          </div>
 
-            <div className="pt-4 border-t border-gray-200">
-              {/* Loading State */}
+          {/* Center — logo */}
+          <div className="flex justify-center">
+            <Link to="/" className="flex items-center pb-2" aria-label="Devanagari home">
+              <LickingWordmark className="text-[52px]" k={1.45} />
+            </Link>
+          </div>
+
+          {/* Right — cart & account */}
+          <div className="flex justify-end">
+            <div className="flex items-center gap-3">
+              {cartButton}
+
               {loading && (
-                <div className="flex justify-center">
-                  <div className="h-8 w-28 rounded-md bg-gray-200 animate-pulse" />
-                </div>
+                <div className="h-9 w-36 rounded-full bg-white/10 animate-pulse" />
               )}
 
-              {/* Sign In Button */}
               {!loading && !user && (
-                <div className="flex justify-center">
-                  <button
-                    onClick={() => {
-                      loginWithGoogle();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="px-3 py-2 rounded-md bg-[#4A5C3D] text-white text-sm"
-                  >
-                    Sign in with Google
-                  </button>
-                </div>
+                <button
+                  onClick={loginWithGoogle}
+                  className="btn-gold !px-6 !py-2.5 !text-[14px]"
+                >
+                  Sign in with Google
+                </button>
               )}
 
-              {/* User Profile Section */}
               {!loading && user && (
-                <div className="relative mobile-user-menu w-full">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const newState = !isMobileUserMenuOpen;
-                      setIsMobileUserMenuOpen(newState);
-                    }}
-                    className="flex items-center space-x-3 w-full p-2 rounded-md hover:bg-gray-50 cursor-pointer"
-                  >
-                    {user.user_metadata?.avatar_url ? (
-                      <img
-                        src={user.user_metadata.avatar_url}
-                        alt={user.user_metadata.full_name || "User avatar"}
-                        className="h-8 w-8 rounded-full border border-gray-200"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
-                          e.currentTarget.nextElementSibling?.classList.remove(
-                            "hidden"
-                          );
-                        }}
-                      />
-                    ) : null}
-                    <div
-                      className={`h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center ${
-                        user.user_metadata?.avatar_url ? "hidden" : ""
-                      }`}
-                    >
-                      <span className="text-sm font-bold text-gray-600">
-                        {(user.user_metadata?.full_name || user.email || "U")
-                          .charAt(0)
-                          .toUpperCase()}
-                      </span>
-                    </div>
-                    <span className="text-sm text-gray-700 flex-1 text-left">
+                <div
+                  className="relative"
+                  onMouseEnter={() => {
+                    if (userMenuCloseTimer.current) {
+                      clearTimeout(userMenuCloseTimer.current);
+                      userMenuCloseTimer.current = null;
+                    }
+                    setIsUserMenuOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    if (userMenuCloseTimer.current) {
+                      clearTimeout(userMenuCloseTimer.current);
+                    }
+                    userMenuCloseTimer.current = window.setTimeout(() => {
+                      setIsUserMenuOpen(false);
+                    }, 150);
+                  }}
+                >
+                  <button className="flex items-center gap-2 rounded-full border border-gold-400/20 py-1 pl-1 pr-3 transition-colors hover:border-gold-400/50 group">
+                    {avatar("h-8 w-8")}
+                    <span className="max-w-[140px] truncate text-[13px] text-cream/85 group-hover:text-gold-100">
                       {user.user_metadata?.full_name || user.email}
                     </span>
-                    <ChevronDown
-                      size={16}
-                      className={`text-gray-500 transition-transform duration-200 ${
-                        isMobileUserMenuOpen ? "rotate-180" : ""
-                      }`}
-                    />
+                    <ChevronDown size={14} className="text-gold-300/70" />
                   </button>
-
-                  {/* Mobile Profile Dropdown */}
-                  {isMobileUserMenuOpen && (
-                    <div className="relative mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-[60]">
+                  {isUserMenuOpen && (
+                    <div
+                      className="absolute right-0 mt-3 w-52 overflow-hidden rounded-xl border border-gold-400/20 bg-emerald-900 py-2 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] z-50"
+                      onMouseEnter={() => {
+                        if (userMenuCloseTimer.current) {
+                          clearTimeout(userMenuCloseTimer.current);
+                          userMenuCloseTimer.current = null;
+                        }
+                        setIsUserMenuOpen(true);
+                      }}
+                      onMouseLeave={() => {
+                        if (userMenuCloseTimer.current) {
+                          clearTimeout(userMenuCloseTimer.current);
+                        }
+                        userMenuCloseTimer.current = window.setTimeout(() => {
+                          setIsUserMenuOpen(false);
+                        }, 150);
+                      }}
+                    >
                       <Link
                         to="/profile"
-                        onClick={() => {
-                          setIsMobileUserMenuOpen(false);
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className={menuItemClass}
                       >
                         My Profile
                       </Link>
                       <Link
                         to="/profile?tab=orders"
-                        onClick={() => {
-                          setIsMobileUserMenuOpen(false);
-                          setIsMobileMenuOpen(false);
-                        }}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className={menuItemClass}
                       >
                         Orders
                       </Link>
                       {isAdmin && (
                         <Link
                           to="/admin"
-                          onClick={() => {
-                            setIsMobileUserMenuOpen(false);
-                            setIsMobileMenuOpen(false);
-                          }}
-                          className="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 font-medium"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="block px-4 py-2.5 text-sm font-medium text-gold-300 hover:bg-gold-400/10"
                         >
                           Admin Panel
                         </Link>
                       )}
+                      <div className="my-1 h-px bg-gold-400/10" />
                       <button
                         onClick={() => {
-                          setIsMobileUserMenuOpen(false);
-                          setIsMobileMenuOpen(false);
+                          setIsUserMenuOpen(false);
                           logout();
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        className="w-full text-left px-4 py-2.5 text-sm text-rose-300 hover:bg-rose-400/10"
                       >
                         Logout
                       </button>
@@ -443,7 +293,121 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      )}
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden px-4 sm:px-6 pb-6 pt-2 border-t border-gold-400/10">
+            <div className="flex flex-col">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`font-display py-3 text-2xl border-b border-gold-400/10 ${
+                    location.pathname === link.path
+                      ? "text-gold-200"
+                      : "text-cream/85"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+
+              <div className="pt-5">
+                {loading && (
+                  <div className="flex justify-center">
+                    <div className="h-10 w-40 rounded-full bg-white/10 animate-pulse" />
+                  </div>
+                )}
+
+                {!loading && !user && (
+                  <button
+                    onClick={() => {
+                      loginWithGoogle();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="btn-gold w-full"
+                  >
+                    Sign in with Google
+                  </button>
+                )}
+
+                {!loading && user && (
+                  <div className="relative mobile-user-menu w-full">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsMobileUserMenuOpen(!isMobileUserMenuOpen);
+                      }}
+                      className="flex items-center gap-3 w-full rounded-xl border border-gold-400/20 p-2.5 cursor-pointer"
+                    >
+                      {avatar("h-9 w-9")}
+                      <span className="text-sm text-cream flex-1 text-left truncate">
+                        {user.user_metadata?.full_name || user.email}
+                      </span>
+                      <ChevronDown
+                        size={16}
+                        className={`text-gold-300 transition-transform duration-200 ${
+                          isMobileUserMenuOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {isMobileUserMenuOpen && (
+                      <div className="relative mt-2 overflow-hidden rounded-xl border border-gold-400/15 bg-emerald-900 py-2 z-[60]">
+                        <Link
+                          to="/profile"
+                          onClick={() => {
+                            setIsMobileUserMenuOpen(false);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className={menuItemClass}
+                        >
+                          My Profile
+                        </Link>
+                        <Link
+                          to="/profile?tab=orders"
+                          onClick={() => {
+                            setIsMobileUserMenuOpen(false);
+                            setIsMobileMenuOpen(false);
+                          }}
+                          className={menuItemClass}
+                        >
+                          Orders
+                        </Link>
+                        {isAdmin && (
+                          <Link
+                            to="/admin"
+                            onClick={() => {
+                              setIsMobileUserMenuOpen(false);
+                              setIsMobileMenuOpen(false);
+                            }}
+                            className="block px-4 py-2.5 text-sm font-medium text-gold-300 hover:bg-gold-400/10"
+                          >
+                            Admin Panel
+                          </Link>
+                        )}
+                        <button
+                          onClick={() => {
+                            setIsMobileUserMenuOpen(false);
+                            setIsMobileMenuOpen(false);
+                            logout();
+                          }}
+                          className="w-full text-left px-4 py-2.5 text-sm text-rose-300 hover:bg-rose-400/10"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </nav>
   );
 };

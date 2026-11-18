@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   ShoppingBag,
@@ -7,14 +6,22 @@ import {
   Bone,
   Wheat,
   ArrowRight,
+  Check,
 } from "lucide-react";
+import type { CSSProperties } from "react";
 import millets from "../assets/millet.png";
 import grinding from "../assets/grinding1.png";
 import finepowder from "../assets/powderMix.png .png";
-import heromain3 from "../assets/sreeshivanihero.png";
-import heroVideo from "../assets/videos/compressed-hero-bg.mp4";
+import productShot from "../assets/heromain4.png";
+import { CountUp, IngredientHoneycomb } from "../components/IngredientHoneycomb";
+import { Rangoli, SectionRangoli, StarMark, useInView } from "../components/Rangoli";
+
+// Staggered delay, read by the CSS transitions as --d
+const delay = (seconds: number) => ({ ["--d" as string]: `${seconds}s` }) as CSSProperties;
+const rise = (step: number) => ({ animationDelay: `${0.45 + step * 0.08}s` });
 
 const Home = () => {
+  const [stepsRef, stepsIn] = useInView<HTMLOListElement>();
   const benefits = [
     {
       icon: Leaf,
@@ -42,305 +49,206 @@ const Home = () => {
     },
   ];
 
+  const journey = [
+    {
+      image: millets,
+      title: "Heirloom Grains & Millets",
+      description:
+        "We source the finest, high-quality ingredients, chosen for their purity and nutritional power.",
+      badge: "Premium Quality",
+    },
+    {
+      image: grinding,
+      title: "Artisanal Blending Process",
+      description:
+        "Our ingredients are carefully blended in small batches to preserve their natural goodness and potency.",
+      badge: "Small Batch",
+    },
+    {
+      image: finepowder,
+      title: "Finely Milled for Purity",
+      description:
+        "The result is a smooth, delicious, and easy-to-mix powder, ready to nourish your day.",
+      badge: "Perfect Texture",
+    },
+  ];
+
+
   return (
-    <div className="bg-[#FDFBF8] overflow-x-hidden">
-      {/* Hero Section - Keep as provided */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background Video */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src={heroVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-
-        {/* Professional Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
-
-        {/* Subtle Pattern Overlay for Texture */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.05)_0%,transparent_70%)]"></div>
-
-        {/* Content Container */}
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center min-h-[80vh]">
-            {/* Left Content - Takes up more space */}
-            <div className="lg:col-span-7 space-y-8">
-              {/* Badge/Tag */}
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-                <span className="text-white/90 text-sm font-medium tracking-wide">
-                  100% Natural • 21 Ingredients • Traditional Recipe
+    <div className="bg-emerald-950 text-cream">
+      {/* ───────────── Hero ───────────── */}
+      <section className="relative overflow-hidden pt-24">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-12 items-center gap-10 lg:gap-6 lg:min-h-[calc(100svh-6rem)] py-14 lg:py-16">
+          {/* Copy */}
+          <div className="lg:col-span-6 relative z-10">
+            <h1 className="font-display font-light text-[3rem] leading-[1.0] sm:text-6xl xl:text-[5.5rem] tracking-[-0.025em] text-cream">
+              <span className="line-mask"><span style={delay(0.1)}>Wellness,</span></span>
+              <span className="line-mask">
+                <span style={delay(0.2)}>
+                  <span className="ink-underline italic text-gold-400" style={delay(1)}>Rooted in</span>
                 </span>
-              </div>
+              </span>
+              <span className="line-mask"><span style={delay(0.3)}>Tradition</span></span>
+            </h1>
 
-              {/* Main Heading */}
-              <div className="space-y-4 sm:space-y-6">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-[0.9] tracking-tight">
-                  Wellness,
-                  <br />
-                  <span className="text-[#CDE0B7]">Rooted in</span>
-                  <br />
-                  Tradition
-                </h1>
+            <p
+              className="animate-rise mt-8 flex items-center gap-4 text-sm font-semibold tracking-[0.12em] text-gold-300"
+              style={rise(0)}
+            >
+              <StarMark className="h-3.5 w-3.5 text-gold-400" />
+              FUELS HEALTH. POWERS LIFE.
+            </p>
 
-                <div className="h-1 w-16 sm:w-24 bg-gradient-to-r from-[#CDE0B7] to-[#F6CFA7] rounded-full"></div>
+            <p
+              className="animate-rise mt-5 max-w-[34rem] text-[17px] leading-[1.7] text-mist"
+              style={rise(1)}
+            >
+              Discover the power of{" "}
+              <span className="font-semibold text-cream">21 natural grains</span>,
+              millets, and pulses in a single, nourishing mix. Inspired by nature
+              and rooted in tradition, Devanagari Health Mix is your gateway to
+              vibrant wellness.
+            </p>
 
-                <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-[#F6CFA7] font-bold tracking-wider">
-                  FUELS HEALTH. POWERS LIFE.
-                </p>
-              </div>
-
-              {/* Description */}
-              <div className="max-w-2xl">
-                <p className="text-base sm:text-lg md:text-xl text-white/90 leading-relaxed font-light">
-                  Discover the power of{" "}
-                  <span className="font-semibold text-[#CDE0B7]">
-                    21 natural grains
-                  </span>
-                  , millets, and pulses in a single, nourishing mix. Inspired by
-                  nature and rooted in tradition, Devanagari Health Mix is your
-                  gateway to vibrant wellness.
-                </p>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
-                <button className="group bg-gradient-to-r from-[#4A5C3D] to-[#5d7249] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-base sm:text-lg font-bold hover:from-[#3a4a2f] hover:to-[#4a5d3a] transition-all duration-300 flex items-center justify-center space-x-2 sm:space-x-3 shadow-2xl hover:shadow-3xl transform hover:scale-105 backdrop-blur-sm">
-                  <ShoppingBag
-                    size={18}
-                    className="sm:w-5 sm:h-5 group-hover:animate-bounce"
-                  />
-                  <span className="font-bold tracking-wide">
-                    <Link to="/shop">Shop Now</Link>
-                  </span>
-                </button>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 lg:gap-8 pt-6 sm:pt-8">
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#CDE0B7] rounded-full animate-pulse"></div>
-                  <span className="text-white/80 text-xs sm:text-sm font-medium">
-                    Certified Organic
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#F6CFA7] rounded-full animate-pulse"></div>
-                  <span className="text-white/80 text-xs sm:text-sm font-medium">
-                    No Preservatives
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 sm:w-3 sm:h-3 bg-[#D8E5D0] rounded-full animate-pulse"></div>
-                  <span className="text-white/80 text-xs sm:text-sm font-medium">
-                    Gluten Free
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Product Image */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="relative">
-                {/* Glow Effect Behind Product */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#CDE0B7]/20 to-[#F6CFA7]/20 blur-3xl transform scale-110"></div>
-
-                {/* Product Image */}
-                <div className="relative">
-                  <img
-                    src={heromain3}
-                    alt="Devanagari Health Mix Product"
-                    className="rounded-2xl shadow-2xl w-full h-auto transform hover:scale-105 transition-transform duration-500"
-                  />
-
-                  {/* Floating Elements */}
-                </div>
-              </div>
+            <div
+              className="animate-rise mt-10 flex flex-col sm:flex-row sm:items-center gap-6"
+              style={rise(2)}
+            >
+              <Link to="/shop" className="btn-gold group !px-7 !py-3.5 !text-[15px] self-start">
+                <ShoppingBag size={18} strokeWidth={1.8} />
+                Shop Now
+                <ArrowRight
+                  size={16}
+                  className="-ml-0.5 transition-transform duration-200 group-hover:translate-x-1"
+                />
+              </Link>
+              <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-mist">
+                {["Certified Organic", "No Preservatives", "Gluten Free"].map((t) => (
+                  <li key={t} className="flex items-center gap-1.5">
+                    <StarMark className="h-2.5 w-2.5 text-gold-400" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="flex flex-col items-center space-y-2 animate-bounce">
-            <span className="text-white/60 text-sm font-medium">
-              Scroll to explore
-            </span>
-            <div className="w-px h-8 bg-gradient-to-b from-white/60 to-transparent"></div>
-            <svg
-              className="w-5 h-5 text-white/60"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 14l-7 7m0 0l-7-7m7 7V3"
-              />
-            </svg>
+          {/* The pack at the centre of a rangoli */}
+          <div className="lg:col-span-6 flex justify-center lg:justify-end">
+            <div className="relative aspect-square w-[min(92vw,620px)]">
+              <Rangoli spin className="absolute inset-0 h-full w-full text-gold-400/60" />
+              <div className="absolute inset-[18%] overflow-hidden rounded-full border border-gold-400/70 bg-emerald-900">
+                <img
+                  src={productShot}
+                  alt="Devanagari Health Mix Product"
+                  className="settle h-full w-full object-cover object-[62%_55%] scale-[1.0]"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* The Devanagari Difference Section - Enhanced */}
-      <section className="py-32 bg-gradient-to-br from-white to-gray-50 relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-[#CDE0B7]/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F6CFA7]/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Section Header */}
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-[#4A5C3D]/10 backdrop-blur-sm border border-[#4A5C3D]/20 mb-6">
-              <span className="text-[#4A5C3D] text-sm font-medium tracking-wide">
-                FROM NATURE TO NUTRITION
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#4A5C3D] mb-6 leading-tight">
+      {/* ───────────── From nature to you ───────────── */}
+      <section className="relative overflow-hidden border-t border-gold-400/15">
+        <SectionRangoli className="-left-44 top-10 h-[26rem] w-[26rem] hidden md:block" />
+        <div className="relative mx-auto max-w-7xl px-5 sm:px-8 py-24 lg:py-32">
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
+            <h2 className="font-display lg:col-span-6 text-4xl sm:text-5xl leading-[1.08]">
               A Natural Choice,
               <br />
-              <span className="bg-gradient-to-r from-[#4A5C3D] to-[#6B8E23] bg-clip-text text-transparent">
-                From Nature to You
-              </span>
+              <span className="italic text-gold-400">From Nature to You</span>
             </h2>
-            <div className="h-1 w-24 bg-gradient-to-r from-[#CDE0B7] to-[#F6CFA7] rounded-full mx-auto mb-6"></div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="lg:col-span-5 lg:col-start-8 text-[17px] leading-[1.7] text-mist">
               Experience the journey of our mix — from grains to glass — with
               care, tradition, and purity in every step.
             </p>
           </div>
 
-          {/* Enhanced Feature Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
-            {[
-              {
-                image: millets,
-                title: "Heirloom Grains & Millets",
-                description:
-                  "We source the finest, high-quality ingredients, chosen for their purity and nutritional power.",
-                badge: "Premium Quality",
-              },
-              {
-                image: grinding,
-                title: "Artisanal Blending Process",
-                description:
-                  "Our ingredients are carefully blended in small batches to preserve their natural goodness and potency.",
-                badge: "Small Batch",
-              },
-              {
-                image: finepowder,
-                title: "Finely Milled for Purity",
-                description:
-                  "The result is a smooth, delicious, and easy-to-mix powder, ready to nourish your day.",
-                badge: "Perfect Texture",
-              },
-            ].map((card, index) => (
-              <div key={index} className="group relative">
-                {/* Card */}
-                <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 group-hover:-translate-y-2 border border-gray-100">
-                  {/* Badge */}
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#4A5C3D]/10 text-[#4A5C3D] text-xs font-medium mb-6">
-                    {card.badge}
-                  </div>
-
-                  {/* Image */}
-                  <div className="relative mb-8 overflow-hidden rounded-2xl">
-                    <img
-                      src={card.image}
-                      alt={card.title}
-                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-[#4A5C3D] leading-tight">
-                      {card.title}
-                    </h3>
-                    <p className="text-gray-700 leading-relaxed text-lg">
-                      {card.description}
-                    </p>
-                  </div>
-
-                  {/* Decorative element */}
-                  <div className="absolute top-8 right-8 w-2 h-2 bg-[#CDE0B7] rounded-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
+          <ol ref={stepsRef} className="mt-16 grid gap-12 md:grid-cols-3 md:gap-8">
+            {journey.map((step, i) => (
+              <li key={step.title} className="group">
+                <div
+                  data-reveal-clip={stepsIn}
+                  style={delay(i * 0.12)}
+                  className="overflow-hidden rounded-xl aspect-[4/3] bg-emerald-900"
+                >
+                  <img
+                    src={step.image}
+                    alt={step.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  />
                 </div>
-              </div>
+                <h3 className="font-display mt-6 text-2xl text-cream">
+                  {step.title}
+                </h3>
+                <p className="mt-3 text-[15px] leading-[1.7] text-mist">
+                  {step.description}
+                </p>
+                <p className="mt-4 flex items-center gap-2 text-[13px] font-semibold text-gold-300">
+                  <Check size={14} strokeWidth={2} />
+                  {step.badge}
+                </p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* Enhanced Benefits Section */}
-      <section className="py-32 bg-gradient-to-br from-[#4A5C3D] to-[#5d7249] relative overflow-hidden">
-        {/* Background Pattern */}
-        {/* <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 border border-white rounded-full"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 border border-white rounded-full"></div>
-          <div className="absolute top-3/4 left-3/4 w-32 h-32 border border-white rounded-full"></div>
-        </div> */}
+      {/* ───────────── What's inside: the 21 ingredients ───────────── */}
+      <section className="relative overflow-hidden bg-emerald-900 border-y border-gold-400/15">
+        <SectionRangoli className="-right-52 -bottom-52 h-[34rem] w-[34rem]" />
+        <SectionRangoli className="-left-60 -top-60 h-[30rem] w-[30rem] hidden lg:block" />
+        <div className="relative mx-auto max-w-7xl px-5 sm:px-8 py-24 lg:py-28">
+          <div className="grid gap-6 lg:grid-cols-12 lg:items-end mb-14 lg:mb-16">
+            <h2 className="font-display font-light lg:col-span-6 text-4xl sm:text-5xl leading-[1.08]">
+              <CountUp to={21} className="italic text-gold-400" /> Natural Ingredients
+            </h2>
+            <p className="lg:col-span-5 lg:col-start-8 text-[17px] leading-[1.7] text-mist">
+              Carefully selected grains, millets, and pulses for complete
+              nutrition
+            </p>
+          </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Section Header */}
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
-              <span className="text-white/90 text-sm font-medium tracking-wide">
-                POWERFUL BENEFITS
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          <IngredientHoneycomb />
+        </div>
+      </section>
+
+      {/* ───────────── Benefits ───────────── */}
+      <section>
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 py-24 lg:py-32 grid gap-14 lg:grid-cols-12">
+          <div className="lg:col-span-5">
+            <h2 className="font-display text-4xl sm:text-5xl leading-[1.08]">
               Pure Ingredients.
               <br />
-              <span className="text-[#CDE0B7]">Powerful Benefits.</span>
+              <span className="italic text-gold-400">Powerful Benefits.</span>
             </h2>
-            <div className="h-1 w-24 bg-gradient-to-r from-[#CDE0B7] to-[#F6CFA7] rounded-full mx-auto"></div>
-          </div>
-
-          {/* Benefits Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => {
-              const IconComponent = benefit.icon;
-              return (
-                <div key={index} className="group text-center space-y-6">
-                  {/* Icon Container */}
-                  <div className="relative">
-                    <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto group-hover:bg-white/20 transition-all duration-300 border border-white/20">
-                      <IconComponent className="text-white" size={36} />
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="space-y-3">
-                    <h3 className="text-xl font-bold text-white leading-tight">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-white/80 leading-relaxed">
-                      {benefit.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* CTA Section */}
-          <div className="mt-20 text-center">
-            <button className="group bg-white text-[#4A5C3D] px-10 py-5 rounded-2xl text-xl font-bold hover:bg-gray-100 transition-all duration-300 flex items-center space-x-3 shadow-2xl hover:shadow-3xl transform hover:scale-105 mx-auto">
-              <span className="font-bold tracking-wide">
-                <Link to="/shop">Experience the Benefits</Link>
-              </span>
+            <Link to="/shop" className="btn-outline-gold group mt-10">
+              Experience the Benefits
               <ArrowRight
-                size={24}
-                className="group-hover:translate-x-1 transition-transform"
+                size={16}
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
               />
-            </button>
+            </Link>
           </div>
+
+          <ul className="lg:col-span-7 border-t border-gold-400/25">
+            {benefits.map(({ icon: Icon, title, description }) => (
+              <li
+                key={title}
+                className="grid grid-cols-[2.5rem_1fr] gap-x-4 border-b border-gold-400/15 py-7"
+              >
+                <Icon size={24} strokeWidth={1.5} className="mt-1 text-gold-400" />
+                <div>
+                  <h3 className="font-display text-2xl text-cream">{title}</h3>
+                  <p className="mt-2 text-[15px] leading-[1.7] text-mist">
+                    {description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </div>

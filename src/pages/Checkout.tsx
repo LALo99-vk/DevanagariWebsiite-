@@ -200,8 +200,8 @@ const Checkout = () => {
   // Show loading state while cartItems is being loaded
   if (!cartItems) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A5C3D]"></div>
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E]"></div>
       </div>
     );
   }
@@ -211,12 +211,12 @@ const Checkout = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="px-4 py-8 mx-auto max-w-6xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <BackButton />
-          <h1 className="text-3xl font-bold text-[#4A5C3D] mt-4">Checkout</h1>
+          <h1 className="font-display text-3xl font-bold text-[#14402E] mt-4">Checkout</h1>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -224,7 +224,7 @@ const Checkout = () => {
           <div className="space-y-6">
             {/* Shipping Address */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-4 flex items-center">
+              <h2 className="text-xl font-bold text-[#14402E] mb-4 flex items-center">
                 <MapPin className="mr-2" size={20} />
                 Shipping Address
               </h2>
@@ -236,7 +236,7 @@ const Checkout = () => {
 
             {/* Promo Code */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-4 flex items-center">
+              <h2 className="text-xl font-bold text-[#14402E] mb-4 flex items-center">
                 <Tag className="mr-2" size={20} />
                 Promo Code
               </h2>
@@ -246,13 +246,13 @@ const Checkout = () => {
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   placeholder="Enter promo code"
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                   disabled={promoApplied}
                 />
                 <button
                   onClick={handlePromoCode}
                   disabled={promoApplied || !promoCode.trim()}
-                  className="px-6 py-2 bg-[#4A5C3D] text-white rounded-lg hover:bg-[#3a4a2f] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-2 bg-[#14402E] text-white rounded-lg hover:bg-[#0B2118] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
                   {promoApplied ? "Applied" : "Apply"}
                 </button>
@@ -266,7 +266,7 @@ const Checkout = () => {
 
             {/* Order Items */}
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+              <h2 className="text-xl font-bold text-[#14402E] mb-4">
                 Order Items
               </h2>
               <div className="space-y-4">
@@ -290,7 +290,7 @@ const Checkout = () => {
                         </p>
                       </div>
                     </div>
-                    <p className="font-semibold text-[#4A5C3D]">
+                    <p className="font-semibold text-[#14402E]">
                       ₹{(item.price * item.quantity).toFixed(2)}
                     </p>
                   </div>
@@ -302,7 +302,7 @@ const Checkout = () => {
           {/* Right Column - Order Summary */}
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-6">
+              <h2 className="text-xl font-bold text-[#14402E] mb-6">
                 Order Summary
               </h2>
 
@@ -335,7 +335,7 @@ const Checkout = () => {
                 </div>
 
                 <div className="border-t border-gray-200 pt-4">
-                  <div className="flex justify-between text-lg font-bold text-[#4A5C3D]">
+                  <div className="flex justify-between text-lg font-bold text-[#14402E]">
                     <span>Total</span>
                     <span>₹{total.toFixed(2)}</span>
                   </div>
@@ -345,7 +345,7 @@ const Checkout = () => {
               <button
                 onClick={handlePayment}
                 disabled={!shippingAddress || loading}
-                className="w-full mt-6 bg-[#4A5C3D] text-white py-4 rounded-lg font-semibold hover:bg-[#3a4a2f] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
+                className="w-full mt-6 bg-[#14402E] text-white py-4 rounded-lg font-semibold hover:bg-[#0B2118] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2"
               >
                 <CreditCard size={20} />
                 <span>

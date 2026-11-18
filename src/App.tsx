@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -38,6 +38,15 @@ import "./utils/checkSupabaseStatus"; // Load Supabase status check
 import "./utils/restoreDatabase"; // Load database restore guide
 import "./utils/supabaseRestApi"; // Load REST API functions
 
+// Reset scroll on route change so every page opens at the top
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   // Load Razorpay script when app starts
   useEffect(() => {
@@ -65,12 +74,13 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       {/* ✅ Wrap everything inside Auth + Cart + Admin + Notification providers */}
       <AuthProvider>
         <CartProvider>
           <AdminProvider>
             <NotificationProvider>
-              <div className="min-h-screen flex flex-col font-['Inter']">
+              <div className="min-h-screen flex flex-col font-sans">
                 <Routes>
                   {/* Public Routes */}
                   <Route

@@ -120,7 +120,7 @@ const RazorpayPayment: React.FC<RazorpayPaymentProps> = ({
           address: "Devanagari Web Store",
         },
         theme: {
-          color: "#4A5C3D",
+          color: "#14402E",
         },
         modal: {
           ondismiss: () => {
@@ -211,11 +211,11 @@ const RazorpayPayment: React.FC<RazorpayPaymentProps> = ({
       disabled={disabled || isProcessing || !isUserAuthenticated}
       className={`
         flex items-center justify-center space-x-2 
-        bg-[#4A5C3D] text-white font-semibold
+        bg-[#14402E] text-white font-semibold
         px-6 py-3 rounded-lg transition-all duration-200
-        hover:bg-[#3a4a2f] hover:scale-[1.02]
+        hover:bg-[#0B2118] hover:scale-[1.02]
         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
-        focus:outline-none focus:ring-2 focus:ring-[#4A5C3D] focus:ring-opacity-50
+        focus:outline-none focus:ring-2 focus:ring-[#14402E] focus:ring-opacity-50
         ${className}
       `}
       type="button"

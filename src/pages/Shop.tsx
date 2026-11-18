@@ -5,6 +5,7 @@ import {
   ShoppingCart,
   CheckCircle,
   AlertCircle,
+  Truck,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -40,7 +41,7 @@ const Shop = () => {
   );
   const { addItem } = useCart();
   const { user } = useAuth();
-  const { showError, showWarning, showInfo } = useNotification();
+  const { showError, showWarning } = useNotification();
 
   useEffect(() => {
     const initializeShop = async () => {
@@ -154,10 +155,10 @@ const Shop = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
+      <div className="bg-emerald-950 pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4A5C3D] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading products...</p>
+          <div className="mx-auto mb-5 h-10 w-10 animate-spin rounded-full border-2 border-gold-400/20 border-t-gold-400"></div>
+          <p className="text-sm text-mist">Loading products...</p>
         </div>
       </div>
     );
@@ -169,30 +170,30 @@ const Shop = () => {
     (!databaseStatus.isConnected || !databaseStatus.tablesExist)
   ) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+      <div className="bg-emerald-950 pt-24 min-h-screen">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="panel p-8">
             <div className="flex items-center mb-4">
-              <AlertCircle className="text-red-500 mr-3" size={24} />
-              <h2 className="text-xl font-bold text-red-800">
+              <AlertCircle className="text-rose-300 mr-3" size={24} />
+              <h2 className="font-display text-2xl text-cream">
                 Database Setup Required
               </h2>
             </div>
-            <div className="text-red-700 whitespace-pre-line">
+            <div className="text-mist whitespace-pre-line text-sm leading-relaxed">
               {getDatabaseSetupInstructions(databaseStatus)}
             </div>
-            <div className="mt-4 flex flex-wrap gap-4">
+            <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href="https://supabase.com/dashboard/project/yclgaxigalixrimuixgo/sql"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+                className="btn-gold"
               >
                 🚀 Setup Database Now
               </a>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+                className="btn-outline-gold"
               >
                 Refresh Page
               </button>
@@ -201,7 +202,7 @@ const Shop = () => {
                   console.log("Verifying database setup...");
                   (window as any).verifyDatabaseSetup?.();
                 }}
-                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                className="btn-outline-gold"
               >
                 Verify Setup
               </button>
@@ -213,14 +214,14 @@ const Shop = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="bg-emerald-950 pt-24 min-h-screen text-cream">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-24">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#4A5C3D] mb-3 sm:mb-4">
-            Devanagari Health Mix
+        <div className="grid gap-6 lg:grid-cols-12 lg:items-end mb-12 sm:mb-16">
+          <h1 className="font-display lg:col-span-6 text-5xl sm:text-6xl leading-[1.04]">
+            Devanagari <span className="italic text-gold-400">Health Mix</span>
           </h1>
-          <p className="text-base sm:text-lg text-gray-700 max-w-3xl mx-auto px-4">
+          <p className="lg:col-span-6 text-[17px] leading-[1.7] text-mist">
             A premium blend of 21 natural grains, millets, and pulses, carefully
             crafted to provide complete nutrition. Rich in protein, fiber,
             vitamins, and minerals for your daily wellness journey.
@@ -228,17 +229,15 @@ const Shop = () => {
         </div>
 
         {/* Free Delivery Banner */}
-        <div className="bg-gradient-to-r from-[#4A5C3D] to-[#3a4a2f] rounded-xl p-4 mb-8 text-center text-white shadow-lg">
-          <div className="flex items-center justify-center space-x-2">
-            <h3 className="text-lg font-bold flex items-center space-x-2">
-              <span>🚚</span>
-              <span>Free Delivery in Davangere!</span>
-            </h3>
-          </div>
+        <div className="mb-10 flex items-center gap-3 border-y border-gold-400/20 py-4">
+          <Truck size={20} strokeWidth={1.6} className="text-gold-400" />
+          <h3 className="font-display text-xl text-gold-200">
+            Free Delivery in Davangere!
+          </h3>
         </div>
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-16">
           {products.length > 0 ? (
             products.map((product, index) => (
               <ProductCard
@@ -251,11 +250,11 @@ const Shop = () => {
               />
             ))
           ) : (
-            <div className="col-span-full text-center py-12">
-              <div className="text-gray-500 text-lg mb-4">
+            <div className="col-span-full panel text-center py-16 px-6">
+              <div className="font-display text-2xl text-cream mb-3">
                 No products available at the moment.
               </div>
-              <p className="text-gray-400">
+              <p className="text-mist">
                 Products will appear here once they are added through the admin
                 panel.
               </p>
@@ -264,28 +263,18 @@ const Shop = () => {
         </div>
 
         {/* Additional Info */}
-        <div className="bg-white rounded-xl p-4 sm:p-6 lg:p-8 shadow-lg">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 text-center">
-            <div className="flex items-center justify-center space-x-2">
-              <CheckCircle className="text-green-500 sm:w-6 sm:h-6" size={20} />
-              <span className="text-sm sm:text-base text-gray-700">
-                No refunds!
-              </span>
-            </div>
-            <div className="flex items-center justify-center space-x-2">
-              <CheckCircle className="text-green-500 sm:w-6 sm:h-6" size={20} />
-              <span className="text-sm sm:text-base text-gray-700">
-                Questions? Reach out to us
-              </span>
-            </div>
-            <div className="flex items-center justify-center space-x-2 sm:col-span-2 lg:col-span-1">
-              <CheckCircle className="text-green-500 sm:w-6 sm:h-6" size={20} />
-              <span className="text-sm sm:text-base text-gray-700">
-                Made from 100% natural ingredients
-              </span>
-            </div>
-          </div>
-        </div>
+        <ul className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-gold-400/20 pt-8">
+          {[
+            "No refunds!",
+            "Questions? Reach out to us",
+            "Made from 100% natural ingredients",
+          ].map((text) => (
+            <li key={text} className="flex items-center gap-3">
+              <CheckCircle className="text-gold-400 shrink-0" size={18} strokeWidth={1.6} />
+              <span className="text-[15px] text-mist">{text}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
@@ -318,103 +307,103 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const decrementQuantity = () => setQuantity((prev) => Math.max(1, prev - 1));
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+    <div className="group flex h-full flex-col overflow-hidden rounded-[14px] border border-gold-400/20 bg-emerald-900 transition-colors duration-200 hover:border-gold-400/45">
       {/* Product Image */}
-      <div className="aspect-square overflow-hidden">
+      <div className="relative aspect-square overflow-hidden bg-emerald-800">
         <img
           src={resolveImageSrc(product.image_url)}
           alt={`${product.name} ${product.weight}g`}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
         />
+        {isBestValue && (
+          <span className="absolute left-3 top-3 rounded-full bg-gold-400 px-3 py-1 text-[12px] font-semibold text-emerald-950">
+            Best Value
+          </span>
+        )}
       </div>
 
       {/* Product Info */}
-      <div className="p-4 sm:p-6">
-        <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg sm:text-xl font-bold text-[#4A5C3D] pr-2">
+      <div className="flex flex-1 flex-col p-6">
+        <div className="flex items-baseline justify-between gap-4">
+          <h3 className="font-display text-2xl leading-tight text-cream">
             {product.name}
           </h3>
-          {isBestValue && (
-            <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full flex-shrink-0">
-              Best Value
-            </span>
-          )}
+          <span className="shrink-0 text-[13px] text-mist">{product.weight}g pack</span>
         </div>
 
-        <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 line-clamp-2">
+        <p className="mt-2 text-[15px] leading-[1.6] text-mist line-clamp-2">
           {product.description}
         </p>
 
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-          <div className="text-xl sm:text-2xl font-bold text-[#A88B67]">
+        <div className="mt-5 flex items-baseline justify-between">
+          <div className="font-display text-3xl text-gold-300 tabular-nums">
             ₹{product.price.toFixed(2)}
           </div>
-          <div className="text-xs sm:text-sm text-gray-500">
-            {product.weight}g pack
-          </div>
-        </div>
-
-        {/* Stock indicator */}
-        {product.stock > 0 && (
-          <div className="text-xs sm:text-sm text-green-600 mb-2">
-            {product.stock} in stock
-          </div>
-        )}
-
-        {/* Quantity Selector */}
-        <div className="flex items-center justify-center space-x-3 sm:space-x-4 mb-3 sm:mb-4">
-          <button
-            onClick={decrementQuantity}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#4A5C3D] flex items-center justify-center text-[#4A5C3D] hover:bg-[#4A5C3D] hover:text-white transition-colors"
-          >
-            <Minus size={12} className="sm:w-3.5 sm:h-3.5" />
-          </button>
-          <span className="text-base sm:text-lg font-semibold text-[#4A5C3D] w-6 sm:w-8 text-center">
-            {quantity}
-          </span>
-          <button
-            onClick={incrementQuantity}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-[#4A5C3D] flex items-center justify-center text-[#4A5C3D] hover:bg-[#4A5C3D] hover:text-white transition-colors"
-          >
-            <Plus size={12} className="sm:w-3.5 sm:h-3.5" />
-          </button>
-        </div>
-
-        {/* Add to Cart Button */}
-        <button
-          onClick={() => onAddToCart(product, quantity)}
-          disabled={isAdding || product.stock === 0}
-          className={`w-full py-2.5 sm:py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center space-x-1.5 sm:space-x-2 text-sm sm:text-base ${
-            showSuccess
-              ? "bg-green-500 text-white"
-              : isAdding || product.stock === 0
-              ? "bg-gray-400 text-white cursor-not-allowed"
-              : "bg-[#4A5C3D] text-white hover:bg-[#3a4a2f] hover:scale-[1.02]"
-          }`}
-        >
-          {showSuccess ? (
-            <>
-              <CheckCircle size={16} className="sm:w-5 sm:h-5" />
-              <span>Added to Cart!</span>
-            </>
-          ) : isAdding ? (
-            <>
-              <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-white"></div>
-              <span>Adding...</span>
-            </>
-          ) : product.stock === 0 ? (
-            <>
-              <span>Out of Stock</span>
-            </>
-          ) : (
-            <>
-              <ShoppingCart size={16} className="sm:w-5 sm:h-5" />
-              <span className="truncate">
-                Add to Cart - ₹{(product.price * quantity).toFixed(2)}
-              </span>
-            </>
+          {product.stock > 0 && (
+            <div className="text-[13px] text-emerald-300">
+              {product.stock} in stock
+            </div>
           )}
-        </button>
+        </div>
+
+        <div className="mt-auto pt-6 flex items-center gap-3">
+          {/* Quantity Selector */}
+          <div className="flex items-center rounded-full border border-gold-400/30">
+            <button
+              onClick={decrementQuantity}
+              aria-label="Decrease quantity"
+              className="grid h-10 w-10 place-items-center rounded-full text-gold-300 transition-colors hover:bg-gold-400/10"
+            >
+              <Minus size={14} />
+            </button>
+            <span className="w-7 text-center text-[15px] font-semibold text-cream tabular-nums">
+              {quantity}
+            </span>
+            <button
+              onClick={incrementQuantity}
+              aria-label="Increase quantity"
+              className="grid h-10 w-10 place-items-center rounded-full text-gold-300 transition-colors hover:bg-gold-400/10"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+
+          {/* Add to Cart Button */}
+          <button
+            onClick={() => onAddToCart(product, quantity)}
+            disabled={isAdding || product.stock === 0}
+            className={`flex-1 !px-4 ${
+              showSuccess
+                ? "inline-flex items-center justify-center gap-2 rounded-full bg-emerald-500 py-3 text-sm font-semibold text-cream"
+                : isAdding || product.stock === 0
+                ? "inline-flex items-center justify-center gap-2 rounded-full border border-gold-400/15 py-3 text-sm font-semibold text-mist/70 cursor-not-allowed"
+                : "btn-gold"
+            }`}
+          >
+            {showSuccess ? (
+              <>
+                <CheckCircle size={16} />
+                <span>Added to Cart!</span>
+              </>
+            ) : isAdding ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-emerald-950/30 border-t-emerald-950"></div>
+                <span>Adding...</span>
+              </>
+            ) : product.stock === 0 ? (
+              <>
+                <span>Out of Stock</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart size={16} strokeWidth={1.8} />
+                <span className="truncate">
+                  Add to Cart - ₹{(product.price * quantity).toFixed(2)}
+                </span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

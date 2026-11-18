@@ -83,7 +83,7 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen flex items-center justify-center">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600">Please sign in to view your profile</p>
         </div>
@@ -92,7 +92,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {showOrderModal && (
           <ConfirmationModal
@@ -115,7 +115,7 @@ const Profile = () => {
               <img
                 src={user.user_metadata.avatar_url}
                 alt={user.user_metadata.full_name || "User"}
-                className="h-16 w-16 rounded-full border-2 border-[#4A5C3D] shadow-lg object-cover"
+                className="h-16 w-16 rounded-full border-2 border-[#14402E] shadow-lg object-cover"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
                   e.currentTarget.nextElementSibling?.classList.remove(
@@ -125,18 +125,18 @@ const Profile = () => {
               />
             ) : null}
             <div
-              className={`h-16 w-16 rounded-full bg-gray-200 border-2 border-[#4A5C3D] flex items-center justify-center flex-shrink-0 ${
+              className={`h-16 w-16 rounded-full bg-gray-200 border-2 border-[#14402E] flex items-center justify-center flex-shrink-0 ${
                 user.user_metadata?.avatar_url ? "hidden" : ""
               }`}
             >
-              <span className="text-2xl font-bold text-[#4A5C3D]">
+              <span className="text-2xl font-bold text-[#14402E]">
                 {(user.user_metadata?.full_name || user.email || "U")
                   .charAt(0)
                   .toUpperCase()}
               </span>
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-2xl sm:text-3xl font-bold text-[#4A5C3D] truncate">
+              <div className="text-2xl sm:text-3xl font-bold text-[#14402E] truncate">
                 {user.user_metadata?.full_name || "User"}
               </div>
               <div className="text-base sm:text-lg text-gray-600 truncate">
@@ -147,7 +147,7 @@ const Profile = () => {
           <div className="flex justify-end sm:justify-start">
             <Link
               to="/settings"
-              className="bg-[#4A5C3D] text-white px-4 py-2 rounded-lg hover:bg-[#3a4a2f] transition-colors flex items-center space-x-2 text-sm sm:text-base"
+              className="bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors flex items-center space-x-2 text-sm sm:text-base"
             >
               <svg
                 className="w-4 h-4"
@@ -175,7 +175,7 @@ const Profile = () => {
 
         {/* Profile Information Card */}
         <div className="bg-white rounded-xl shadow p-4 sm:p-6 border border-gray-100 mb-8">
-          <h2 className="text-lg sm:text-xl font-semibold text-[#4A5C3D] mb-4">
+          <h2 className="text-lg sm:text-xl font-semibold text-[#14402E] mb-4">
             Profile Information
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -183,7 +183,7 @@ const Profile = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name
               </label>
-              <div className="text-base sm:text-lg text-[#4A5C3D] font-medium truncate">
+              <div className="text-base sm:text-lg text-[#14402E] font-medium truncate">
                 {user.user_metadata?.full_name || "Not provided"}
               </div>
             </div>
@@ -191,7 +191,7 @@ const Profile = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email Address
               </label>
-              <div className="text-base sm:text-lg text-[#4A5C3D] font-medium truncate">
+              <div className="text-base sm:text-lg text-[#14402E] font-medium truncate">
                 {user.email || "Not provided"}
               </div>
             </div>
@@ -209,17 +209,17 @@ const Profile = () => {
           {/* Order History */}
           <div className="bg-white rounded-xl shadow p-4 sm:p-6 border border-gray-100">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
-              <h2 className="text-lg sm:text-xl font-semibold text-[#4A5C3D]">
+              <h2 className="text-lg sm:text-xl font-semibold text-[#14402E]">
                 Order History
               </h2>
               <button
                 onClick={refreshOrders}
                 disabled={refreshing || loading}
-                className="text-[#4A5C3D] hover:text-[#3a4a2f] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
+                className="text-[#14402E] hover:text-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
               >
                 {refreshing ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#4A5C3D]"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#14402E]"></div>
                     <span>Refreshing...</span>
                   </>
                 ) : (
@@ -245,7 +245,7 @@ const Profile = () => {
 
             {loading ? (
               <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A5C3D] mx-auto mb-4"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E] mx-auto mb-4"></div>
                 <p className="text-gray-600">Loading orders...</p>
               </div>
             ) : orders.length === 0 ? (
@@ -253,7 +253,7 @@ const Profile = () => {
                 <p className="text-gray-600 mb-4">No orders yet</p>
                 <a
                   href="/shop"
-                  className="inline-block bg-[#4A5C3D] text-white px-4 py-2 rounded-lg hover:bg-[#3a4a2f] transition-colors"
+                  className="inline-block bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors"
                 >
                   Start Shopping
                 </a>
@@ -263,11 +263,11 @@ const Profile = () => {
                 {orders.map((order) => (
                   <div
                     key={order.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:border-[#4A5C3D] transition-colors"
+                    className="border border-gray-200 rounded-lg p-4 hover:border-[#14402E] transition-colors"
                   >
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-semibold text-[#4A5C3D]">
+                        <h3 className="font-semibold text-[#14402E]">
                           Order #{order.id.slice(0, 8)}
                         </h3>
                         <p className="text-sm text-gray-600">
@@ -280,7 +280,7 @@ const Profile = () => {
                         )}
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-[#4A5C3D]">
+                        <div className="font-semibold text-[#14402E]">
                           ₹{order.total.toFixed(2)} {order.currency || "INR"}
                         </div>
                         <div className="flex space-x-1 mt-1">
@@ -361,7 +361,7 @@ const Profile = () => {
                       </div>
                       <Link
                         to={`/order/${order.id}`}
-                        className="text-sm text-[#4A5C3D] hover:text-[#3a4a2f] font-medium"
+                        className="text-sm text-[#14402E] hover:text-[#0B2118] font-medium"
                       >
                         View Details →
                       </Link>

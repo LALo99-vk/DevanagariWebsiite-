@@ -26,7 +26,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   return (
     <button
       onClick={handleGoBack}
-      className={`inline-flex items-center text-[#4A5C3D] hover:text-[#3a4a2f] transition-colors ${className}`}
+      className={`inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors ${className}`}
     >
       <ArrowLeft className="w-4 h-4 mr-2" />
       <span>{text}</span>

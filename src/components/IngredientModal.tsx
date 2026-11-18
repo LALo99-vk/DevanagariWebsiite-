@@ -22,12 +22,12 @@ const IngredientModal: React.FC<IngredientModalProps> = ({ ingredient, isOpen, o
             <X size={24} />
           </button>
           
-          <h3 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+          <h3 className="text-2xl font-bold text-[#14402E] mb-4">
             {ingredient.name}
           </h3>
           
           <div className="mb-4">
-            <h4 className="text-lg font-semibold text-[#A88B67] mb-2">
+            <h4 className="text-lg font-semibold text-[#A37C38] mb-2">
               Nutritional Benefits
             </h4>
             <p className="text-gray-700 leading-relaxed">
@@ -37,7 +37,7 @@ const IngredientModal: React.FC<IngredientModalProps> = ({ ingredient, isOpen, o
           
           <button
             onClick={onClose}
-            className="w-full bg-[#4A5C3D] text-white py-3 rounded-lg font-medium hover:bg-[#3a4a2f] transition-colors duration-200"
+            className="w-full bg-[#14402E] text-white py-3 rounded-lg font-medium hover:bg-[#0B2118] transition-colors duration-200"
           >
             Close
           </button>

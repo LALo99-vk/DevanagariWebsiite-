@@ -98,10 +98,10 @@ const OrderStatus: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4A5C3D]"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14402E]"></div>
             <span className="ml-4 text-gray-600">Loading order details...</span>
           </div>
         </div>
@@ -111,16 +111,16 @@ const OrderStatus: React.FC = () => {
 
   if (error || !order) {
     return (
-      <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+      <div className="bg-[#F6F0E4] pt-24 min-h-screen">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <XCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            <h1 className="font-display text-2xl font-bold text-gray-900 mb-4">
               {error || "Order not found"}
             </h1>
             <button
               onClick={() => navigate("/")}
-              className="inline-flex items-center px-4 py-2 bg-[#4A5C3D] text-white rounded-lg hover:bg-[#3a4a2f] transition-colors"
+              className="inline-flex items-center px-4 py-2 bg-[#14402E] text-white rounded-lg hover:bg-[#0B2118] transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Return Home
@@ -132,13 +132,13 @@ const OrderStatus: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate("/profile")}
-            className="inline-flex items-center text-[#4A5C3D] hover:text-[#3a4a2f] transition-colors mb-4"
+            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -147,7 +147,7 @@ const OrderStatus: React.FC = () => {
           <div className="flex items-center space-x-4 mb-6">
             {getStatusIcon(order.status, order.payment_status)}
             <div>
-              <h1 className="text-3xl font-bold text-[#4A5C3D]">
+              <h1 className="font-display text-3xl font-bold text-[#14402E]">
                 Order #{order.id.slice(0, 8)}
               </h1>
               <span
@@ -167,7 +167,7 @@ const OrderStatus: React.FC = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Order Items */}
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+              <h2 className="text-xl font-bold text-[#14402E] mb-4">
                 Order Items
               </h2>
               <div className="space-y-4">
@@ -176,8 +176,8 @@ const OrderStatus: React.FC = () => {
                     key={item.id}
                     className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg"
                   >
-                    <div className="w-16 h-16 bg-[#E6D9C5] rounded-lg flex items-center justify-center">
-                      <Package className="w-8 h-8 text-[#4A5C3D]" />
+                    <div className="w-16 h-16 bg-[#ECE2CE] rounded-lg flex items-center justify-center">
+                      <Package className="w-8 h-8 text-[#14402E]" />
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900">
@@ -186,13 +186,13 @@ const OrderStatus: React.FC = () => {
                       <p className="text-sm text-gray-600">
                         {item.product?.weight}g pack
                       </p>
-                      <p className="text-sm font-medium text-[#4A5C3D]">
+                      <p className="text-sm font-medium text-[#14402E]">
                         ₹{item.product_price.toFixed(2)}{" "}
                         {order.currency || "INR"} × {item.quantity}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-[#4A5C3D]">
+                      <p className="font-bold text-[#14402E]">
                         ₹{item.total_price.toFixed(2)} {order.currency || "INR"}
                       </p>
                     </div>
@@ -204,7 +204,7 @@ const OrderStatus: React.FC = () => {
             {/* Payment Information */}
             {order.payment_id && (
               <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+                <h2 className="text-xl font-bold text-[#14402E] mb-4">
                   Payment Information
                 </h2>
                 <div className="grid grid-cols-2 gap-4 text-sm">
@@ -252,7 +252,7 @@ const OrderStatus: React.FC = () => {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 sticky top-24">
-              <h2 className="text-xl font-bold text-[#4A5C3D] mb-4">
+              <h2 className="text-xl font-bold text-[#14402E] mb-4">
                 Order Summary
               </h2>
 
@@ -276,8 +276,8 @@ const OrderStatus: React.FC = () => {
 
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-lg font-bold">
-                    <span className="text-[#4A5C3D]">Total:</span>
-                    <span className="text-[#A88B67]">
+                    <span className="text-[#14402E]">Total:</span>
+                    <span className="text-[#A37C38]">
                       ₹{order.total.toFixed(2)} {order.currency || "INR"}
                     </span>
                   </div>
@@ -288,13 +288,13 @@ const OrderStatus: React.FC = () => {
               <div className="mt-6 space-y-3">
                 {order.status === "pending" &&
                   order.payment_status !== "paid" && (
-                    <button className="w-full bg-[#4A5C3D] text-white py-2 rounded-lg font-semibold hover:bg-[#3a4a2f] transition-colors">
+                    <button className="w-full bg-[#14402E] text-white py-2 rounded-lg font-semibold hover:bg-[#0B2118] transition-colors">
                       Complete Payment
                     </button>
                   )}
 
                 {order.status === "shipped" && (
-                  <button className="w-full border-2 border-[#4A5C3D] text-[#4A5C3D] py-2 rounded-lg font-semibold hover:bg-[#4A5C3D] hover:text-white transition-colors">
+                  <button className="w-full border-2 border-[#14402E] text-[#14402E] py-2 rounded-lg font-semibold hover:bg-[#14402E] hover:text-white transition-colors">
                     Track Package
                   </button>
                 )}

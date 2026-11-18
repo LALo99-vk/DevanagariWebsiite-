@@ -4,24 +4,24 @@ import { Link } from "react-router-dom";
 
 const Privacy: React.FC = () => {
   return (
-    <div className="bg-[#FDFBF8] pt-16 min-h-screen">
+    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
       <div className="px-4 py-12 mx-auto max-w-4xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <Link
             to="/contact"
-            className="inline-flex items-center text-[#4A5C3D] hover:text-[#3a4a2f] transition-colors mb-6"
+            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors mb-6"
           >
             <ArrowLeft size={20} className="mr-2" />
             Back to Contact
           </Link>
 
           <div className="flex items-center mb-6">
-            <div className="w-12 h-12 bg-[#4A5C3D] rounded-full flex items-center justify-center mr-4">
+            <div className="w-12 h-12 bg-[#14402E] rounded-full flex items-center justify-center mr-4">
               <Shield className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-[#4A5C3D]">
+              <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#14402E]">
                 Privacy Policy
               </h1>
               <p className="text-gray-600 mt-2">Last updated: 24/08/2025</p>
@@ -31,7 +31,7 @@ const Privacy: React.FC = () => {
 
         {/* Content */}
         <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
-          <div className="border-l-4 border-[#4A5C3D] pl-6">
+          <div className="border-l-4 border-[#14402E] pl-6">
             <p className="text-gray-700 leading-relaxed">
               At <strong>Devanagari</strong> (operated by Sree Shivani Foods, a
               sole proprietorship firm based in Davangere, Karnataka, India), we
@@ -40,7 +40,7 @@ const Privacy: React.FC = () => {
               visit and use our website{" "}
               <a
                 href="https://www.sreeshivanifoods.com"
-                className="text-[#4A5C3D] hover:underline font-semibold"
+                className="text-[#14402E] hover:underline font-semibold"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -57,7 +57,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 1 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               1. Information We Collect
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -79,7 +79,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 2 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               2. How We Use Your Information
             </h2>
             <div className="space-y-2 text-gray-700">
@@ -106,7 +106,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 3 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               3. Sharing of Information
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -129,7 +129,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 4 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               4. Cookies & Tracking
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -144,7 +144,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 5 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               5. Data Security
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -159,7 +159,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 6 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               6. Your Rights
             </h2>
             <div className="space-y-2 text-gray-700">
@@ -182,7 +182,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 7 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               7. Third-Party Links
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -196,7 +196,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 8 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               8. Children’s Privacy
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -210,7 +210,7 @@ const Privacy: React.FC = () => {
 
           {/* Section 9 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               9. Changes to This Policy
             </h2>
             <div className="space-y-4 text-gray-700">
@@ -223,12 +223,12 @@ const Privacy: React.FC = () => {
 
           {/* Section 10 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#4A5C3D] mb-4">
+            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
               10. Contact Us
             </h2>
             <div className="space-y-2 text-gray-700">
               <p>For questions, concerns, or requests regarding this policy:</p>
-              <div className="bg-[#E6D9C5] rounded-lg p-6 mt-2">
+              <div className="bg-[#ECE2CE] rounded-lg p-6 mt-2">
                 <p>
                   <strong>Brand:</strong> Devanagari (Sree Shivani Foods)
                 </p>

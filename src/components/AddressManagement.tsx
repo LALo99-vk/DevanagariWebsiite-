@@ -179,7 +179,7 @@ const AddressManagement: React.FC = () => {
   if (loading) {
     return (
       <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A5C3D] mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E] mx-auto mb-4"></div>
         <p className="text-gray-600">Loading addresses...</p>
       </div>
     );
@@ -189,12 +189,12 @@ const AddressManagement: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-[#4A5C3D]">
+        <h2 className="text-xl font-semibold text-[#14402E]">
           Address Management
         </h2>
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-x-2 bg-[#4A5C3D] text-white px-4 py-2 rounded-lg hover:bg-[#3a4a2f] transition-colors"
+          className="flex items-center gap-x-2 bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors"
         >
           <Plus className="h-4 w-4" />
           Add Address
@@ -215,12 +215,12 @@ const AddressManagement: React.FC = () => {
           {addresses.map((address) => (
             <div
               key={address.id}
-              className="border border-gray-200 rounded-lg p-4 hover:border-[#4A5C3D] transition-colors"
+              className="border border-gray-200 rounded-lg p-4 hover:border-[#14402E] transition-colors"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-x-2">
-                  <MapPin className="h-5 w-5 text-[#4A5C3D]" />
-                  <h3 className="font-semibold text-[#4A5C3D]">
+                  <MapPin className="h-5 w-5 text-[#14402E]" />
+                  <h3 className="font-semibold text-[#14402E]">
                     {address.name}
                   </h3>
                   {address.is_default && (
@@ -233,7 +233,7 @@ const AddressManagement: React.FC = () => {
                 <div className="flex items-center gap-x-2">
                   <button
                     onClick={() => handleEdit(address)}
-                    className="p-1 text-gray-400 hover:text-[#4A5C3D] transition-colors"
+                    className="p-1 text-gray-400 hover:text-[#14402E] transition-colors"
                     title="Edit address"
                   >
                     <Edit className="h-4 w-4" />
@@ -261,7 +261,7 @@ const AddressManagement: React.FC = () => {
               {!address.is_default && (
                 <button
                   onClick={() => handleSetDefault(address.id)}
-                  className="w-full text-sm text-[#4A5C3D] font-medium py-2 border border-[#4A5C3D] rounded-lg hover:bg-[#4A5C3D] hover:text-white transition-colors"
+                  className="w-full text-sm text-[#14402E] font-medium py-2 border border-[#14402E] rounded-lg hover:bg-[#14402E] hover:text-white transition-colors"
                 >
                   Set as Default
                 </button>
@@ -277,7 +277,7 @@ const AddressManagement: React.FC = () => {
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-[#4A5C3D]">
+                <h3 className="text-lg font-semibold text-[#14402E]">
                   {editingAddress ? "Edit Address" : "Add New Address"}
                 </h3>
                 <button
@@ -300,7 +300,7 @@ const AddressManagement: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, name: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                   />
                 </div>
 
@@ -315,7 +315,7 @@ const AddressManagement: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, phone: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                   />
                 </div>
 
@@ -333,7 +333,7 @@ const AddressManagement: React.FC = () => {
                         address_line_1: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                     placeholder="Street address, P.O. box, etc."
                   />
                 </div>
@@ -351,7 +351,7 @@ const AddressManagement: React.FC = () => {
                         address_line_2: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                     placeholder="Apartment, suite, unit, building, floor, etc."
                   />
                 </div>
@@ -368,7 +368,7 @@ const AddressManagement: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, city: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -382,7 +382,7 @@ const AddressManagement: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, state: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -402,7 +402,7 @@ const AddressManagement: React.FC = () => {
                           postal_code: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                     />
                   </div>
                   <div>
@@ -415,7 +415,7 @@ const AddressManagement: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, country: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#4A5C3D] focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
                     >
                       <option value="India">India</option>
                       <option value="United States">United States</option>
@@ -434,7 +434,7 @@ const AddressManagement: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, is_default: e.target.checked })
                     }
-                    className="h-4 w-4 text-[#4A5C3D] focus:ring-[#4A5C3D] border-gray-300 rounded"
+                    className="h-4 w-4 text-[#14402E] focus:ring-[#14402E] border-gray-300 rounded"
                   />
                   <label
                     htmlFor="is_default"
@@ -454,7 +454,7 @@ const AddressManagement: React.FC = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-2 bg-[#4A5C3D] text-white rounded-lg hover:bg-[#3a4a2f] transition-colors flex items-center justify-center gap-x-2"
+                    className="flex-1 px-4 py-2 bg-[#14402E] text-white rounded-lg hover:bg-[#0B2118] transition-colors flex items-center justify-center gap-x-2"
                   >
                     <Check className="h-4 w-4" />
                     {editingAddress ? "Update Address" : "Add Address"}
