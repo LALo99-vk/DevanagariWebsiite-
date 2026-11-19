@@ -184,14 +184,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(
-        "[AuthContext] Auth state changed:",
-        event,
-        session?.user?.email,
-        "Session exists:",
-        !!session
-      );
-
       if (!isMounted) return;
 
       try {
@@ -263,10 +255,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
         },
       });
       return { error };

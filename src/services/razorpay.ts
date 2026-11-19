@@ -1,8 +1,28 @@
+import { supabase } from "../lib/supabaseClient";
+
 export interface CartItem {
   id: string;
   name: string;
   quantity: number;
   price: number;
+}
+
+export interface CheckoutItem {
+  product_id: string;
+  quantity: number;
+}
+
+export interface CheckoutQuote {
+  subtotal: number;
+  shipping_amount: number;
+  discount_amount: number;
+  total: number;
+  promo_code: string | null;
+}
+
+export interface CancelOrderResponse {
+  cancelled: boolean;
+  refund: { id: string; amount: number; status: string; created_at: number } | null;
 }
 
 export interface RazorpayOrder {
@@ -17,6 +37,7 @@ export interface RazorpayOrder {
   attempts: number;
   notes: Record<string, unknown>;
   created_at: number;
+  quote?: CheckoutQuote;
 }
 
 export interface RazorpayPaymentResponse {
@@ -29,20 +50,11 @@ export interface PaymentVerificationResponse {
   isValid: boolean;
   payment_id: string;
   order_id: string;
-  payment_details?: {
+  order?: {
     id: string;
-    amount: number;
-    currency: string;
-    status: string;
-    method: string;
-    captured: boolean;
-    created_at: number;
-  };
-  order_details?: {
-    id: string;
-    amount: number;
-    status: string;
-    receipt: string;
+    order_number?: string;
+    total: number;
+    currency?: string;
   };
   error?: string;
 }
@@ -159,6 +171,29 @@ declare global {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || `${window.location.origin}/api`;
 
+// Sends the signed-in user's Supabase access token so the server can verify who is calling.
+async function authHeaders(): Promise<Record<string, string>> {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  if (!session?.access_token) {
+    throw new Error("Please sign in to continue");
+  }
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${session.access_token}`,
+  };
+}
+
+async function readError(response: Response): Promise<string> {
+  try {
+    const data = (await response.json()) as { error?: string };
+    return data.error || `HTTP error! status: ${response.status}`;
+  } catch {
+    return `HTTP error! status: ${response.status}`;
+  }
+}
+
 const razorpayService = {
   async getConfig(): Promise<RazorpayConfig> {
     try {
@@ -173,67 +208,30 @@ const razorpayService = {
     }
   },
 
+  /**
+   * Starts checkout. Only product IDs, quantities, the saved address and promo code
+   * are sent; the server looks up prices and calculates the amount to charge.
+   */
   async createOrder(
-    amountInINR: number,
-    cartItems: CartItem[],
-    userEmail?: string
+    items: CheckoutItem[],
+    addressId: string,
+    promoCode?: string | null
   ): Promise<RazorpayOrder> {
-    try {
-      // Amount is already in INR, convert to paise
-      const amountInPaise = Math.round(amountInINR * 100);
+    const response = await fetch(`${API_BASE_URL}/razorpay/create-order`, {
+      method: "POST",
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        items,
+        address_id: addressId,
+        promo_code: promoCode || null,
+      }),
+    });
 
-      const orderData = {
-        amount: amountInPaise,
-        currency: "INR",
-        receipt: `receipt_${Date.now()}`,
-        notes: {
-          user_email: userEmail,
-          items_count: cartItems.length,
-          items: JSON.stringify(
-            cartItems.map((item) => ({
-              id: item.id,
-              name: item.name,
-              quantity: item.quantity,
-              price_inr: item.price,
-            }))
-          ),
-          original_amount_inr: amountInINR,
-          created_from: "devanagari_web",
-        },
-      };
-
-      console.log("📦 Creating Razorpay order:", {
-        amount_inr: amountInINR,
-        amount_paise: amountInPaise,
-        items_count: cartItems.length,
-      });
-
-      const response = await fetch(`${API_BASE_URL}/razorpay/create-order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      });
-
-      if (!response.ok) {
-        const errorData = (await response.json()) as { error: string };
-        throw new Error(
-          errorData.error || `HTTP error! status: ${response.status}`
-        );
-      }
-
-      const order = (await response.json()) as RazorpayOrder;
-      console.log("✅ Razorpay order created:", order.id);
-      return order;
-    } catch (error) {
-      console.error("❌ Failed to create Razorpay order:", error);
-      throw new Error(
-        `Failed to create order: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+    if (!response.ok) {
+      throw new Error(await readError(response));
     }
+
+    return (await response.json()) as RazorpayOrder;
   },
 
   async openPaymentModal(
@@ -275,7 +273,6 @@ const razorpayService = {
         image: "/logo.png",
         order_id: order.id,
         handler: (response: RazorpayPaymentResponse) => {
-          console.log("✅ Payment successful:", response.razorpay_payment_id);
           onSuccess?.(response);
           resolve();
         },
@@ -332,50 +329,42 @@ const razorpayService = {
     });
   },
 
+  /** Verifies the payment on the server, which then saves the order. */
   async verifyPayment(
     paymentData: RazorpayPaymentResponse
   ): Promise<PaymentVerificationResponse> {
-    try {
-      console.log("🔐 Verifying payment:", paymentData.razorpay_payment_id);
+    const response = await fetch(`${API_BASE_URL}/razorpay/verify-payment`, {
+      method: "POST",
+      headers: await authHeaders(),
+      body: JSON.stringify(paymentData),
+    });
 
-      const response = await fetch(`${API_BASE_URL}/razorpay/verify-payment`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(paymentData),
-      });
-
-      if (!response.ok) {
-        const errorData = (await response.json()) as { error: string };
-        throw new Error(
-          errorData.error || `HTTP error! status: ${response.status}`
-        );
-      }
-
-      const result = (await response.json()) as PaymentVerificationResponse;
-
-      if (result.isValid) {
-        console.log("✅ Payment verified successfully");
-      } else {
-        console.log("❌ Payment verification failed");
-      }
-
-      return result;
-    } catch (error) {
-      console.error("❌ Failed to verify payment:", error);
-      throw new Error(
-        `Payment verification failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+    if (!response.ok) {
+      throw new Error(await readError(response));
     }
+
+    return (await response.json()) as PaymentVerificationResponse;
+  },
+
+  /** Cancels an order; the server refunds it in full if it was paid. */
+  async cancelOrder(orderId: string): Promise<CancelOrderResponse> {
+    const response = await fetch(
+      `${API_BASE_URL}/orders/${encodeURIComponent(orderId)}/cancel`,
+      { method: "POST", headers: await authHeaders() }
+    );
+
+    if (!response.ok) {
+      throw new Error(await readError(response));
+    }
+
+    return (await response.json()) as CancelOrderResponse;
   },
 
   async getPaymentDetails(paymentId: string): Promise<PaymentDetails> {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/razorpay/payment/${paymentId}`
+        `${API_BASE_URL}/razorpay/payment/${encodeURIComponent(paymentId)}`,
+        { headers: await authHeaders() }
       );
 
       if (!response.ok) {
@@ -398,7 +387,10 @@ const razorpayService = {
 
   async getOrderDetails(orderId: string): Promise<RazorpayOrder> {
     try {
-      const response = await fetch(`${API_BASE_URL}/razorpay/order/${orderId}`);
+      const response = await fetch(
+        `${API_BASE_URL}/razorpay/order/${encodeURIComponent(orderId)}`,
+        { headers: await authHeaders() }
+      );
 
       if (!response.ok) {
         const errorData = (await response.json()) as { error: string };
@@ -477,12 +469,10 @@ const razorpayService = {
       }
 
       const response = await fetch(
-        `${API_BASE_URL}/razorpay/payment/${paymentId}/refund`,
+        `${API_BASE_URL}/razorpay/payment/${encodeURIComponent(paymentId)}/refund`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: await authHeaders(),
           body: JSON.stringify(refundData),
         }
       );
@@ -509,30 +499,6 @@ const razorpayService = {
       console.error("❌ Failed to process refund:", error);
       throw new Error(
         `Refund processing failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
-    }
-  },
-
-  async getRefundDetails(refundId: string): Promise<RefundResponse> {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/razorpay/refund/${refundId}`
-      );
-
-      if (!response.ok) {
-        const errorData = (await response.json()) as { error: string };
-        throw new Error(
-          errorData.error || `HTTP error! status: ${response.status}`
-        );
-      }
-
-      return (await response.json()) as RefundResponse;
-    } catch (error) {
-      console.error("❌ Failed to get refund details:", error);
-      throw new Error(
-        `Failed to get refund details: ${
           error instanceof Error ? error.message : "Unknown error"
         }`
       );

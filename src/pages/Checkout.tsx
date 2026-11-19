@@ -5,7 +5,6 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import razorpayService from "../services/razorpay";
-import { ordersService } from "../services/supabase";
 import AddressManagement from "../components/AddressManagement";
 import BackButton from "../components/BackButton";
 
@@ -73,7 +72,7 @@ const Checkout = () => {
 
       if (data.valid) {
         setPromoApplied(true);
-        setPromoDiscount(Math.round(subtotal * (data.discount / 100)));
+        setPromoDiscount(data.discountAmount || 0);
         showSuccess("Promo Applied", `${data.description}`);
       } else {
         showError(
@@ -100,11 +99,14 @@ const Checkout = () => {
 
     setLoading(true);
     try {
-      // First create a Razorpay order
+      // The server prices the cart itself; we only send what is being bought.
       const order = await razorpayService.createOrder(
-        total, // Amount in INR (includes shipping)
-        cartItems,
-        user.email
+        cartItems.map((item) => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+        })),
+        shippingAddress.id,
+        promoApplied ? promoCode : null
       );
 
       // Then open payment modal
@@ -115,62 +117,17 @@ const Checkout = () => {
         user.user_metadata?.phone,
         async (response) => {
           try {
-            console.log("🔄 Payment successful, verifying payment...");
-
-            // Verify payment with Razorpay
-            const verificationResult = await razorpayService.verifyPayment(
-              response
-            );
-
-            if (!verificationResult.isValid) {
-              throw new Error("Payment verification failed");
+            // The server verifies the payment and saves the order.
+            const result = await razorpayService.verifyPayment(response);
+            if (!result.isValid || !result.order) {
+              throw new Error(result.error || "Payment verification failed");
             }
 
-            console.log("✅ Payment verified, creating order in database...");
-
-            // Create order in database
-            const order = await ordersService.createOrder(
-              user.id,
-              cartItems,
-              {
-                payment_id: verificationResult.payment_id,
-                payment_order_id: verificationResult.order_id,
-                payment_signature: response.razorpay_signature,
-                payment_status: "paid",
-                payment_method: "razorpay",
-                currency: "INR",
-              },
-              shipping,
-              shippingAddress,
-              discount
-            );
-
-            console.log("✅ Order created successfully:", order.id);
-
-            // Fire-and-forget email notification
-            try {
-              fetch(
-                `${
-                  import.meta.env.VITE_API_BASE_URL
-                }/notify/order-confirmation`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    to: user.email,
-                    orderId: order.id,
-                    amount: order.total,
-                    currency: order.currency || "INR",
-                    etaDays: "3-4",
-                  }),
-                }
-              ).catch(() => {});
-            } catch {}
             clearCart();
             try {
               sessionStorage.setItem(
                 "orderSuccess",
-                JSON.stringify({ id: order.id, amount: order.total })
+                JSON.stringify({ id: result.order.id, amount: result.order.total })
               );
             } catch {}
             setTimeout(() => navigate("/profile"), 800);
@@ -178,7 +135,9 @@ const Checkout = () => {
             console.error("❌ Error processing order:", error);
             showError(
               "Order Processing Error",
-              "Payment was successful but there was an error processing your order. Please contact support."
+              error instanceof Error
+                ? error.message
+                : "Payment was successful but there was an error processing your order. Please contact support."
             );
           }
         },

@@ -12,11 +12,6 @@ const AuthCallback: React.FC = () => {
       try {
         setLoading(true);
 
-        // Debug: Log current URL and hash
-        console.log("Current URL:", window.location.href);
-        console.log("URL Hash:", window.location.hash);
-        console.log("URL Search:", window.location.search);
-
         // Check if there's an error in the URL
         const urlParams = new URLSearchParams(window.location.search);
         const errorParam = urlParams.get("error");
@@ -26,8 +21,6 @@ const AuthCallback: React.FC = () => {
           errorParam === "server_error" &&
           errorDescription?.includes("Database error granting user")
         ) {
-          console.log("Database error detected, redirecting to home page...");
-
           // Just redirect to home page - the user should already exist in auth.users
           // The trigger should have created them in public.users
           navigate("/", { replace: true });
@@ -37,9 +30,6 @@ const AuthCallback: React.FC = () => {
         // Handle the OAuth callback by exchanging the code for a session
         const { data, error } = await supabase.auth.getSession();
 
-        console.log("Session data:", data);
-        console.log("Session error:", error);
-
         if (error) {
           console.error("Auth callback error:", error);
           setError(error.message);
@@ -47,10 +37,6 @@ const AuthCallback: React.FC = () => {
         }
 
         if (data.session) {
-          console.log(
-            "✅ Auth callback successful, user signed in:",
-            data.session.user.email
-          );
           // Redirect to home page after successful authentication
           navigate("/", { replace: true });
         } else {
@@ -61,10 +47,7 @@ const AuthCallback: React.FC = () => {
           const accessToken = hashParams.get("access_token");
           const refreshToken = hashParams.get("refresh_token");
 
-          console.log("Hash params:", Object.fromEntries(hashParams.entries()));
-
           if (accessToken && refreshToken) {
-            console.log("Found tokens in URL, setting session...");
             const { data: sessionData, error: sessionError } =
               await supabase.auth.setSession({
                 access_token: accessToken,
@@ -78,16 +61,11 @@ const AuthCallback: React.FC = () => {
             }
 
             if (sessionData.session) {
-              console.log(
-                "✅ Session set successfully, user signed in:",
-                sessionData.session.user.email
-              );
               navigate("/", { replace: true });
               return;
             }
           }
 
-          console.log("❌ No session found in callback");
           setError("Authentication failed. Please try again.");
         }
       } catch (err) {

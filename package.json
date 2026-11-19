@@ -12,7 +12,8 @@
     "dev:server": "nodemon server/razorpay-server.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run dev:server\"",
     "start": "node server/razorpay-server.js",
-    "setup:razorpay": "npm install razorpay express cors dotenv && echo 'Razorpay dependencies installed!'"
+    "setup:razorpay": "npm install razorpay express cors dotenv && echo 'Razorpay dependencies installed!'",
+    "test:e2e": "server/tests/run-e2e.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

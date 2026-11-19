@@ -100,15 +100,10 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
     }
 
     try {
-      console.log(
-        "🔍 AdminContext: Starting admin status check for user:",
-        user.id
-      );
       setLoading(true);
       setError(null);
 
       // Check admin status from database
-      console.log("🔍 AdminContext: Checking admin status from database");
 
       const { data: userData, error: userError } = await supabase
         .from("users")
@@ -117,48 +112,17 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
         .single();
 
       if (userError) {
+        // Fail closed: if we can't confirm admin status, the user is not an admin.
         console.error("Error fetching user admin status:", userError);
-        // Fallback: Check if user email matches admin email
-        const isAdminUser = user.email === "adityapiyush71@gmail.com";
-        const isSuperAdminUser = user.email === "adityapiyush71@gmail.com";
-
-        console.log("🔍 Admin status check (fallback):", {
-          email: user.email,
-          isAdminUser,
-          isSuperAdminUser,
-        });
-
-        setIsAdmin(isAdminUser);
-        setIsSuperAdmin(isSuperAdminUser);
-
-        if (isAdminUser) {
-          setAdminUser({
-            id: user.id,
-            email: user.email || "",
-            name:
-              user.user_metadata?.full_name ||
-              user.user_metadata?.name ||
-              "Admin",
-            role: "super_admin",
-            is_active: true,
-            last_login: new Date().toISOString(),
-            created_at: new Date().toISOString(),
-          });
-        } else {
-          setAdminUser(null);
-        }
+        setIsAdmin(false);
+        setIsSuperAdmin(false);
+        setAdminUser(null);
         return;
       }
 
       const isAdminUser = userData?.is_admin || false;
-      const isSuperAdminUser = userData?.role === "super_admin";
-
-      console.log("🔍 Admin status check (database):", {
-        email: user.email,
-        isAdminUser,
-        isSuperAdminUser,
-        userData,
-      });
+      const isSuperAdminUser =
+        isAdminUser && userData?.role === "super_admin";
 
       setIsAdmin(isAdminUser);
       setIsSuperAdmin(isSuperAdminUser);

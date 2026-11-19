@@ -26,6 +26,17 @@ import { supabase } from "../../lib/supabaseClient";
 import { mockAdminData, simulateDbDelay } from "../../utils/mockData";
 import { supabaseRestApi } from "../../utils/supabaseRestApi";
 
+
+// Escapes text before it is placed into HTML (customer-entered fields like
+// names and addresses must never be interpreted as markup).
+const esc = (value: unknown): string =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 interface Order {
   id: string;
   user_id: string;
@@ -349,24 +360,24 @@ const Orders: React.FC = () => {
                 : getStatusColor(order.status).includes("red")
                 ? "#dc2626"
                 : "#d97706"
-            };">${order.status}</span></p>
+            };">${esc(order.status)}</span></p>
             <p style="margin: 5px 0;"><strong>Payment Status:</strong> <span style="text-transform: capitalize; color: ${
               order.payment_status === "paid" ? "#059669" : "#d97706"
-            };">${order.payment_status}</span></p>
+            };">${esc(order.payment_status)}</span></p>
           </div>
           <div>
             <h3 style="color: #333; margin: 0 0 10px 0;">Payment Details</h3>
-            <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${
+            <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${esc(
               order.payment_method
-            }</p>
+            )}</p>
             ${
               order.payment_id
-                ? `<p style="margin: 5px 0;"><strong>Payment ID:</strong> ${order.payment_id}</p>`
+                ? `<p style="margin: 5px 0;"><strong>Payment ID:</strong> ${esc(order.payment_id)}</p>`
                 : ""
             }
-            <p style="margin: 5px 0;"><strong>Currency:</strong> ${
+            <p style="margin: 5px 0;"><strong>Currency:</strong> ${esc(
               order.currency
-            }</p>
+            )}</p>
           </div>
         </div>
 
@@ -375,10 +386,10 @@ const Orders: React.FC = () => {
           <h3 style="color: #333; margin: 0 0 15px 0;">Customer Information</h3>
           <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
             <p style="margin: 5px 0;"><strong>Name:</strong> ${
-              order.user?.name || "Unknown"
+              esc(order.user?.name || "Unknown")
             }</p>
             <p style="margin: 5px 0;"><strong>Email:</strong> ${
-              order.user?.email || "No email"
+              esc(order.user?.email || "No email")
             }</p>
           </div>
         </div>
@@ -391,24 +402,24 @@ const Orders: React.FC = () => {
           <h3 style="color: #333; margin: 0 0 15px 0;">Shipping Address</h3>
           <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
             <p style="margin: 5px 0;"><strong>Name:</strong> ${
-              order.shipping_address.name || "Not provided"
+              esc(order.shipping_address.name || "Not provided")
             }</p>
             <p style="margin: 5px 0;"><strong>Phone:</strong> ${
-              order.shipping_address.phone || "Not provided"
+              esc(order.shipping_address.phone || "Not provided")
             }</p>
             <p style="margin: 5px 0;"><strong>Address:</strong> ${
-              order.shipping_address.address_line_1 || "Not provided"
+              esc(order.shipping_address.address_line_1 || "Not provided")
             }</p>
             ${
               order.shipping_address.address_line_2
-                ? `<p style="margin: 5px 0;">${order.shipping_address.address_line_2}</p>`
+                ? `<p style="margin: 5px 0;">${esc(order.shipping_address.address_line_2)}</p>`
                 : ""
             }
-            <p style="margin: 5px 0;">${order.shipping_address.city || ""}, ${
-                order.shipping_address.state || ""
-              } ${order.shipping_address.postal_code || ""}</p>
+            <p style="margin: 5px 0;">${esc(order.shipping_address.city || "")}, ${
+                esc(order.shipping_address.state || "")
+              } ${esc(order.shipping_address.postal_code || "")}</p>
             <p style="margin: 5px 0;"><strong>Country:</strong> ${
-              order.shipping_address.country || "India"
+              esc(order.shipping_address.country || "India")
             }</p>
           </div>
         </div>
@@ -435,11 +446,11 @@ const Orders: React.FC = () => {
                     (item) => `
                 <tr>
                   <td style="border: 1px solid #e5e7eb; padding: 12px;">
-                    <strong>${item.product?.name || "Unknown Product"}</strong>
+                    <strong>${esc(item.product?.name || "Unknown Product")}</strong>
                   </td>
-                  <td style="border: 1px solid #e5e7eb; padding: 12px; text-align: center;">${
+                  <td style="border: 1px solid #e5e7eb; padding: 12px; text-align: center;">${esc(
                     item.quantity
-                  }</td>
+                  )}</td>
                   <td style="border: 1px solid #e5e7eb; padding: 12px; text-align: right;">₹${
                     item.price?.toFixed(2) || "0.00"
                   }</td>
@@ -502,18 +513,18 @@ const Orders: React.FC = () => {
         <div style="margin-bottom: 30px;">
           <h3 style="color: #333; margin: 0 0 15px 0;">Refund Information</h3>
           <div style="background: #fef2f2; padding: 15px; border-radius: 8px; border-left: 4px solid #ef4444;">
-            <p style="margin: 5px 0;"><strong>Refund ID:</strong> ${
+            <p style="margin: 5px 0;"><strong>Refund ID:</strong> ${esc(
               order.refund_id
-            }</p>
+            )}</p>
             <p style="margin: 5px 0;"><strong>Refund Amount:</strong> ₹${
               order.refund_amount?.toFixed(2) || "0.00"
             }</p>
             <p style="margin: 5px 0;"><strong>Refund Status:</strong> ${
-              order.refund_status || "Unknown"
+              esc(order.refund_status || "Unknown")
             }</p>
             ${
               order.refund_reason
-                ? `<p style="margin: 5px 0;"><strong>Reason:</strong> ${order.refund_reason}</p>`
+                ? `<p style="margin: 5px 0;"><strong>Reason:</strong> ${esc(order.refund_reason)}</p>`
                 : ""
             }
             ${

@@ -162,9 +162,10 @@ DevanagariWeb/
 │   ├── utils/                 # Utility functions
 │   └── assets/                # Static assets
 ├── server/                    # Backend server
-│   ├── razorpay-server.cjs   # Express server with Razorpay
+│   ├── razorpay-server.js    # API server: checkout, payments, refunds
 │   └── package.json          # Server dependencies
 ├── database-schema.sql       # Database schema
+├── database-security-fixes.sql # Security migration (run after deploying)
 ├── SETUP_GUIDE.md           # Detailed setup instructions
 └── README.md               # This file
 ```

@@ -31,12 +31,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { AdminProvider } from "./context/AdminContext";
 import { NotificationProvider } from "./context/NotificationContext";
-import "./utils/debugAdmin"; // Load debug functions
-import "./utils/testSupabase"; // Load Supabase test
-import "./utils/testAdminPanel"; // Load admin panel test
-import "./utils/checkSupabaseStatus"; // Load Supabase status check
-import "./utils/restoreDatabase"; // Load database restore guide
-import "./utils/supabaseRestApi"; // Load REST API functions
 
 // Reset scroll on route change so every page opens at the top
 function ScrollToTop() {

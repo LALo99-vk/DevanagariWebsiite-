@@ -17,6 +17,15 @@
         ],
         "createdAt": "2026-11-18T18:30:32.953Z",
         "reason": "user confirmed: asked to keep the gold foil Devanagari wordmark and restore the first Contact page that uses it"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          "server/razorpay-server.js"
+        ],
+        "createdAt": "2026-11-19T13:11:05.120Z",
+        "reason": "Claude: pre-existing transactional email HTML; email clients need web-safe fonts, not the site's web fonts"
       }
     ]
   }

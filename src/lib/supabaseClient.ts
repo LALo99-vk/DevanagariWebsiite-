@@ -18,9 +18,3 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
   },
 });
-
-// Debug: Log Supabase config
-console.log("Supabase Config:", {
-  url: supabaseUrl,
-  hasKey: !!supabaseAnonKey,
-});

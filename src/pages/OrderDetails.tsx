@@ -115,108 +115,32 @@ const OrderDetails: React.FC = () => {
       throw new Error("Order not found");
     }
 
-    // If order doesn't have payment_id (e.g., old COD orders), just cancel without refund
-    if (!order.payment_id) {
-      await ordersService.cancelOrder(order.id);
-      await refetchOrder();
-      showSuccess("Order Cancelled", "Order cancelled successfully!");
-      setTimeout(() => {
-        navigate("/profile");
-      }, 2000);
-      return;
-    }
-
     try {
-      // Debug: Log the refund amount being sent
-      console.log("🔄 Processing refund for order:", {
-        order_id: order.id,
-        payment_id: order.payment_id,
-        order_total: order.total,
-        refund_amount_inr: order.total,
-        refund_amount_paise: Math.round(order.total * 100),
-      });
-
-      // Process refund through Razorpay
-      const refund = await razorpayService.processRefund(
-        order.payment_id,
-        order.total,
-        "Order cancelled by customer",
-        "normal"
-      );
-
-      // Update order in database with refund information
-      const refundData = {
-        refund_id: refund.id,
-        refund_amount: refund.amount / 100, // Convert from paise to INR
-        refund_reason: "Order cancelled by customer",
-        refund_status: refund.status as "pending" | "processed" | "failed",
-        refunded_at: new Date(refund.created_at * 1000).toISOString(),
-      };
-
-      await ordersService.cancelOrder(order.id, refundData);
-
-      // Refetch order data from database to ensure it's up to date
+      // The server checks the order is ours and cancellable, then refunds it if paid.
+      const { refund } = await razorpayService.cancelOrder(order.id);
       await refetchOrder();
 
       showSuccess(
         "Order Cancelled",
-        `Order cancelled successfully!\n\nRefund ID: ${
-          refund.id
-        }\nRefund Amount: ₹${order.total.toFixed(
-          2
-        )}\n\nYour refund will be processed within 5-7 business days.`
+        refund
+          ? `Order cancelled successfully!\n\nRefund ID: ${refund.id}\nRefund Amount: ₹${(
+              refund.amount / 100
+            ).toFixed(2)}\n\nYour refund will be processed within 5-7 business days.`
+          : "Order cancelled successfully!"
       );
 
-      // Redirect to orders page after successful cancellation
       setTimeout(() => {
         navigate("/profile");
       }, 2000);
     } catch (error) {
-      console.error("❌ Error processing cancellation:", error);
-
-      // Extract more specific error information
-      let errorMessage = "Unknown error occurred";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-        console.error("❌ Error details:", {
-          message: error.message,
-          stack: error.stack,
-          paymentId: order.payment_id,
-          orderId: order.id,
-          total: order.total,
-        });
-      }
-
-      // If refund fails, still cancel the order but without refund
-      if (order.payment_status === "paid") {
-        await ordersService.cancelOrder(order.id);
-
-        // Refetch order data from database
-        await refetchOrder();
-
-        showError(
-          "Refund Processing Failed",
-          `Order cancelled, but refund processing failed.\n\nError: ${errorMessage}\n\nPlease contact support with Order ID: ${order.id}`
-        );
-
-        // Redirect to orders page
-        setTimeout(() => {
-          navigate("/profile");
-        }, 2000);
-      } else {
-        // If payment wasn't completed, just cancel the order
-        await ordersService.cancelOrder(order.id);
-
-        // Refetch order data from database
-        await refetchOrder();
-
-        showSuccess("Order Cancelled", "Order cancelled successfully!");
-
-        // Redirect to orders page
-        setTimeout(() => {
-          navigate("/profile");
-        }, 2000);
-      }
+      console.error("❌ Error cancelling order:", error);
+      await refetchOrder();
+      showError(
+        "Cancellation Failed",
+        `${
+          error instanceof Error ? error.message : "Unknown error"
+        }\n\nIf this keeps happening, contact support with Order ID: ${order.id}`
+      );
     }
   };
 
@@ -371,7 +295,8 @@ const OrderDetails: React.FC = () => {
                   <div className="flex-shrink-0">
                     <div
                       className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        order.payment_status === "paid"
+                        order.payment_status === "paid" ||
+                        order.payment_status === "refunded"
                           ? "bg-green-100"
                           : order.payment_status === "failed"
                           ? "bg-red-100"
@@ -380,7 +305,8 @@ const OrderDetails: React.FC = () => {
                     >
                       <CreditCard
                         className={`w-4 h-4 ${
-                          order.payment_status === "paid"
+                          order.payment_status === "paid" ||
+                          order.payment_status === "refunded"
                             ? "text-green-600"
                             : order.payment_status === "failed"
                             ? "text-red-600"
@@ -392,7 +318,8 @@ const OrderDetails: React.FC = () => {
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">
                       Payment{" "}
-                      {order.payment_status === "paid"
+                      {order.payment_status === "paid" ||
+                      order.payment_status === "refunded"
                         ? "Confirmed"
                         : order.payment_status === "failed"
                         ? "Failed"
@@ -513,7 +440,7 @@ const OrderDetails: React.FC = () => {
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.refund_status === "processed"
-                          ? `Refund of $${order.refund_amount?.toFixed(
+                          ? `Refund of ₹${order.refund_amount?.toFixed(
                               2
                             )} processed`
                           : order.refund_status === "failed"
@@ -759,6 +686,16 @@ const OrderDetails: React.FC = () => {
                     {order.currency || "INR"}
                   </span>
                 </div>
+
+                {(order.discount_amount ?? 0) > 0 && (
+                  <div className="flex justify-between text-green-700">
+                    <span>Discount:</span>
+                    <span>
+                      -₹{Number(order.discount_amount).toFixed(2)}{" "}
+                      {order.currency || "INR"}
+                    </span>
+                  </div>
+                )}
 
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Items:</span>

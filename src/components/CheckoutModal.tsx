@@ -12,11 +12,7 @@ import {
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
-import {
-  addressService,
-  UserAddress,
-  ordersService,
-} from "../services/supabase";
+import { addressService, UserAddress } from "../services/supabase";
 import { supabase } from "../lib/supabaseClient";
 import razorpayService from "../services/razorpay";
 import logo from "../assets/sreeshivanilogo.png";
@@ -261,16 +257,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
     setPaymentLoading(true);
     try {
-      // Create Razorpay order
+      // The server prices the cart itself; we only send what is being bought.
       const order = await razorpayService.createOrder(
-        total, // Amount in INR
         cartItems.map((item) => ({
-          id: item.id,
-          name: item.product?.name || "Product",
+          product_id: item.product_id,
           quantity: item.quantity,
-          price: item.product?.price || 0,
         })),
-        user.email
+        selectedAddress.id,
+        promoApplied ? promoCode : null
       );
 
       // Open payment modal
@@ -281,64 +275,18 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
         user.user_metadata?.phone,
         async (response) => {
           try {
-            console.log("🔄 Payment successful, verifying payment...");
-
-            // Verify payment with Razorpay
-            const verificationResult = await razorpayService.verifyPayment(
-              response
-            );
-
-            if (!verificationResult.isValid) {
-              throw new Error("Payment verification failed");
+            // The server verifies the payment and saves the order.
+            const result = await razorpayService.verifyPayment(response);
+            if (!result.isValid || !result.order) {
+              throw new Error(result.error || "Payment verification failed");
             }
 
-            console.log("✅ Payment verified, creating order in database...");
-
-            // Create order in database
-            const order = await ordersService.createOrder(
-              user.id,
-              cartItems,
-              {
-                payment_id: verificationResult.payment_id,
-                payment_order_id: verificationResult.order_id,
-                payment_signature: response.razorpay_signature,
-                payment_status: "paid",
-                payment_method: "razorpay",
-                currency: "INR",
-              },
-              shipping,
-              selectedAddress,
-              discount
-            );
-
-            console.log("✅ Order created successfully:", order.id);
-
-            // Fire-and-forget email notification
-            try {
-              fetch(
-                `${
-                  import.meta.env.VITE_API_BASE_URL
-                }/notify/order-confirmation`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    to: user.email,
-                    orderId: order.id,
-                    amount: order.total,
-                    currency: order.currency || "INR",
-                    etaDays: "3-4",
-                  }),
-                }
-              ).catch(() => {});
-            } catch {}
             clearCart();
             onClose();
-            // Navigate to profile page to view order history after short delay
             try {
               sessionStorage.setItem(
                 "orderSuccess",
-                JSON.stringify({ id: order.id, amount: order.total })
+                JSON.stringify({ id: result.order.id, amount: result.order.total })
               );
             } catch {}
             setTimeout(() => {
@@ -348,7 +296,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             console.error("❌ Error processing order:", error);
             showError(
               "Order Processing Error",
-              "Payment was successful but there was an error processing your order. Please contact support."
+              error instanceof Error
+                ? error.message
+                : "Payment was successful but there was an error processing your order. Please contact support."
             );
           }
         },
@@ -360,7 +310,9 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
       console.error("Payment error:", error);
       showError(
         "Payment Error",
-        "Failed to initiate payment. Please try again."
+        error instanceof Error
+          ? error.message
+          : "Failed to initiate payment. Please try again."
       );
     } finally {
       setPaymentLoading(false);
