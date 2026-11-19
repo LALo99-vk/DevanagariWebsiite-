@@ -146,41 +146,41 @@ const OrderDetails: React.FC = () => {
 
   const getStatusIcon = (status: string, paymentStatus?: string) => {
     if (paymentStatus === "failed") {
-      return <XCircle className="w-6 h-6 text-red-500" />;
+      return <XCircle className="w-6 h-6 text-[#F0A08C]" />;
     }
 
     switch (status) {
       case "pending":
-        return <Clock className="w-6 h-6 text-yellow-500" />;
+        return <Clock className="w-6 h-6 text-gold-400" />;
       case "processing":
-        return <Package className="w-6 h-6 text-blue-500" />;
+        return <Package className="w-6 h-6 text-gold-200" />;
       case "shipped":
-        return <Truck className="w-6 h-6 text-purple-500" />;
+        return <Truck className="w-6 h-6 text-gold-200" />;
       case "delivered":
-        return <CheckCircle className="w-6 h-6 text-green-500" />;
+        return <CheckCircle className="w-6 h-6 text-emerald-300" />;
       case "cancelled":
-        return <XCircle className="w-6 h-6 text-red-500" />;
+        return <XCircle className="w-6 h-6 text-[#F0A08C]" />;
       default:
-        return <Clock className="w-6 h-6 text-gray-500" />;
+        return <Clock className="w-6 h-6 text-mist" />;
     }
   };
 
   const getStatusColor = (status: string, paymentStatus?: string) => {
-    if (paymentStatus === "failed") return "text-red-600 bg-red-100";
+    if (paymentStatus === "failed") return "text-[#F0A08C] bg-[#F0A08C]/15";
 
     switch (status) {
       case "pending":
-        return "text-yellow-600 bg-yellow-100";
+        return "text-gold-400 bg-gold-400/15";
       case "processing":
-        return "text-blue-600 bg-blue-100";
+        return "text-gold-200 bg-gold-200/15";
       case "shipped":
-        return "text-purple-600 bg-purple-100";
+        return "text-gold-200 bg-gold-200/15";
       case "delivered":
-        return "text-green-600 bg-green-100";
+        return "text-emerald-300 bg-emerald-300/15";
       case "cancelled":
-        return "text-red-600 bg-red-100";
+        return "text-[#F0A08C] bg-[#F0A08C]/15";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-mist bg-emerald-800";
     }
   };
 
@@ -200,10 +200,10 @@ const OrderDetails: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
+      <div className="bg-emerald-950 text-cream pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14402E] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading order details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-400 mx-auto mb-4"></div>
+          <p className="text-mist">Loading order details...</p>
         </div>
       </div>
     );
@@ -211,15 +211,15 @@ const OrderDetails: React.FC = () => {
 
   if (error || !order) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
+      <div className="bg-emerald-950 text-cream pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <XCircle className="mx-auto h-16 w-16 text-red-500 mb-4" />
-          <h1 className="font-display text-2xl font-bold text-gray-900 mb-4">
+          <XCircle className="mx-auto h-16 w-16 text-[#F0A08C] mb-4" />
+          <h1 className="font-display text-2xl font-display font-semibold text-cream mb-4">
             {error || "Order not found"}
           </h1>
           <button
             onClick={() => navigate("/profile")}
-            className="inline-flex items-center px-4 py-2 bg-[#14402E] text-white rounded-lg hover:bg-[#0B2118] transition-colors"
+            className="inline-flex items-center px-4 py-2 bg-gold-400 text-emerald-950 rounded-full hover:bg-gold-300 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -230,13 +230,13 @@ const OrderDetails: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
+    <div className="bg-emerald-950 text-cream pt-24 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <button
             onClick={() => navigate("/profile")}
-            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors mb-4"
+            className="inline-flex items-center text-sm font-semibold text-gold-300 hover:text-gold-200 transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Orders
@@ -244,10 +244,10 @@ const OrderDetails: React.FC = () => {
 
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="font-display text-3xl font-bold text-[#14402E]">
+              <h1 className="font-display text-3xl font-display font-semibold text-cream">
                 Order Details
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-mist mt-1">
                 Order #{order.order_number || order.id.slice(0, 8)} • Placed on{" "}
                 {new Date(order.created_at).toLocaleDateString()}
               </p>
@@ -270,21 +270,21 @@ const OrderDetails: React.FC = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Order Timeline */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#14402E] mb-6">
+            <div className="bg-emerald-900 rounded-xl p-6 border border-gold-400/20">
+              <h2 className="text-xl font-display font-semibold text-cream mb-6">
                 Order Timeline
               </h2>
               <div className="space-y-4">
                 {/* Order Placed */}
                 <div className="flex items-center space-x-4">
                   <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    <div className="w-8 h-8 bg-emerald-300/15 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-4 h-4 text-emerald-300" />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">Order Placed</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="font-medium text-cream">Order Placed</p>
+                    <p className="text-sm text-mist">
                       {new Date(order.created_at).toLocaleString()}
                     </p>
                   </div>
@@ -297,26 +297,26 @@ const OrderDetails: React.FC = () => {
                       className={`w-8 h-8 rounded-full flex items-center justify-center ${
                         order.payment_status === "paid" ||
                         order.payment_status === "refunded"
-                          ? "bg-green-100"
+                          ? "bg-emerald-300/15"
                           : order.payment_status === "failed"
-                          ? "bg-red-100"
-                          : "bg-yellow-100"
+                          ? "bg-[#F0A08C]/15"
+                          : "bg-gold-400/15"
                       }`}
                     >
                       <CreditCard
                         className={`w-4 h-4 ${
                           order.payment_status === "paid" ||
                           order.payment_status === "refunded"
-                            ? "text-green-600"
+                            ? "text-emerald-300"
                             : order.payment_status === "failed"
-                            ? "text-red-600"
-                            : "text-yellow-600"
+                            ? "text-[#F0A08C]"
+                            : "text-gold-400"
                         }`}
                       />
                     </div>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-cream">
                       Payment{" "}
                       {order.payment_status === "paid" ||
                       order.payment_status === "refunded"
@@ -325,7 +325,7 @@ const OrderDetails: React.FC = () => {
                         ? "Failed"
                         : "Pending"}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-mist">
                       {order.payment_method || "Razorpay"} •{" "}
                       {order.currency || "INR"}
                     </p>
@@ -336,13 +336,13 @@ const OrderDetails: React.FC = () => {
                 {order.status !== "pending" && (
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <Package className="w-4 h-4 text-blue-600" />
+                      <div className="w-8 h-8 bg-gold-200/15 rounded-full flex items-center justify-center">
+                        <Package className="w-4 h-4 text-gold-200" />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">Processing</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-cream">Processing</p>
+                      <p className="text-sm text-mist">
                         Your order is being prepared
                       </p>
                     </div>
@@ -353,13 +353,13 @@ const OrderDetails: React.FC = () => {
                 {order.status === "shipped" && (
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                        <Truck className="w-4 h-4 text-purple-600" />
+                      <div className="w-8 h-8 bg-gold-200/15 rounded-full flex items-center justify-center">
+                        <Truck className="w-4 h-4 text-gold-200" />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">Shipped</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-cream">Shipped</p>
+                      <p className="text-sm text-mist">
                         Your order is on its way
                       </p>
                     </div>
@@ -370,13 +370,13 @@ const OrderDetails: React.FC = () => {
                 {order.status === "delivered" && (
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-emerald-300/15 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-emerald-300" />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">Delivered</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-cream">Delivered</p>
+                      <p className="text-sm text-mist">
                         Your order has been delivered
                       </p>
                     </div>
@@ -387,16 +387,16 @@ const OrderDetails: React.FC = () => {
                 {order.status === "cancelled" && (
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                        <XCircle className="w-4 h-4 text-red-600" />
+                      <div className="w-8 h-8 bg-[#F0A08C]/15 rounded-full flex items-center justify-center">
+                        <XCircle className="w-4 h-4 text-[#F0A08C]" />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">Cancelled</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-cream">Cancelled</p>
+                      <p className="text-sm text-mist">
                         This order has been cancelled
                         {order.refund_id && (
-                          <span className="block text-green-600">
+                          <span className="block text-emerald-300">
                             Refund ID: {order.refund_id}
                           </span>
                         )}
@@ -412,25 +412,25 @@ const OrderDetails: React.FC = () => {
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           order.refund_status === "processed"
-                            ? "bg-green-100"
+                            ? "bg-emerald-300/15"
                             : order.refund_status === "failed"
-                            ? "bg-red-100"
-                            : "bg-yellow-100"
+                            ? "bg-[#F0A08C]/15"
+                            : "bg-gold-400/15"
                         }`}
                       >
                         <RefreshCw
                           className={`w-4 h-4 ${
                             order.refund_status === "processed"
-                              ? "text-green-600"
+                              ? "text-emerald-300"
                               : order.refund_status === "failed"
-                              ? "text-red-600"
-                              : "text-yellow-600"
+                              ? "text-[#F0A08C]"
+                              : "text-gold-400"
                           }`}
                         />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-cream">
                         Refund{" "}
                         {order.refund_status === "processed"
                           ? "Processed"
@@ -438,7 +438,7 @@ const OrderDetails: React.FC = () => {
                           ? "Failed"
                           : "Pending"}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-mist">
                         {order.refund_status === "processed"
                           ? `Refund of ₹${order.refund_amount?.toFixed(
                               2
@@ -459,33 +459,33 @@ const OrderDetails: React.FC = () => {
             </div>
 
             {/* Order Items */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-              <h2 className="text-xl font-bold text-[#14402E] mb-6">
+            <div className="bg-emerald-900 rounded-xl p-6 border border-gold-400/20">
+              <h2 className="text-xl font-display font-semibold text-cream mb-6">
                 Order Items
               </h2>
               <div className="space-y-4">
                 {order.order_items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg"
+                    className="flex items-center space-x-4 p-4 border border-gold-400/20 rounded-lg"
                   >
-                    <div className="w-16 h-16 bg-[#ECE2CE] rounded-lg flex items-center justify-center">
-                      <Package className="w-8 h-8 text-[#14402E]" />
+                    <div className="w-16 h-16 bg-emerald-950/60 rounded-lg flex items-center justify-center">
+                      <Package className="w-8 h-8 text-cream" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-display font-semibold text-cream">
                         {item.product_name || "Product"}
                       </h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-mist">
                         Quantity: {item.quantity}
                       </p>
-                      <p className="text-sm font-medium text-[#14402E]">
+                      <p className="text-sm font-medium text-cream">
                         ₹{item.product_price.toFixed(2)}{" "}
                         {order.currency || "INR"} each
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-[#14402E]">
+                      <p className="font-bold text-cream">
                         ₹{item.total_price.toFixed(2)} {order.currency || "INR"}
                       </p>
                     </div>
@@ -496,48 +496,48 @@ const OrderDetails: React.FC = () => {
 
             {/* Shipping Information */}
             {order.shipping_address ? (
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#14402E] mb-4">
+              <div className="bg-emerald-900 rounded-xl p-6 border border-gold-400/20">
+                <h2 className="text-xl font-display font-semibold text-cream mb-4">
                   Shipping Information
                 </h2>
                 <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-[#14402E] mt-1" />
+                  <MapPin className="w-5 h-5 text-cream mt-1" />
                   <div className="space-y-2">
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-cream">
                       {order.shipping_address.name || "Recipient Name"}
                     </p>
                     {order.shipping_address.phone && (
-                      <p className="text-gray-600 flex items-center">
+                      <p className="text-mist flex items-center">
                         <Phone className="w-4 h-4 mr-1" />
                         {order.shipping_address.phone}
                       </p>
                     )}
-                    <p className="text-gray-600">
+                    <p className="text-mist">
                       {order.shipping_address.address_line_1 ||
                         "Address not provided"}
                     </p>
                     {order.shipping_address.address_line_2 && (
-                      <p className="text-gray-600 pl-4">
+                      <p className="text-mist pl-4">
                         {order.shipping_address.address_line_2}
                       </p>
                     )}
-                    <p className="text-gray-600">
+                    <p className="text-mist">
                       {order.shipping_address.city},{" "}
                       {order.shipping_address.state}{" "}
                       {order.shipping_address.postal_code}
                     </p>
-                    <p className="text-gray-600">
+                    <p className="text-mist">
                       {order.shipping_address.country || "India"}
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#14402E] mb-4">
+              <div className="bg-emerald-900 rounded-xl p-6 border border-gold-400/20">
+                <h2 className="text-xl font-display font-semibold text-cream mb-4">
                   Shipping Information
                 </h2>
-                <div className="flex items-center space-x-3 text-gray-500">
+                <div className="flex items-center space-x-3 text-mist">
                   <MapPin className="w-5 h-5" />
                   <p>Shipping address not provided for this order</p>
                 </div>
@@ -546,44 +546,44 @@ const OrderDetails: React.FC = () => {
 
             {/* Payment Information */}
             {order.payment_id && (
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
-                <h2 className="text-xl font-bold text-[#14402E] mb-4">
+              <div className="bg-emerald-900 rounded-xl p-6 border border-gold-400/20">
+                <h2 className="text-xl font-display font-semibold text-cream mb-4">
                   Payment Information
                 </h2>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="font-medium text-gray-600">
+                    <span className="font-medium text-mist">
                       Payment ID:
                     </span>
-                    <p className="text-gray-900 font-mono">
+                    <p className="text-cream font-mono break-all">
                       {order.payment_id}
                     </p>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-600">
+                    <span className="font-medium text-mist">
                       Payment Method:
                     </span>
-                    <p className="text-gray-900 capitalize">
+                    <p className="text-cream capitalize">
                       {order.payment_method || "Razorpay"}
                     </p>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-600">Currency:</span>
-                    <p className="text-gray-900">{order.currency || "INR"}</p>
+                    <span className="font-medium text-mist">Currency:</span>
+                    <p className="text-cream">{order.currency || "INR"}</p>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-600">
+                    <span className="font-medium text-mist">
                       Payment Status:
                     </span>
                     <span
                       className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                         order.payment_status === "paid"
-                          ? "bg-green-100 text-green-800"
+                          ? "bg-emerald-300/15 text-emerald-300"
                           : order.payment_status === "failed"
-                          ? "bg-red-100 text-red-800"
+                          ? "bg-[#F0A08C]/15 text-[#F0A08C]"
                           : order.payment_status === "refunded"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-yellow-100 text-yellow-800"
+                          ? "bg-gold-200/15 text-gold-200"
+                          : "bg-gold-400/15 text-gold-400"
                       }`}
                     >
                       {order.payment_status || "Pending"}
@@ -593,24 +593,24 @@ const OrderDetails: React.FC = () => {
 
                 {/* Refund Information */}
                 {order.refund_id && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <div className="mt-4 pt-4 border-t border-gold-400/20">
+                    <h3 className="text-lg font-display font-semibold text-cream mb-3">
                       Refund Information
                     </h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="font-medium text-gray-600">
+                        <span className="font-medium text-mist">
                           Refund ID:
                         </span>
-                        <p className="text-gray-900 font-mono">
+                        <p className="text-cream font-mono break-all">
                           {order.refund_id}
                         </p>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-600">
+                        <span className="font-medium text-mist">
                           Refund Amount:
                         </span>
-                        <p className="text-gray-900 font-semibold">
+                        <p className="text-cream font-semibold">
                           $
                           {(() => {
                             const amount = order.refund_amount || 0;
@@ -624,26 +624,26 @@ const OrderDetails: React.FC = () => {
                         </p>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-600">
+                        <span className="font-medium text-mist">
                           Refund Status:
                         </span>
                         <span
                           className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                             order.refund_status === "processed"
-                              ? "bg-green-100 text-green-800"
+                              ? "bg-emerald-300/15 text-emerald-300"
                               : order.refund_status === "failed"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
+                              ? "bg-[#F0A08C]/15 text-[#F0A08C]"
+                              : "bg-gold-400/15 text-gold-400"
                           }`}
                         >
                           {order.refund_status || "Pending"}
                         </span>
                       </div>
                       <div>
-                        <span className="font-medium text-gray-600">
+                        <span className="font-medium text-mist">
                           Refund Date:
                         </span>
-                        <p className="text-gray-900">
+                        <p className="text-cream">
                           {order.refunded_at
                             ? new Date(order.refunded_at).toLocaleDateString()
                             : "N/A"}
@@ -651,10 +651,10 @@ const OrderDetails: React.FC = () => {
                       </div>
                       {order.refund_reason && (
                         <div className="col-span-2">
-                          <span className="font-medium text-gray-600">
+                          <span className="font-medium text-mist">
                             Refund Reason:
                           </span>
-                          <p className="text-gray-900">{order.refund_reason}</p>
+                          <p className="text-cream">{order.refund_reason}</p>
                         </div>
                       )}
                     </div>
@@ -666,29 +666,29 @@ const OrderDetails: React.FC = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 sticky top-24">
-              <h2 className="text-xl font-bold text-[#14402E] mb-6">
+            <div className="bg-emerald-900 rounded-xl p-6 border border-gold-400/20 sticky top-24">
+              <h2 className="text-xl font-display font-semibold text-cream mb-6">
                 Order Summary
               </h2>
 
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal:</span>
-                  <span className="text-gray-900">
+                  <span className="text-mist">Subtotal:</span>
+                  <span className="text-cream">
                     ₹{order.subtotal.toFixed(2)} {order.currency || "INR"}
                   </span>
                 </div>
 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Shipping:</span>
-                  <span className="text-gray-900">
+                  <span className="text-mist">Shipping:</span>
+                  <span className="text-cream">
                     ₹{order.shipping_amount?.toFixed(2) || "0.00"}{" "}
                     {order.currency || "INR"}
                   </span>
                 </div>
 
                 {(order.discount_amount ?? 0) > 0 && (
-                  <div className="flex justify-between text-green-700">
+                  <div className="flex justify-between text-emerald-300">
                     <span>Discount:</span>
                     <span>
                       -₹{Number(order.discount_amount).toFixed(2)}{" "}
@@ -698,8 +698,8 @@ const OrderDetails: React.FC = () => {
                 )}
 
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total Items:</span>
-                  <span className="text-gray-900">
+                  <span className="text-mist">Total Items:</span>
+                  <span className="text-cream">
                     {order.order_items.reduce(
                       (sum, item) => sum + item.quantity,
                       0
@@ -709,8 +709,8 @@ const OrderDetails: React.FC = () => {
 
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-lg font-bold">
-                    <span className="text-[#14402E]">Total:</span>
-                    <span className="text-[#A37C38]">
+                    <span className="text-cream">Total:</span>
+                    <span className="text-gold-300">
                       ₹{order.total.toFixed(2)} {order.currency || "INR"}
                     </span>
                   </div>
@@ -723,7 +723,7 @@ const OrderDetails: React.FC = () => {
                   <button
                     onClick={() => handleOrderAction("cancel")}
                     disabled={actionLoading === "cancel"}
-                    className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="w-full bg-[#F0A08C] text-emerald-950 py-2.5 rounded-full font-semibold hover:bg-[#F4B5A4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {actionLoading === "cancel" ? (
                       <RefreshCw className="w-4 h-4 animate-spin" />
@@ -738,7 +738,7 @@ const OrderDetails: React.FC = () => {
                   <button
                     onClick={() => handleOrderAction("track")}
                     disabled={actionLoading === "track"}
-                    className="w-full border-2 border-blue-600 text-blue-600 py-2 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                    className="w-full border border-gold-400/60 text-gold-200 py-2.5 rounded-full font-semibold hover:bg-gold-400/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                   >
                     {actionLoading === "track" ? (
                       <RefreshCw className="w-4 h-4 animate-spin" />
@@ -751,7 +751,7 @@ const OrderDetails: React.FC = () => {
 
                 <button
                   onClick={() => window.print()}
-                  className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                  className="w-full border border-gold-400/60 text-gold-200 py-2.5 rounded-full font-semibold hover:bg-gold-400/10 transition-colors flex items-center justify-center space-x-2"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download Invoice</span>
@@ -759,7 +759,7 @@ const OrderDetails: React.FC = () => {
 
                 <button
                   onClick={() => navigate("/contact")}
-                  className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                  className="w-full border border-gold-400/60 text-gold-200 py-2.5 rounded-full font-semibold hover:bg-gold-400/10 transition-colors flex items-center justify-center space-x-2"
                 >
                   <Phone className="w-4 h-4" />
                   <span>Contact Support</span>
@@ -767,16 +767,15 @@ const OrderDetails: React.FC = () => {
               </div>
 
               {/* Important Notes */}
-              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="mt-6 p-4 bg-gold-400/10 border border-gold-400/40 rounded-lg">
                 <div className="flex items-start space-x-2">
-                  <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-gold-400 mt-0.5" />
                   <div className="text-sm">
-                    <p className="font-medium text-yellow-800 mb-1">
+                    <p className="font-medium text-gold-400 mb-1">
                       Important Notes:
                     </p>
-                    <ul className="text-yellow-700 space-y-1">
+                    <ul className="text-gold-400 space-y-1">
                       <li>• Orders can be cancelled within 24 hours</li>
-                      <li>• Returns accepted within 30 days</li>
                       <li>• Contact support for any issues</li>
                     </ul>
                   </div>
@@ -792,32 +791,32 @@ const OrderDetails: React.FC = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className="fixed inset-0 bg-black/60 transition-opacity"
               onClick={() => setShowTrackingModal(false)}
             />
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="inline-block align-bottom bg-emerald-900 rounded-lg text-left overflow-hidden shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+              <div className="bg-emerald-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  <h3 className="text-lg leading-6 font-medium text-cream">
                     Track Your Package
                   </h3>
                   <button
                     onClick={() => setShowTrackingModal(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className="text-mist/80 hover:text-mist"
                   >
                     <X className="h-6 w-6" />
                   </button>
                 </div>
 
                 <div className="mb-6">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="bg-gold-200/10 border border-gold-200/40 rounded-lg p-4">
                     <div className="flex items-center">
-                      <Package className="h-5 w-5 text-blue-600 mr-2" />
+                      <Package className="h-5 w-5 text-gold-200 mr-2" />
                       <div>
-                        <p className="font-medium text-blue-900">
+                        <p className="font-medium text-gold-200">
                           Order #{order.order_number || order.id.slice(-8)}
                         </p>
-                        <p className="text-sm text-blue-700">
+                        <p className="text-sm text-gold-200">
                           Expected delivery:{" "}
                           {(() => {
                             const deliveryDate = new Date(order.created_at);
@@ -837,20 +836,20 @@ const OrderDetails: React.FC = () => {
 
                 {/* Professional Tracking Timeline */}
                 <div className="space-y-4">
-                  <h4 className="font-medium text-gray-900 mb-4">
+                  <h4 className="font-medium text-cream mb-4">
                     Package Status
                   </h4>
 
                   {/* Order Placed */}
                   <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      <div className="w-8 h-8 bg-emerald-300/15 rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-emerald-300" />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">Order Placed</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-cream">Order Placed</p>
+                      <p className="text-sm text-mist">
                         {new Date(order.created_at).toLocaleString("en-IN")}
                       </p>
                     </div>
@@ -862,31 +861,31 @@ const OrderDetails: React.FC = () => {
                       <div
                         className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           order.payment_status === "paid"
-                            ? "bg-green-100"
+                            ? "bg-emerald-300/15"
                             : order.payment_status === "failed"
-                            ? "bg-red-100"
-                            : "bg-yellow-100"
+                            ? "bg-[#F0A08C]/15"
+                            : "bg-gold-400/15"
                         }`}
                       >
                         <CreditCard
                           className={`w-4 h-4 ${
                             order.payment_status === "paid"
-                              ? "text-green-600"
+                              ? "text-emerald-300"
                               : order.payment_status === "failed"
-                              ? "text-red-600"
-                              : "text-yellow-600"
+                              ? "text-[#F0A08C]"
+                              : "text-gold-400"
                           }`}
                         />
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-cream">
                         Payment{" "}
                         {order.payment_status === "paid"
                           ? "Confirmed"
                           : "Pending"}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-mist">
                         {order.payment_method || "Razorpay"} • ₹
                         {order.total.toFixed(2)}
                       </p>
@@ -900,22 +899,22 @@ const OrderDetails: React.FC = () => {
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center ${
                             order.status === "processing"
-                              ? "bg-blue-100"
-                              : "bg-green-100"
+                              ? "bg-gold-200/15"
+                              : "bg-emerald-300/15"
                           }`}
                         >
                           <Package
                             className={`w-4 h-4 ${
                               order.status === "processing"
-                                ? "text-blue-600"
-                                : "text-green-600"
+                                ? "text-gold-200"
+                                : "text-emerald-300"
                             }`}
                           />
                         </div>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">Processing</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-cream">Processing</p>
+                        <p className="text-sm text-mist">
                           Your order is being prepared for shipment
                         </p>
                       </div>
@@ -926,21 +925,21 @@ const OrderDetails: React.FC = () => {
                   {order.status === "shipped" && (
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                          <Truck className="w-4 h-4 text-purple-600" />
+                        <div className="w-8 h-8 bg-gold-200/15 rounded-full flex items-center justify-center">
+                          <Truck className="w-4 h-4 text-gold-200" />
                         </div>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">Shipped</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-cream">Shipped</p>
+                        <p className="text-sm text-mist">
                           Your package is on its way to you
                         </p>
-                        <div className="mt-2 bg-purple-50 border border-purple-200 rounded-lg p-3">
-                          <p className="text-sm text-purple-800">
+                        <div className="mt-2 bg-gold-200/10 border border-gold-200/40 rounded-lg p-3">
+                          <p className="text-sm text-gold-200">
                             <strong>Tracking Number:</strong> DHM
                             {order.id.slice(-8).toUpperCase()}
                           </p>
-                          <p className="text-sm text-purple-700 mt-1">
+                          <p className="text-sm text-gold-200 mt-1">
                             You can track your package using this number with
                             our delivery partner.
                           </p>
@@ -953,17 +952,17 @@ const OrderDetails: React.FC = () => {
                   {order.status === "delivered" && (
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
+                        <div className="w-8 h-8 bg-emerald-300/15 rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-4 h-4 text-emerald-300" />
                         </div>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">Delivered</p>
-                        <p className="text-sm text-gray-500">
+                        <p className="font-medium text-cream">Delivered</p>
+                        <p className="text-sm text-mist">
                           Your package has been successfully delivered
                         </p>
-                        <div className="mt-2 bg-green-50 border border-green-200 rounded-lg p-3">
-                          <p className="text-sm text-green-800">
+                        <div className="mt-2 bg-emerald-300/10 border border-emerald-300/40 rounded-lg p-3">
+                          <p className="text-sm text-emerald-300">
                             Thank you for choosing Devanagari Health Mix! We
                             hope you enjoy your products.
                           </p>
@@ -976,24 +975,24 @@ const OrderDetails: React.FC = () => {
                   {order.status === "cancelled" && (
                     <div className="flex items-center space-x-4">
                       <div className="flex-shrink-0">
-                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                          <XCircle className="w-4 h-4 text-red-600" />
+                        <div className="w-8 h-8 bg-[#F0A08C]/15 rounded-full flex items-center justify-center">
+                          <XCircle className="w-4 h-4 text-[#F0A08C]" />
                         </div>
                       </div>
                       <div className="flex-1">
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-cream">
                           Order Cancelled
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-mist">
                           This order has been cancelled
                         </p>
                         {order.refund_id && (
-                          <div className="mt-2 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                            <p className="text-sm text-yellow-800">
+                          <div className="mt-2 bg-gold-400/10 border border-gold-400/40 rounded-lg p-3">
+                            <p className="text-sm text-gold-400">
                               <strong>Refund Status:</strong>{" "}
                               {order.refund_status || "Processing"}
                             </p>
-                            <p className="text-sm text-yellow-700">
+                            <p className="text-sm text-gold-400">
                               Refund ID: {order.refund_id}
                             </p>
                           </div>
@@ -1006,35 +1005,35 @@ const OrderDetails: React.FC = () => {
                 {/* Shipping Address in Tracking */}
                 {order.shipping_address && (
                   <div className="mt-6">
-                    <h4 className="font-medium text-gray-900 mb-3">
+                    <h4 className="font-medium text-cream mb-3">
                       Delivery Address
                     </h4>
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <div className="bg-emerald-950/50 border border-gold-400/20 rounded-lg p-4">
                       <div className="flex items-start space-x-3">
-                        <MapPin className="w-5 h-5 text-gray-600 mt-0.5" />
+                        <MapPin className="w-5 h-5 text-mist mt-0.5" />
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-cream">
                             {order.shipping_address.name}
                           </p>
                           {order.shipping_address.phone && (
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-mist">
                               {order.shipping_address.phone}
                             </p>
                           )}
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-mist">
                             {order.shipping_address.address_line_1}
                           </p>
                           {order.shipping_address.address_line_2 && (
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-mist">
                               {order.shipping_address.address_line_2}
                             </p>
                           )}
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-mist">
                             {order.shipping_address.city},{" "}
                             {order.shipping_address.state}{" "}
                             {order.shipping_address.postal_code}
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-mist">
                             {order.shipping_address.country || "India"}
                           </p>
                         </div>
@@ -1044,12 +1043,12 @@ const OrderDetails: React.FC = () => {
                 )}
 
                 {/* Support Information */}
-                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="mt-6 bg-gold-200/10 border border-gold-200/40 rounded-lg p-4">
                   <div className="flex items-start space-x-3">
-                    <Phone className="w-5 h-5 text-blue-600 mt-0.5" />
+                    <Phone className="w-5 h-5 text-gold-200 mt-0.5" />
                     <div>
-                      <p className="font-medium text-blue-900">Need Help?</p>
-                      <p className="text-sm text-blue-800 mt-1">
+                      <p className="font-medium text-gold-200">Need Help?</p>
+                      <p className="text-sm text-gold-200 mt-1">
                         If you have any questions about your order or delivery,
                         please contact our support team.
                       </p>
@@ -1058,7 +1057,7 @@ const OrderDetails: React.FC = () => {
                           setShowTrackingModal(false);
                           navigate("/contact");
                         }}
-                        className="mt-2 text-sm text-blue-600 hover:text-blue-800 underline"
+                        className="mt-2 text-sm text-gold-200 hover:text-gold-200 underline"
                       >
                         Contact Support
                       </button>
@@ -1067,11 +1066,11 @@ const OrderDetails: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="bg-emerald-950/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
                   onClick={() => setShowTrackingModal(false)}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-gold-200 text-base font-medium text-cream hover:bg-gold-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Close
                 </button>

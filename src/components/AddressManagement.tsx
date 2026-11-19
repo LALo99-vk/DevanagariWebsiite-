@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, MapPin, Star, Check } from "lucide-react";
+import { Plus, Edit, Trash2, MapPin, Star, Check, X } from "lucide-react";
 import { addressService, UserAddress } from "../services/supabase";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
@@ -176,297 +176,210 @@ const AddressManagement: React.FC = () => {
     setShowForm(false);
   };
 
+
+  const field = (
+    key: keyof Omit<AddressFormData, "is_default">,
+    label: string,
+    opts: { required?: boolean; type?: string; placeholder?: string; autoComplete?: string } = {}
+  ) => (
+    <label className="block">
+      <span className="text-[13px] font-semibold text-mist">
+        {label}
+        {opts.required && <span className="text-gold-400"> *</span>}
+      </span>
+      <input
+        type={opts.type || "text"}
+        required={opts.required}
+        autoComplete={opts.autoComplete}
+        placeholder={opts.placeholder}
+        value={formData[key]}
+        onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+        className="field-dark"
+      />
+    </label>
+  );
+
   if (loading) {
     return (
-      <div className="text-center py-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E] mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading addresses...</p>
+      <div className="py-12 text-center">
+        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gold-400/20 border-t-gold-400" />
+        <p className="text-sm text-mist">Loading addresses…</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-[#14402E]">
-          Address Management
-        </h2>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-x-2 bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors"
-        >
-          <Plus className="h-4 w-4" />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-2xl text-cream">Address Management</h2>
+        <button onClick={() => setShowForm(true)} className="btn-gold whitespace-nowrap !px-4 !py-2.5">
+          <Plus size={16} />
           Add Address
         </button>
       </div>
 
-      {/* Address List */}
+      {/* Address list */}
       {addresses.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg">
-          <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600 mb-4">No addresses saved yet</p>
-          <p className="text-sm text-gray-500">
+        <div className="mt-6 rounded-xl border border-dashed border-gold-400/30 px-6 py-10 text-center">
+          <MapPin size={32} strokeWidth={1.5} className="mx-auto text-gold-400" />
+          <p className="mt-4 text-cream">No addresses saved yet</p>
+          <p className="mt-1 text-sm text-mist">
             Add your first address to get started with faster checkout
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {addresses.map((address) => (
-            <div
+            <li
               key={address.id}
-              className="border border-gray-200 rounded-lg p-4 hover:border-[#14402E] transition-colors"
+              className={`flex flex-col rounded-xl border p-5 transition-colors ${
+                address.is_default
+                  ? "border-gold-400/60"
+                  : "border-gold-400/20 hover:border-gold-400/45"
+              }`}
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-x-2">
-                  <MapPin className="h-5 w-5 text-[#14402E]" />
-                  <h3 className="font-semibold text-[#14402E]">
-                    {address.name}
-                  </h3>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-cream">{address.name}</h3>
                   {address.is_default && (
-                    <span className="inline-flex items-center gap-x-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                      <Star className="h-3 w-3" />
+                    <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-gold-400 px-2.5 py-0.5 text-xs font-semibold text-emerald-950">
+                      <Star size={11} fill="currentColor" />
                       Default
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-x-2">
+                <div className="-mr-2 -mt-1 flex shrink-0">
                   <button
                     onClick={() => handleEdit(address)}
-                    className="p-1 text-gray-400 hover:text-[#14402E] transition-colors"
+                    aria-label={`Edit address for ${address.name}`}
                     title="Edit address"
+                    className="grid h-9 w-9 place-items-center rounded-full text-mist transition-colors hover:bg-gold-400/10 hover:text-gold-200"
                   >
-                    <Edit className="h-4 w-4" />
+                    <Edit size={16} strokeWidth={1.7} />
                   </button>
                   <button
                     onClick={() => handleDelete(address.id)}
-                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                    aria-label={`Delete address for ${address.name}`}
                     title="Delete address"
+                    className="grid h-9 w-9 place-items-center rounded-full text-mist transition-colors hover:bg-[#F0A08C]/10 hover:text-[#F0A08C]"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 size={16} strokeWidth={1.7} />
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-1 text-sm text-gray-600 mb-4">
+              <address className="mt-3 space-y-0.5 text-sm not-italic leading-relaxed text-mist">
                 <p>{address.address_line_1}</p>
                 {address.address_line_2 && <p>{address.address_line_2}</p>}
                 <p>
                   {address.city}, {address.state} {address.postal_code}
                 </p>
                 <p>{address.country}</p>
-                <p className="font-medium">{address.phone}</p>
-              </div>
+                <p className="pt-1 font-semibold text-cream tabular-nums">{address.phone}</p>
+              </address>
 
               {!address.is_default && (
                 <button
                   onClick={() => handleSetDefault(address.id)}
-                  className="w-full text-sm text-[#14402E] font-medium py-2 border border-[#14402E] rounded-lg hover:bg-[#14402E] hover:text-white transition-colors"
+                  className="btn-outline-gold mt-4 w-full !py-2"
                 >
                   Set as Default
                 </button>
               )}
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
-      {/* Address Form Modal */}
+      {/* Address form */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-[#14402E]">
-                  {editingAddress ? "Edit Address" : "Add New Address"}
-                </h3>
-                <button
-                  onClick={resetForm}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  ×
-                </button>
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4"
+          onClick={resetForm}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="address-form-title"
+            onClick={(e) => e.stopPropagation()}
+            className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[14px] border border-gold-400/25 bg-emerald-900 p-6 sm:p-8 text-cream shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)]"
+          >
+            <div className="flex items-center justify-between">
+              <h3 id="address-form-title" className="font-display text-2xl">
+                {editingAddress ? "Edit Address" : "Add New Address"}
+              </h3>
+              <button
+                onClick={resetForm}
+                aria-label="Close"
+                className="-mr-2 grid h-9 w-9 place-items-center rounded-full text-mist transition-colors hover:bg-gold-400/10 hover:text-cream"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="mt-6 space-y-5">
+              {field("name", "Full Name", { required: true, autoComplete: "name" })}
+              {field("phone", "Phone Number", { required: true, type: "tel", autoComplete: "tel" })}
+              {field("address_line_1", "Address Line 1", {
+                required: true,
+                autoComplete: "address-line1",
+                placeholder: "Street address, P.O. box, etc.",
+              })}
+              {field("address_line_2", "Address Line 2", {
+                autoComplete: "address-line2",
+                placeholder: "Apartment, suite, unit, building, floor, etc.",
+              })}
+              <div className="grid grid-cols-2 gap-5">
+                {field("city", "City", { required: true, autoComplete: "address-level2" })}
+                {field("state", "State", { required: true, autoComplete: "address-level1" })}
+              </div>
+              <div className="grid grid-cols-2 gap-5">
+                {field("postal_code", "Postal Code", { required: true, autoComplete: "postal-code" })}
+                <label className="block">
+                  <span className="text-[13px] font-semibold text-mist">
+                    Country<span className="text-gold-400"> *</span>
+                  </span>
+                  <select
+                    required
+                    value={formData.country}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    className="field-dark [&>option]:bg-emerald-900"
+                  >
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                  </select>
+                </label>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                  />
-                </div>
+              <label className="flex items-center gap-3 pt-1 text-sm text-cream">
+                <input
+                  type="checkbox"
+                  checked={formData.is_default}
+                  onChange={(e) => setFormData({ ...formData, is_default: e.target.checked })}
+                  className="h-4 w-4 rounded accent-[#D4A63E]"
+                />
+                Set as default address
+              </label>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Address Line 1 *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.address_line_1}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        address_line_1: e.target.value,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                    placeholder="Street address, P.O. box, etc."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Address Line 2
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address_line_2}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        address_line_2: e.target.value,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                    placeholder="Apartment, suite, unit, building, floor, etc."
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      City *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.city}
-                      onChange={(e) =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      State *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.state}
-                      onChange={(e) =>
-                        setFormData({ ...formData, state: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Postal Code *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.postal_code}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          postal_code: e.target.value,
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Country *
-                    </label>
-                    <select
-                      required
-                      value={formData.country}
-                      onChange={(e) =>
-                        setFormData({ ...formData, country: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                    >
-                      <option value="India">India</option>
-                      <option value="United States">United States</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="Canada">Canada</option>
-                      <option value="Australia">Australia</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="is_default"
-                    checked={formData.is_default}
-                    onChange={(e) =>
-                      setFormData({ ...formData, is_default: e.target.checked })
-                    }
-                    className="h-4 w-4 text-[#14402E] focus:ring-[#14402E] border-gray-300 rounded"
-                  />
-                  <label
-                    htmlFor="is_default"
-                    className="ml-2 text-sm text-gray-700"
-                  >
-                    Set as default address
-                  </label>
-                </div>
-
-                <div className="flex gap-x-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={resetForm}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 px-4 py-2 bg-[#14402E] text-white rounded-lg hover:bg-[#0B2118] transition-colors flex items-center justify-center gap-x-2"
-                  >
-                    <Check className="h-4 w-4" />
-                    {editingAddress ? "Update Address" : "Add Address"}
-                  </button>
-                </div>
-              </form>
-            </div>
+              <div className="flex flex-col-reverse sm:flex-row gap-3 pt-3">
+                <button type="button" onClick={resetForm} className="btn-outline-gold flex-1">
+                  Cancel
+                </button>
+                <button type="submit" className="btn-gold flex-1">
+                  <Check size={16} />
+                  {editingAddress ? "Update Address" : "Add Address"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete confirmation */}
       <ConfirmationModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}

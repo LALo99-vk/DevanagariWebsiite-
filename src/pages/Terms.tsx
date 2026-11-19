@@ -4,27 +4,27 @@ import { Link } from "react-router-dom";
 
 const Terms = () => {
   return (
-    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
+    <div className="bg-emerald-950 text-cream pt-24 min-h-screen">
       <div className="px-4 py-12 mx-auto max-w-4xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <Link
             to="/contact"
-            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors mb-6"
+            className="inline-flex items-center text-sm font-semibold text-gold-300 hover:text-gold-200 transition-colors mb-6"
           >
-            <ArrowLeft size={20} className="mr-2" />
+            <ArrowLeft size={16} className="mr-2" />
             Back to Contact
           </Link>
 
           <div className="flex items-center mb-6">
-            <div className="w-12 h-12 bg-[#14402E] rounded-full flex items-center justify-center mr-4">
-              <FileText className="text-white" size={24} />
+            <div className="w-12 h-12 bg-gold-400 rounded-full flex items-center justify-center mr-4">
+              <FileText className="text-cream" size={24} />
             </div>
             <div>
-              <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#14402E]">
+              <h1 className="font-display text-4xl sm:text-5xl font-semibold text-cream">
                 Terms and Conditions
               </h1>
-              <p className="text-gray-600 mt-2">
+              <p className="text-mist mt-2">
                 Last updated: {new Date().toLocaleDateString()}
               </p>
             </div>
@@ -32,14 +32,14 @@ const Terms = () => {
         </div>
 
         {/* Terms Content */}
-        <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
-          <div className="border-l-4 border-[#14402E] pl-6">
-            <p className="text-gray-700 leading-relaxed">
+        <div className="bg-emerald-900 rounded-xl p-8 space-y-8">
+          <div className="border-b border-gold-400/20 pb-8 text-[17px] leading-[1.7]">
+            <p className="text-cream leading-relaxed">
               Welcome to <strong>SREE SHIVANI FOODS</strong>. By accessing or
               using our website,{" "}
               <a
                 href="https://sreeshivanifoods.in"
-                className="text-[#14402E] hover:underline font-semibold"
+                className="text-cream hover:underline font-semibold"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -53,11 +53,11 @@ const Terms = () => {
 
           {/* Section 1 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4 flex items-center">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4 flex items-center">
               <Scale className="mr-3" size={24} />
               1. General Information
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We are a food manufacturing and distribution company based in{" "}
                 <strong>DAVANAGERE</strong>.
@@ -78,10 +78,10 @@ const Terms = () => {
 
           {/* Section 2 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               2. Use of Website
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>You agree to use this Website only for lawful purposes.</p>
               <p>
                 You may not misuse the Website by introducing viruses, trojans,
@@ -96,10 +96,10 @@ const Terms = () => {
 
           {/* Section 3 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               3. Product Information & Disclaimer
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We make every effort to provide accurate product descriptions,
                 images, nutritional details, and ingredients. However, minor
@@ -111,11 +111,11 @@ const Terms = () => {
                 are responsible for reviewing ingredient lists before
                 consumption.
               </p>
-              <div className="bg-[#FFF3CD] border border-[#FFEAA7] rounded-lg p-4">
-                <p className="font-semibold text-[#856404] mb-2">
+              <div className="bg-gold-400/10 border border-gold-400/40 rounded-lg p-4">
+                <p className="font-semibold text-gold-200 mb-2">
                   Important Storage Notice:
                 </p>
-                <p className="text-[#856404]">
+                <p className="text-gold-200">
                   The respective shelf life offered is only valid if the product
                   is kept in airtight containers as suggested.{" "}
                   <strong>
@@ -134,10 +134,10 @@ const Terms = () => {
 
           {/* Section 4 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               4. Orders, Pricing & Payments
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 All prices displayed are in <strong>INR</strong> and subject to
                 change without prior notice.
@@ -156,10 +156,10 @@ const Terms = () => {
 
           {/* Section 5 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               5. Shipping & Delivery
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 Delivery timelines mentioned on the Website are estimates and
                 may vary due to factors beyond our control.
@@ -177,10 +177,10 @@ const Terms = () => {
 
           {/* Section 6 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               6. Returns & Refunds
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 Due to the perishable nature of our products, returns are
                 generally not accepted unless:
@@ -190,11 +190,11 @@ const Terms = () => {
                 <li>The product delivered is incorrect, or</li>
                 <li>The product is expired at the time of delivery.</li>
               </ul>
-              <div className="bg-[#E8F5E8] border border-[#C3E6C3] rounded-lg p-4">
-                <p className="font-semibold text-[#2D5A2D] mb-2">
+              <div className="bg-emerald-300/10 border border-emerald-300/40 rounded-lg p-4">
+                <p className="font-semibold text-emerald-300 mb-2">
                   Return/Refund Process:
                 </p>
-                <p className="text-[#2D5A2D]">
+                <p className="text-emerald-300">
                   For returns or refunds, one has to send a detailed description
                   mentioning order details and valid reason for return or refund
                   to our email or WhatsApp.{" "}
@@ -209,10 +209,10 @@ const Terms = () => {
 
           {/* Section 7 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               7. Intellectual Property
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 All content on this Website, including but not limited to text,
                 logos, product images, recipes, graphics, and design, is the
@@ -228,10 +228,10 @@ const Terms = () => {
 
           {/* Section 8 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               8. Limitation of Liability
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 To the maximum extent permitted by law,{" "}
                 <strong>SREE SHIVANI FOODS</strong> shall not be held liable
@@ -259,10 +259,10 @@ const Terms = () => {
 
           {/* Section 9 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               9. Privacy & Data Protection
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We respect your privacy. Information collected on this Website
                 (such as name, contact details, and payment information) is used
@@ -279,10 +279,10 @@ const Terms = () => {
 
           {/* Section 10 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               10. Governing Law & Jurisdiction
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 These Terms shall be governed by and construed in accordance
                 with the laws of India.
@@ -296,10 +296,10 @@ const Terms = () => {
 
           {/* Section 11 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               11. Modifications
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We reserve the right to amend these Terms at any time without
                 prior notice.
@@ -312,15 +312,15 @@ const Terms = () => {
           </section>
 
           {/* Contact Information */}
-          <div className="bg-[#ECE2CE] rounded-lg p-6 mt-8">
-            <h3 className="text-xl font-bold text-[#14402E] mb-4">
+          <div className="bg-emerald-950/60 rounded-lg p-6 mt-8">
+            <h3 className="text-xl font-display font-semibold text-cream mb-4">
               Contact Us
             </h3>
-            <p className="text-gray-700 mb-4">
+            <p className="text-cream mb-4">
               If you have any questions about these Terms and Conditions, please
               contact us:
             </p>
-            <div className="space-y-2 text-gray-700">
+            <div className="space-y-2 text-cream">
               <p>
                 <strong>Email:</strong> sreeshivanifoods@gamil.com
               </p>

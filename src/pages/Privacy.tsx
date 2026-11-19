@@ -4,35 +4,35 @@ import { Link } from "react-router-dom";
 
 const Privacy: React.FC = () => {
   return (
-    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
+    <div className="bg-emerald-950 text-cream pt-24 min-h-screen">
       <div className="px-4 py-12 mx-auto max-w-4xl sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
           <Link
             to="/contact"
-            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors mb-6"
+            className="inline-flex items-center text-sm font-semibold text-gold-300 hover:text-gold-200 transition-colors mb-6"
           >
-            <ArrowLeft size={20} className="mr-2" />
+            <ArrowLeft size={16} className="mr-2" />
             Back to Contact
           </Link>
 
           <div className="flex items-center mb-6">
-            <div className="w-12 h-12 bg-[#14402E] rounded-full flex items-center justify-center mr-4">
-              <Shield className="text-white" size={24} />
+            <div className="w-12 h-12 bg-gold-400 rounded-full flex items-center justify-center mr-4">
+              <Shield className="text-cream" size={24} />
             </div>
             <div>
-              <h1 className="font-display text-3xl sm:text-4xl font-bold text-[#14402E]">
+              <h1 className="font-display text-4xl sm:text-5xl font-semibold text-cream">
                 Privacy Policy
               </h1>
-              <p className="text-gray-600 mt-2">Last updated: 24/08/2025</p>
+              <p className="text-mist mt-2">Last updated: 24/08/2025</p>
             </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="bg-white rounded-xl shadow-lg p-8 space-y-8">
-          <div className="border-l-4 border-[#14402E] pl-6">
-            <p className="text-gray-700 leading-relaxed">
+        <div className="bg-emerald-900 rounded-xl p-8 space-y-8">
+          <div className="border-b border-gold-400/20 pb-8 text-[17px] leading-[1.7]">
+            <p className="text-cream leading-relaxed">
               At <strong>Devanagari</strong> (operated by Sree Shivani Foods, a
               sole proprietorship firm based in Davangere, Karnataka, India), we
               value and respect your privacy. This Privacy Policy explains how
@@ -40,7 +40,7 @@ const Privacy: React.FC = () => {
               visit and use our website{" "}
               <a
                 href="https://sreeshivanifoods.in"
-                className="text-[#14402E] hover:underline font-semibold"
+                className="text-cream hover:underline font-semibold"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -49,7 +49,7 @@ const Privacy: React.FC = () => {
               . By accessing or using our Website, you agree to the terms of
               this Privacy Policy.
             </p>
-            <p className="text-sm text-gray-500 mt-3 flex items-center">
+            <p className="text-sm text-mist mt-3 flex items-center">
               <FileText size={16} className="mr-2" />
               Effective Date: 24/08/2025
             </p>
@@ -57,10 +57,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 1 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               1. Information We Collect
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>When you interact with our Website, we may collect:</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>
@@ -79,10 +79,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 2 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               2. How We Use Your Information
             </h2>
-            <div className="space-y-2 text-gray-700">
+            <div className="space-y-2 text-cream">
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Processing and delivering your orders.</li>
                 <li>
@@ -106,10 +106,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 3 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               3. Sharing of Information
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We do not sell, rent, or trade your personal information to
                 third parties. However, we may share your information with:
@@ -129,10 +129,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 4 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               4. Cookies & Tracking
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 Our Website may use cookies and similar technologies to enhance
                 user experience, analyze traffic, and provide personalized
@@ -144,10 +144,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 5 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               5. Data Security
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We take reasonable technical and organizational measures to
                 protect your personal information against unauthorized access,
@@ -159,10 +159,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 6 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               6. Your Rights
             </h2>
-            <div className="space-y-2 text-gray-700">
+            <div className="space-y-2 text-cream">
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>
                   Access and review the personal information we hold about you.
@@ -182,10 +182,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 7 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               7. Third-Party Links
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 Our Website may contain links to third-party websites. We are
                 not responsible for the privacy practices or content of such
@@ -196,10 +196,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 8 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               8. Children’s Privacy
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 Our products and Website are not intended for individuals under
                 the age of 18. We do not knowingly collect personal data from
@@ -210,10 +210,10 @@ const Privacy: React.FC = () => {
 
           {/* Section 9 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               9. Changes to This Policy
             </h2>
-            <div className="space-y-4 text-gray-700">
+            <div className="space-y-4 text-cream">
               <p>
                 We may update this Privacy Policy from time to time. Any changes
                 will be posted on this page with an updated “Effective Date.”
@@ -223,12 +223,12 @@ const Privacy: React.FC = () => {
 
           {/* Section 10 */}
           <section>
-            <h2 className="text-2xl font-bold text-[#14402E] mb-4">
+            <h2 className="text-2xl font-display font-semibold text-cream mb-4">
               10. Contact Us
             </h2>
-            <div className="space-y-2 text-gray-700">
+            <div className="space-y-2 text-cream">
               <p>For questions, concerns, or requests regarding this policy:</p>
-              <div className="bg-[#ECE2CE] rounded-lg p-6 mt-2">
+              <div className="bg-emerald-950/60 rounded-lg p-6 mt-2">
                 <p>
                   <strong>Brand:</strong> Devanagari (Sree Shivani Foods)
                 </p>

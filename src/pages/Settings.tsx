@@ -6,6 +6,7 @@ import { supabase } from "../lib/supabaseClient";
 import { userService } from "../services/supabase";
 import BackButton from "../components/BackButton";
 import ConfirmationModal from "../components/ConfirmationModal";
+import { Check, Edit, MapPin, Plus, Star, Trash2, Upload, X } from "lucide-react";
 
 interface Address {
   id: string;
@@ -420,180 +421,181 @@ const Settings = () => {
     }
   };
 
+  // One underline field on dark, shared by the address form
+  const addrField = (
+    key: "name" | "phone" | "address_line_1" | "address_line_2" | "city" | "state" | "postal_code",
+    label: string,
+    opts: { required?: boolean; type?: string; placeholder?: string; autoComplete?: string } = {}
+  ) => (
+    <label className="block">
+      <span className="text-[13px] font-semibold text-mist">
+        {label}
+        {opts.required && <span className="text-gold-400"> *</span>}
+      </span>
+      <input
+        type={opts.type || "text"}
+        required={opts.required}
+        autoComplete={opts.autoComplete}
+        placeholder={opts.placeholder}
+        value={addressForm[key]}
+        onChange={(e) => setAddressForm({ ...addressForm, [key]: e.target.value })}
+        className="field-dark"
+      />
+    </label>
+  );
+
+  const closeAddressForm = () => {
+    setShowAddressForm(false);
+    setEditingAddress(null);
+  };
+
   if (!user) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600">Please sign in to view settings</p>
+      <div className="bg-emerald-950 pt-24 min-h-screen flex items-center justify-center text-cream">
+        <div className="text-center px-5">
+          <h1 className="font-display text-4xl">Settings</h1>
+          <p className="mt-3 text-mist">Please sign in to view settings.</p>
         </div>
       </div>
     );
   }
 
+  const tabs = [
+    { id: "profile", label: "Profile Settings" },
+    { id: "addresses", label: "Address Management" },
+  ] as const;
+
   return (
-    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-6">
-          <BackButton text="Back to Profile" />
-        </div>
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold text-[#14402E] mb-2">Settings</h1>
-          <p className="text-gray-600">Manage your profile and addresses</p>
+    <div className="bg-emerald-950 pt-24 min-h-screen text-cream">
+      <div className="mx-auto max-w-4xl px-5 sm:px-8 pt-8 sm:pt-12 pb-24">
+        <BackButton text="Back to Profile" tone="dark" />
+        <div className="mt-6 sm:mt-8 mb-8">
+          <h1 className="font-display text-4xl sm:text-5xl leading-[1.05]">Settings</h1>
+          <p className="mt-2 text-[15px] text-mist">Manage your profile and addresses</p>
         </div>
 
         {/* Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab("profile")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "profile"
-                    ? "border-[#14402E] text-[#14402E]"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-              >
-                Profile Settings
-              </button>
-              <button
-                onClick={() => setActiveTab("addresses")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "addresses"
-                    ? "border-[#14402E] text-[#14402E]"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-              >
-                Address Management
-              </button>
-            </nav>
-          </div>
+        <div role="tablist" className="mb-8 flex gap-6 sm:gap-8 overflow-x-auto border-b border-gold-400/20">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`-mb-px whitespace-nowrap border-b-2 pb-3 text-[15px] font-semibold transition-colors ${
+                activeTab === tab.id
+                  ? "border-gold-400 text-gold-300"
+                  : "border-transparent text-mist hover:text-cream"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Profile Settings Tab */}
         {activeTab === "profile" && (
-          <div className="bg-white rounded-xl shadow p-6 border border-gray-100">
-            <h2 className="text-xl font-semibold text-[#14402E] mb-6">
-              Profile Information
-            </h2>
+          <section className="panel p-5 sm:p-8">
+            <h2 className="font-display text-2xl">Profile Information</h2>
 
-            <div className="space-y-6">
-              {/* Avatar Section */}
+            <div className="mt-7 space-y-7">
+              {/* Avatar */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Profile Picture
-                </label>
-                <div className="flex items-center space-x-4">
-                  <div className="relative flex-shrink-0">
+                <span className="text-[13px] font-semibold text-mist">Profile Picture</span>
+                <div className="mt-3 flex flex-wrap items-center gap-5">
+                  <div className="relative shrink-0">
                     {avatarPreview ? (
                       <img
                         src={avatarPreview}
                         alt="Profile"
-                        className="h-20 w-20 rounded-full border-2 border-[#14402E] object-cover"
+                        className="h-20 w-20 rounded-full object-cover ring-1 ring-gold-400/70 ring-offset-4 ring-offset-emerald-900"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
-                          e.currentTarget.nextElementSibling?.classList.remove(
-                            "hidden"
-                          );
+                          e.currentTarget.nextElementSibling?.classList.remove("hidden");
                         }}
                       />
                     ) : null}
                     <div
-                      className={`h-20 w-20 rounded-full bg-gray-200 border-2 border-[#14402E] flex items-center justify-center flex-shrink-0 ${
+                      className={`grid h-20 w-20 place-items-center rounded-full bg-emerald-800 ring-1 ring-gold-400/70 ring-offset-4 ring-offset-emerald-900 ${
                         avatarPreview ? "hidden" : ""
                       }`}
                     >
-                      <span className="text-2xl font-bold text-[#14402E]">
+                      <span className="font-display text-3xl text-gold-300">
                         {profileData.full_name.charAt(0).toUpperCase() || "U"}
                       </span>
                     </div>
                   </div>
-                  <div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#14402E] file:text-white hover:file:bg-[#0B2118]"
-                    />
-                    <p className="text-xs text-gray-500 mt-1">
-                      JPG, PNG or GIF. Max size 2MB.
-                    </p>
+                  <div className="min-w-0">
+                    <label className="btn-outline-gold cursor-pointer !py-2.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-[3px] focus-within:outline-gold-400">
+                      <Upload size={16} strokeWidth={1.8} />
+                      Choose photo
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAvatarChange}
+                        className="sr-only"
+                      />
+                    </label>
+                    <p className="mt-2 text-xs text-mist">JPG, PNG or GIF. Max size 2MB.</p>
                   </div>
                 </div>
               </div>
 
-              {/* Name Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
+              <label className="block">
+                <span className="text-[13px] font-semibold text-mist">Full Name</span>
                 <input
                   type="text"
+                  autoComplete="name"
                   value={profileData.full_name}
-                  onChange={(e) =>
-                    setProfileData({
-                      ...profileData,
-                      full_name: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                  onChange={(e) => setProfileData({ ...profileData, full_name: e.target.value })}
+                  className="field-dark"
                   placeholder="Enter your full name"
                 />
-              </div>
+              </label>
 
-              {/* Email Field (Read-only) */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
-                </label>
+              <label className="block">
+                <span className="text-[13px] font-semibold text-mist">Email Address</span>
                 <input
                   type="email"
                   value={profileData.email}
                   disabled
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+                  className="field-dark cursor-not-allowed !border-gold-400/15 !text-mist"
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <span className="mt-2 block text-xs text-mist">
                   Email cannot be changed. Contact support if needed.
-                </p>
-              </div>
+                </span>
+              </label>
 
-              {/* Phone Field */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Phone Number
-                </label>
+              <label className="block">
+                <span className="text-[13px] font-semibold text-mist">Phone Number</span>
                 <input
                   type="tel"
+                  autoComplete="tel"
                   value={profileData.phone}
-                  onChange={(e) =>
-                    setProfileData({ ...profileData, phone: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                  onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                  className="field-dark"
                   placeholder="Enter your phone number"
                 />
-              </div>
+              </label>
 
-              {/* Save Button */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <button
                   onClick={updateProfile}
                   disabled={saving}
-                  className="bg-[#14402E] text-white px-6 py-2 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="btn-gold w-full sm:w-auto !px-8 !py-3.5 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {saving ? "Saving..." : "Save Changes"}
+                  {saving ? "Saving…" : "Save Changes"}
                 </button>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
         {/* Address Management Tab */}
         {activeTab === "addresses" && (
-          <div className="space-y-6">
-            {/* Add Address Button */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-[#14402E]">
-                Address Management
-              </h2>
+          <section className="panel p-5 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-display text-2xl">Address Management</h2>
               <button
                 onClick={() => {
                   setShowAddressForm(true);
@@ -610,315 +612,176 @@ const Settings = () => {
                     is_default: false,
                   });
                 }}
-                className="bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors"
+                className="btn-gold whitespace-nowrap !px-4 !py-2.5"
               >
+                <Plus size={16} />
                 Add New Address
               </button>
             </div>
 
-            {/* Address Form Modal */}
-            {showAddressForm && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-                  <div className="p-6">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-semibold text-[#14402E]">
-                        {editingAddress ? "Edit Address" : "Add New Address"}
-                      </h3>
-                      <button
-                        onClick={() => {
-                          setShowAddressForm(false);
-                          setEditingAddress(null);
-                        }}
-                        className="text-gray-400 hover:text-gray-600"
-                      >
-                        ✕
-                      </button>
-                    </div>
-
-                    <form onSubmit={handleAddressSubmit} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={addressForm.name}
-                          onChange={(e) =>
-                            setAddressForm({
-                              ...addressForm,
-                              name: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                          placeholder="Enter full name"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Phone Number *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          value={addressForm.phone}
-                          onChange={(e) =>
-                            setAddressForm({
-                              ...addressForm,
-                              phone: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                          placeholder="Enter phone number"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Address Line 1 *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={addressForm.address_line_1}
-                          onChange={(e) =>
-                            setAddressForm({
-                              ...addressForm,
-                              address_line_1: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                          placeholder="Street address, P.O. box, etc."
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Address Line 2
-                        </label>
-                        <input
-                          type="text"
-                          value={addressForm.address_line_2}
-                          onChange={(e) =>
-                            setAddressForm({
-                              ...addressForm,
-                              address_line_2: e.target.value,
-                            })
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                          placeholder="Apartment, suite, unit, building, floor, etc."
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            City *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={addressForm.city}
-                            onChange={(e) =>
-                              setAddressForm({
-                                ...addressForm,
-                                city: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                            placeholder="City"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            State *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={addressForm.state}
-                            onChange={(e) =>
-                              setAddressForm({
-                                ...addressForm,
-                                state: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                            placeholder="State"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Postal Code *
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            value={addressForm.postal_code}
-                            onChange={(e) =>
-                              setAddressForm({
-                                ...addressForm,
-                                postal_code: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                            placeholder="Postal code"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Country *
-                          </label>
-                          <select
-                            required
-                            value={addressForm.country}
-                            onChange={(e) =>
-                              setAddressForm({
-                                ...addressForm,
-                                country: e.target.value,
-                              })
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
-                          >
-                            <option value="India">India</option>
-                            <option value="United States">United States</option>
-                            <option value="United Kingdom">
-                              United Kingdom
-                            </option>
-                            <option value="Canada">Canada</option>
-                            <option value="Australia">Australia</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          id="is_default"
-                          checked={addressForm.is_default}
-                          onChange={(e) =>
-                            setAddressForm({
-                              ...addressForm,
-                              is_default: e.target.checked,
-                            })
-                          }
-                          className="h-4 w-4 text-[#14402E] focus:ring-[#14402E] border-gray-300 rounded"
-                        />
-                        <label
-                          htmlFor="is_default"
-                          className="ml-2 block text-sm text-gray-700"
-                        >
-                          Set as default address
-                        </label>
-                      </div>
-
-                      <div className="flex space-x-3 pt-4">
-                        <button
-                          type="submit"
-                          disabled={saving}
-                          className="flex-1 bg-[#14402E] text-white py-2 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                        >
-                          {saving
-                            ? "Saving..."
-                            : editingAddress
-                            ? "Update Address"
-                            : "Add Address"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowAddressForm(false);
-                            setEditingAddress(null);
-                          }}
-                          className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Addresses List */}
             {loading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E] mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading addresses...</p>
+              <div className="py-12 text-center">
+                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gold-400/20 border-t-gold-400" />
+                <p className="text-sm text-mist">Loading addresses…</p>
               </div>
             ) : addresses.length === 0 ? (
-              <div className="bg-white rounded-xl shadow p-6 border border-gray-100 text-center">
-                <p className="text-gray-600 mb-4">No addresses saved yet</p>
-                <p className="text-sm text-gray-500">
-                  Add your first address to make checkout faster
-                </p>
+              <div className="mt-6 rounded-xl border border-dashed border-gold-400/30 px-6 py-10 text-center">
+                <MapPin size={32} strokeWidth={1.5} className="mx-auto text-gold-400" />
+                <p className="mt-4 text-cream">No addresses saved yet</p>
+                <p className="mt-1 text-sm text-mist">Add your first address to make checkout faster</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ul className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {addresses.map((address) => (
-                  <div
+                  <li
                     key={address.id}
-                    className="bg-white rounded-xl shadow p-6 border border-gray-100"
+                    className={`flex flex-col rounded-xl border p-5 transition-colors ${
+                      address.is_default ? "border-gold-400/60" : "border-gold-400/20 hover:border-gold-400/45"
+                    }`}
                   >
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h3 className="font-semibold text-[#14402E]">
-                          {address.name}
-                        </h3>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="font-semibold text-cream">{address.name}</h3>
                         {address.is_default && (
-                          <span className="inline-block px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full mt-1">
+                          <span className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-gold-400 px-2.5 py-0.5 text-xs font-semibold text-emerald-950">
+                            <Star size={11} fill="currentColor" />
                             Default
                           </span>
                         )}
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="-mr-2 -mt-1 flex shrink-0">
                         <button
                           onClick={() => editAddress(address)}
-                          className="text-[#14402E] hover:text-[#0B2118] text-sm"
+                          aria-label={`Edit address for ${address.name}`}
+                          title="Edit address"
+                          className="grid h-9 w-9 place-items-center rounded-full text-mist transition-colors hover:bg-gold-400/10 hover:text-gold-200"
                         >
-                          Edit
+                          <Edit size={16} strokeWidth={1.7} />
                         </button>
                         <button
                           onClick={() => deleteAddress(address.id)}
-                          className="text-red-600 hover:text-red-800 text-sm"
+                          aria-label={`Delete address for ${address.name}`}
+                          title="Delete address"
+                          className="grid h-9 w-9 place-items-center rounded-full text-mist transition-colors hover:bg-[#F0A08C]/10 hover:text-[#F0A08C]"
                         >
-                          Delete
+                          <Trash2 size={16} strokeWidth={1.7} />
                         </button>
                       </div>
                     </div>
 
-                    <div className="text-sm text-gray-600 space-y-1">
+                    <address className="mt-3 space-y-0.5 text-sm not-italic leading-relaxed text-mist">
                       <p>{address.address_line_1}</p>
-                      {address.address_line_2 && (
-                        <p>{address.address_line_2}</p>
-                      )}
+                      {address.address_line_2 && <p>{address.address_line_2}</p>}
                       <p>
                         {address.city}, {address.state} {address.postal_code}
                       </p>
                       <p>{address.country}</p>
-                      <p className="font-medium">{address.phone}</p>
-                    </div>
+                      <p className="pt-1 font-semibold text-cream tabular-nums">{address.phone}</p>
+                    </address>
 
                     {!address.is_default && (
                       <button
                         onClick={() => setDefaultAddress(address.id)}
-                        className="mt-4 text-sm text-[#14402E] hover:text-[#0B2118] font-medium"
+                        className="btn-outline-gold mt-4 w-full !py-2"
                       >
                         Set as Default
                       </button>
                     )}
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
+          </section>
+        )}
+
+        {/* Address form */}
+        {showAddressForm && (
+          <div
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4"
+            onClick={closeAddressForm}
+          >
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="settings-address-title"
+              onClick={(e) => e.stopPropagation()}
+              className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-[14px] border border-gold-400/25 bg-emerald-900 p-6 sm:p-8 text-cream shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)]"
+            >
+              <div className="flex items-center justify-between">
+                <h3 id="settings-address-title" className="font-display text-2xl">
+                  {editingAddress ? "Edit Address" : "Add New Address"}
+                </h3>
+                <button
+                  onClick={closeAddressForm}
+                  aria-label="Close"
+                  className="-mr-2 grid h-9 w-9 place-items-center rounded-full text-mist transition-colors hover:bg-gold-400/10 hover:text-cream"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleAddressSubmit} className="mt-6 space-y-5">
+                {addrField("name", "Full Name", { required: true, autoComplete: "name", placeholder: "Enter full name" })}
+                {addrField("phone", "Phone Number", { required: true, type: "tel", autoComplete: "tel", placeholder: "Enter phone number" })}
+                {addrField("address_line_1", "Address Line 1", {
+                  required: true,
+                  autoComplete: "address-line1",
+                  placeholder: "Street address, P.O. box, etc.",
+                })}
+                {addrField("address_line_2", "Address Line 2", {
+                  autoComplete: "address-line2",
+                  placeholder: "Apartment, suite, unit, building, floor, etc.",
+                })}
+                <div className="grid grid-cols-2 gap-5">
+                  {addrField("city", "City", { required: true, autoComplete: "address-level2", placeholder: "City" })}
+                  {addrField("state", "State", { required: true, autoComplete: "address-level1", placeholder: "State" })}
+                </div>
+                <div className="grid grid-cols-2 gap-5">
+                  {addrField("postal_code", "Postal Code", { required: true, autoComplete: "postal-code", placeholder: "Postal code" })}
+                  <label className="block">
+                    <span className="text-[13px] font-semibold text-mist">
+                      Country<span className="text-gold-400"> *</span>
+                    </span>
+                    <select
+                      required
+                      value={addressForm.country}
+                      onChange={(e) => setAddressForm({ ...addressForm, country: e.target.value })}
+                      className="field-dark [&>option]:bg-emerald-900"
+                    >
+                      <option value="India">India</option>
+                      <option value="United States">United States</option>
+                      <option value="United Kingdom">United Kingdom</option>
+                      <option value="Canada">Canada</option>
+                      <option value="Australia">Australia</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label className="flex items-center gap-3 pt-1 text-sm text-cream">
+                  <input
+                    type="checkbox"
+                    checked={addressForm.is_default}
+                    onChange={(e) => setAddressForm({ ...addressForm, is_default: e.target.checked })}
+                    className="h-4 w-4 rounded accent-[#D4A63E]"
+                  />
+                  Set as default address
+                </label>
+
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-3">
+                  <button type="button" onClick={closeAddressForm} className="btn-outline-gold flex-1">
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="btn-gold flex-1 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <Check size={16} />
+                    {saving ? "Saving…" : editingAddress ? "Update Address" : "Add Address"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
 

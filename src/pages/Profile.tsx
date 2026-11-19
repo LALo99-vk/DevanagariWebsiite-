@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight, Package, RefreshCw, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import { ordersService, Order, OrderItem } from "../services/supabase";
-import { supabase } from "../lib/supabaseClient";
 import AddressManagement from "../components/AddressManagement";
 import BackButton from "../components/BackButton";
 import ConfirmationModal from "../components/ConfirmationModal";
@@ -83,17 +83,20 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600">Please sign in to view your profile</p>
+      <div className="bg-emerald-950 pt-24 min-h-screen flex items-center justify-center text-cream">
+        <div className="text-center px-5">
+          <h1 className="font-display text-4xl">Your profile</h1>
+          <p className="mt-3 text-mist">Please sign in to view your profile.</p>
         </div>
       </div>
     );
   }
 
+  const name = user.user_metadata?.full_name || "User";
+
   return (
-    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="bg-emerald-950 pt-24 min-h-screen text-cream">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 pt-8 sm:pt-12 pb-24">
         {showOrderModal && (
           <ConfirmationModal
             isOpen={showOrderModal}
@@ -106,280 +109,182 @@ const Profile = () => {
             type="success"
           />
         )}
-        <div className="mb-6">
-          <BackButton text="Back to Home" />
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-4 sm:space-y-0">
-          <div className="flex items-center space-x-4">
+        <BackButton text="Back to Home" tone="dark" />
+
+        {/* Header */}
+        <div className="mt-6 sm:mt-8 mb-8 sm:mb-10 flex flex-wrap items-center justify-between gap-5 sm:gap-6">
+          <div className="flex min-w-0 items-center gap-4 sm:gap-5">
             {user.user_metadata?.avatar_url ? (
               <img
                 src={user.user_metadata.avatar_url}
-                alt={user.user_metadata.full_name || "User"}
-                className="h-16 w-16 rounded-full border-2 border-[#14402E] shadow-lg object-cover"
+                alt=""
+                className="h-14 w-14 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 rounded-full object-cover ring-1 ring-gold-400/70 ring-offset-4 ring-offset-emerald-950"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
-                  e.currentTarget.nextElementSibling?.classList.remove(
-                    "hidden"
-                  );
+                  e.currentTarget.nextElementSibling?.classList.remove("hidden");
                 }}
               />
             ) : null}
             <div
-              className={`h-16 w-16 rounded-full bg-gray-200 border-2 border-[#14402E] flex items-center justify-center flex-shrink-0 ${
+              className={`grid h-14 w-14 sm:h-[4.5rem] sm:w-[4.5rem] shrink-0 place-items-center rounded-full bg-emerald-800 ring-1 ring-gold-400/70 ring-offset-4 ring-offset-emerald-950 ${
                 user.user_metadata?.avatar_url ? "hidden" : ""
               }`}
             >
-              <span className="text-2xl font-bold text-[#14402E]">
-                {(user.user_metadata?.full_name || user.email || "U")
-                  .charAt(0)
-                  .toUpperCase()}
+              <span className="font-display text-2xl sm:text-3xl text-gold-300">
+                {(user.user_metadata?.full_name || user.email || "U").charAt(0).toUpperCase()}
               </span>
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-2xl sm:text-3xl font-bold text-[#14402E] truncate">
-                {user.user_metadata?.full_name || "User"}
-              </div>
-              <div className="text-base sm:text-lg text-gray-600 truncate">
-                {user.email}
-              </div>
+            <div className="min-w-0">
+              <h1 className="font-display text-3xl sm:text-5xl leading-[1.08] break-words">{name}</h1>
+              <p className="mt-1 text-sm sm:text-[15px] text-mist break-all">{user.email}</p>
             </div>
           </div>
-          <div className="flex justify-end sm:justify-start">
-            <Link
-              to="/settings"
-              className="bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors flex items-center space-x-2 text-sm sm:text-base"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span>Settings</span>
-            </Link>
-          </div>
+          <Link to="/settings" className="btn-outline-gold !py-2.5">
+            <Settings size={16} strokeWidth={1.8} />
+            Settings
+          </Link>
         </div>
 
-        {/* Profile Information Card */}
-        <div className="bg-white rounded-xl shadow p-4 sm:p-6 border border-gray-100 mb-8">
-          <h2 className="text-lg sm:text-xl font-semibold text-[#14402E] mb-4">
-            Profile Information
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Profile information */}
+        <section className="panel p-5 sm:p-7">
+          <h2 className="font-display text-2xl">Profile Information</h2>
+          <dl className="mt-6 grid gap-6 sm:grid-cols-2">
             <div className="min-w-0">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-              </label>
-              <div className="text-base sm:text-lg text-[#14402E] font-medium truncate">
+              <dt className="text-[13px] font-semibold text-mist">Full Name</dt>
+              <dd className="mt-1 text-lg text-cream truncate">
                 {user.user_metadata?.full_name || "Not provided"}
-              </div>
+              </dd>
             </div>
             <div className="min-w-0">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <div className="text-base sm:text-lg text-[#14402E] font-medium truncate">
-                {user.email || "Not provided"}
-              </div>
+              <dt className="text-[13px] font-semibold text-mist">Email Address</dt>
+              <dd className="mt-1 text-lg text-cream break-all">{user.email || "Not provided"}</dd>
             </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-gray-200">
-            <p className="text-xs sm:text-sm text-gray-500">
-              <span className="font-medium">Note:</span> Your profile
-              information is automatically synced from your account. To update
-              your name or photo, please change it in your account settings.
-            </p>
-          </div>
-        </div>
+          </dl>
+          <p className="mt-6 border-t border-gold-400/15 pt-5 text-sm leading-relaxed text-mist">
+            <span className="font-semibold text-cream">Note:</span> Your profile information is
+            automatically synced from your account. To update your name or photo, please change it
+            in your account settings.
+          </p>
+        </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          {/* Order History */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 border border-gray-100">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
-              <h2 className="text-lg sm:text-xl font-semibold text-[#14402E]">
-                Order History
-              </h2>
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          {/* Order history */}
+          <section className="panel p-5 sm:p-7">
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="font-display text-2xl">Order History</h2>
               <button
                 onClick={refreshOrders}
                 disabled={refreshing || loading}
-                className="text-[#14402E] hover:text-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
+                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-gold-300 transition-colors hover:bg-gold-400/10 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {refreshing ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[#14402E]"></div>
-                    <span>Refreshing...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                      />
-                    </svg>
-                    <span>Refresh</span>
-                  </>
-                )}
+                <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
+                {refreshing ? "Refreshing…" : "Refresh"}
               </button>
             </div>
 
             {loading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14402E] mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading orders...</p>
+              <div className="py-12 text-center">
+                <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gold-400/20 border-t-gold-400" />
+                <p className="text-sm text-mist">Loading orders…</p>
               </div>
             ) : orders.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600 mb-4">No orders yet</p>
-                <a
-                  href="/shop"
-                  className="inline-block bg-[#14402E] text-white px-4 py-2 rounded-lg hover:bg-[#0B2118] transition-colors"
-                >
+              <div className="py-12 text-center">
+                <Package size={36} strokeWidth={1.4} className="mx-auto text-gold-400" />
+                <p className="mt-4 text-cream">No orders yet</p>
+                <Link to="/shop" className="btn-gold mt-6">
                   Start Shopping
-                </a>
+                </Link>
               </div>
             ) : (
-              <div className="space-y-4">
+              <ul className="mt-6 divide-y divide-gold-400/15 border-t border-gold-400/15">
                 {orders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="border border-gray-200 rounded-lg p-4 hover:border-[#14402E] transition-colors"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h3 className="font-semibold text-[#14402E]">
+                  <li key={order.id} className="py-5">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <h3 className="font-display text-lg sm:text-xl text-cream tabular-nums whitespace-nowrap">
                           Order #{order.id.slice(0, 8)}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="mt-0.5 text-sm text-mist tabular-nums">
                           {new Date(order.created_at).toLocaleDateString()}
                         </p>
                         {order.payment_id && (
-                          <p className="text-xs text-gray-500">
-                            Payment ID: {order.payment_id.slice(0, 20)}...
+                          <p className="mt-0.5 text-xs text-mist/80 truncate">
+                            Payment ID: {order.payment_id.slice(0, 20)}…
                           </p>
                         )}
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-[#14402E]">
-                          ₹{order.total.toFixed(2)} {order.currency || "INR"}
+                        <div className="font-display text-lg sm:text-xl text-gold-300 tabular-nums whitespace-nowrap">
+                          ₹{order.total.toFixed(2)}
                         </div>
-                        <div className="flex space-x-1 mt-1">
-                          <span
-                            className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                              order.status === "pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : order.status === "processing"
-                                ? "bg-blue-100 text-blue-800"
-                                : order.status === "shipped"
-                                ? "bg-purple-100 text-purple-800"
-                                : order.status === "delivered"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {order.status.charAt(0).toUpperCase() +
-                              order.status.slice(1)}
-                          </span>
-                          {order.payment_status && (
-                            <span
-                              className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                                order.payment_status === "paid"
-                                  ? "bg-green-100 text-green-800"
-                                  : order.payment_status === "failed"
-                                  ? "bg-red-100 text-red-800"
-                                  : "bg-yellow-100 text-yellow-800"
-                              }`}
-                            >
-                              {order.payment_status.charAt(0).toUpperCase() +
-                                order.payment_status.slice(1)}
-                            </span>
-                          )}
+                        <div className="mt-2 flex flex-wrap justify-end gap-1.5">
+                          <StatusChip value={order.status} />
+                          {order.payment_status && <StatusChip value={order.payment_status} payment />}
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-2 mb-3">
-                      <div className="flex justify-between text-sm">
-                        <span>Order Total</span>
-                        <span>
-                          ₹{order.total.toFixed(2)} {order.currency || "INR"}
-                        </span>
-                      </div>
+                    <div className="mt-4 space-y-1.5 text-sm">
                       {order.order_items && order.order_items.length > 0 ? (
                         order.order_items.map((item) => (
-                          <div
-                            key={item.id}
-                            className="flex justify-between text-sm"
-                          >
-                            <span>
-                              {item.product_name ||
-                                item.product?.name ||
-                                "Product"}{" "}
-                              × {item.quantity}
+                          <div key={item.id} className="flex justify-between gap-4 text-mist">
+                            <span className="truncate">
+                              {item.product_name || item.product?.name || "Product"} × {item.quantity}
                             </span>
-                            <span>
-                              ₹{item.product_price.toFixed(2)}{" "}
-                              {order.currency || "INR"}
+                            <span className="tabular-nums text-cream">
+                              ₹{item.product_price.toFixed(2)}
                             </span>
                           </div>
                         ))
                       ) : (
-                        <div className="text-sm text-gray-500">
-                          Order items not loaded (simplified view)
-                        </div>
+                        <div className="text-mist">Order items not loaded (simplified view)</div>
                       )}
                     </div>
 
-                    <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                      <div className="flex space-x-2 text-xs text-gray-500">
-                        {order.payment_method && (
-                          <span>Payment: {order.payment_method}</span>
-                        )}
-                        {order.currency && (
-                          <span>Currency: {order.currency}</span>
-                        )}
+                    <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                      <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-mist">
+                        {order.payment_method && <span>Payment: {order.payment_method}</span>}
+                        {order.currency && <span>Currency: {order.currency}</span>}
                       </div>
-                      <Link
-                        to={`/order/${order.id}`}
-                        className="text-sm text-[#14402E] hover:text-[#0B2118] font-medium"
-                      >
-                        View Details →
+                      <Link to={`/order/${order.id}`} className="link-gold whitespace-nowrap">
+                        View Details
+                        <ArrowRight size={15} />
                       </Link>
                     </div>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
-          </div>
+          </section>
 
-          {/* Address Management */}
-          <div className="bg-white rounded-xl shadow p-4 sm:p-6 border border-gray-100">
+          {/* Address management */}
+          <section className="panel p-5 sm:p-7">
             <AddressManagement />
-          </div>
+          </section>
         </div>
       </div>
     </div>
   );
 };
+
+// Order and payment status: a coloured dot on a quiet chip
+const STATUS_DOT: Record<string, string> = {
+  pending: "bg-gold-400",
+  processing: "bg-gold-200",
+  shipped: "bg-emerald-300",
+  delivered: "bg-emerald-300",
+  paid: "bg-emerald-300",
+  failed: "bg-[#F0A08C]",
+  cancelled: "bg-[#F0A08C]",
+};
+
+const StatusChip = ({ value, payment = false }: { value: string; payment?: boolean }) => (
+  <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-gold-400/25 px-2.5 py-0.5 text-xs font-semibold text-cream">
+    <span className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT[value] ?? "bg-[#F0A08C]"}`} />
+    {payment && value !== "paid"
+      ? `Payment ${value}`
+      : value.charAt(0).toUpperCase() + value.slice(1)}
+  </span>
+);
 
 export default Profile;

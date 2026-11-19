@@ -1,11 +1,41 @@
 import { useState } from "react";
 import placeholderImg from "../assets/shop/ingredients.png";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  Trash2,
+  ShoppingBag,
+  ArrowLeft,
+  ArrowRight,
+  ShieldCheck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import CheckoutModal from "../components/CheckoutModal";
+
+const rupees = (n: number) => `₹${n.toFixed(2)}`;
+
+// Centred message used for the signed-out and empty states
+const CartMessage = ({
+  title,
+  text,
+  children,
+}: {
+  title: string;
+  text: string;
+  children: React.ReactNode;
+}) => (
+  <div className="bg-emerald-950 pt-24 min-h-screen text-cream">
+    <div className="mx-auto max-w-xl px-5 sm:px-8 py-24 text-center">
+      <ShoppingBag size={44} strokeWidth={1.4} className="mx-auto text-gold-400" />
+      <h1 className="mt-6 font-display text-4xl sm:text-5xl leading-[1.08]">{title}</h1>
+      <p className="mt-4 text-[17px] leading-[1.7] text-mist">{text}</p>
+      <div className="mt-10 flex flex-col sm:flex-row gap-3 justify-center">{children}</div>
+    </div>
+  </div>
+);
 
 const Cart = () => {
   const {
@@ -16,340 +46,220 @@ const Cart = () => {
     totalPrice,
     loading,
   } = useCart();
-  const { user } = useAuth();
+  const { user, loginWithGoogle } = useAuth();
   const { showError } = useNotification();
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
-  const getSubtotal = (price: number, qty: number) => price * qty;
+  const changeQty = async (itemId: string, quantity: number) => {
+    try {
+      await updateQty(itemId, quantity);
+    } catch (error) {
+      showError(
+        "Couldn't update quantity",
+        error instanceof Error ? error.message : "Please try again."
+      );
+    }
+  };
 
-  const handlePaymentInitiation = async () => {
-    // Open checkout modal instead of checking addresses directly
-    setShowCheckoutModal(true);
+  const remove = async (itemId: string) => {
+    try {
+      await removeItem(itemId);
+    } catch {
+      showError("Couldn't remove item", "Please try again.");
+    }
   };
 
   if (loading) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen flex items-center justify-center">
+      <div className="bg-emerald-950 pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#14402E] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading cart...</p>
+          <div className="mx-auto mb-5 h-10 w-10 animate-spin rounded-full border-2 border-gold-400/20 border-t-gold-400" />
+          <p className="text-sm text-mist">Loading your cart…</p>
         </div>
       </div>
     );
   }
 
-  // Show different messages based on authentication status
   if (!user) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <ShoppingBag size={64} className="mx-auto text-gray-400 mb-6" />
-            <h1 className="font-display text-3xl font-bold text-[#14402E] mb-4">
-              Sign In to View Your Cart
-            </h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Please sign in to view your cart and manage your items.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => {
-                  // This will trigger the Google sign-in
-                  window.location.href = "/";
-                }}
-                className="inline-flex items-center px-6 py-3 bg-[#14402E] text-white rounded-lg font-semibold hover:bg-[#0B2118] transition-colors duration-200"
-              >
-                Sign In with Google
-              </button>
-              <Link
-                to="/shop"
-                className="inline-flex items-center px-6 py-3 border-2 border-[#14402E] text-[#14402E] rounded-lg font-semibold hover:bg-[#14402E] hover:text-white transition-colors duration-200"
-              >
-                <ArrowLeft size={20} className="mr-2" />
-                Continue Shopping
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CartMessage
+        title="Sign in to view your cart"
+        text="Please sign in to view your cart and manage your items."
+      >
+        <button
+          onClick={() =>
+            loginWithGoogle().catch(() =>
+              showError("Sign-in failed", "Please try again in a moment.")
+            )
+          }
+          className="btn-gold !px-7 !py-3.5 !text-[15px]"
+        >
+          Sign in with Google
+        </button>
+        <Link to="/shop" className="btn-outline-gold !px-7 !py-3.5 !text-[15px]">
+          <ArrowLeft size={17} />
+          Continue Shopping
+        </Link>
+      </CartMessage>
     );
   }
 
   if (cartItems.length === 0) {
     return (
-      <div className="bg-[#F6F0E4] pt-24 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <ShoppingBag size={64} className="mx-auto text-gray-400 mb-6" />
-            <h1 className="font-display text-3xl font-bold text-[#14402E] mb-4">
-              Your Cart is Empty
-            </h1>
-            <p className="text-lg text-gray-600 mb-8">
-              Looks like you haven't added any items to your cart yet.
-            </p>
-            <Link
-              to="/shop"
-              className="inline-flex items-center px-6 py-3 bg-[#14402E] text-white rounded-lg font-semibold hover:bg-[#0B2118] transition-colors duration-200"
-            >
-              <ArrowLeft size={20} className="mr-2" />
-              Continue Shopping
-            </Link>
-          </div>
-        </div>
-      </div>
+      <CartMessage
+        title="Your cart is empty"
+        text="Looks like you haven't added any items to your cart yet."
+      >
+        <Link to="/shop" className="btn-gold !px-7 !py-3.5 !text-[15px]">
+          <ArrowLeft size={17} />
+          Continue Shopping
+        </Link>
+      </CartMessage>
     );
   }
 
   return (
-    <div className="bg-[#F6F0E4] pt-24 min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="bg-emerald-950 pt-24 min-h-screen text-cream">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 pt-14 pb-24">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
-          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-[#14402E]">
-            Shopping Cart
-          </h1>
-          <Link
-            to="/shop"
-            className="inline-flex items-center text-[#14402E] hover:text-[#0B2118] transition-colors text-sm sm:text-base"
-          >
-            <ArrowLeft size={18} className="mr-2" />
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
+          <div>
+            <h1 className="font-display text-4xl sm:text-5xl leading-[1.05]">
+              Shopping Cart
+            </h1>
+            <p className="mt-2 text-[15px] text-mist tabular-nums">
+              {totalItems} {totalItems === 1 ? "item" : "items"}
+            </p>
+          </div>
+          <Link to="/shop" className="link-gold">
+            <ArrowLeft size={16} />
             Continue Shopping
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_22rem] gap-8 lg:gap-10 items-start">
+          {/* Line items: one panel, rows divided by gold rules */}
+          <ul className="panel divide-y divide-gold-400/15">
             {cartItems.map((item) => {
-              console.log("Cart item:", item);
+              const price = item.product?.price || 0;
+              const name = item.product?.name || "Product";
               return (
-                <div
+                <li
                   key={`${item.id}-${item.product_id}`}
-                  className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100"
+                  className="grid grid-cols-[4.5rem_minmax(0,1fr)] sm:grid-cols-[5.5rem_minmax(0,1fr)_auto] gap-x-4 sm:gap-x-6 gap-y-4 p-4 sm:p-6"
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 lg:space-x-6">
-                    {/* Product Image */}
-                    <div className="flex-shrink-0 mx-auto sm:mx-0">
-                      <img
-                        src={
-                          typeof item.product?.image_url === "string" &&
-                          /^https?:\/\//i.test(item.product.image_url)
-                            ? item.product.image_url
-                            : placeholderImg
-                        }
-                        alt={item.product?.name || "Product"}
-                        className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg"
-                      />
+                  <div className="aspect-square overflow-hidden rounded-xl bg-emerald-800">
+                    <img
+                      src={
+                        typeof item.product?.image_url === "string" &&
+                        /^https?:\/\//i.test(item.product.image_url)
+                          ? item.product.image_url
+                          : placeholderImg
+                      }
+                      alt={name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="min-w-0 self-center">
+                    <h2 className="font-display text-lg sm:text-2xl leading-tight text-cream">
+                      {name}
+                    </h2>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
+                      {item.product?.weight ? (
+                        <span className="rounded-lg border border-gold-400/50 px-2.5 py-0.5 font-semibold text-gold-200 tabular-nums">
+                          {item.product.weight}g pack
+                        </span>
+                      ) : null}
+                      <span className="text-mist tabular-nums">{rupees(price)} each</span>
                     </div>
+                  </div>
 
-                    {/* Product Info */}
-                    <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-lg sm:text-xl font-semibold text-[#14402E] mb-2">
-                        {item.product?.name || "Product"}
-                      </h3>
-                      <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-600">
-                        <span className="bg-[#ECE2CE] px-2 sm:px-3 py-1 rounded-full font-medium text-xs sm:text-sm text-center inline-block">
-                          {item.product?.weight}g pack
-                        </span>
-                        <span className="text-base sm:text-lg font-bold text-[#A37C38]">
-                          ₹{item.product?.price?.toFixed(2) || "0.00"} each
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Quantity Controls */}
-                    <div className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4">
-                      <div className="flex items-center space-x-2 sm:space-x-3">
-                        <button
-                          onClick={async () => {
-                            console.log("🔴 MINUS BUTTON CLICKED!");
-                            console.log("Item details:", {
-                              id: item.id,
-                              quantity: item.quantity,
-                              product_id: item.product_id,
-                            });
-                            const newQuantity = item.quantity - 1;
-                            console.log(
-                              "Decreasing quantity for item:",
-                              item.id,
-                              "from",
-                              item.quantity,
-                              "to",
-                              newQuantity
-                            );
-                            try {
-                              console.log("🔍 Updating quantity for item:", {
-                                cartItemId: item.id,
-                                productId: item.product_id,
-                                currentQuantity: item.quantity,
-                                newQuantity: newQuantity,
-                              });
-                              await updateQty(item.id, newQuantity);
-                              console.log("✅ Quantity updated successfully");
-                            } catch (error) {
-                              console.error(
-                                "❌ Error updating quantity:",
-                                error
-                              );
-                              showError(
-                                "Update Failed",
-                                `Failed to update quantity: ${
-                                  error instanceof Error
-                                    ? error.message
-                                    : "Unknown error"
-                                }`
-                              );
-                            }
-                          }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#14402E] flex items-center justify-center text-[#14402E] hover:bg-[#14402E] hover:text-white transition-colors"
-                        >
-                          <Minus size={14} className="sm:w-4 sm:h-4" />
-                        </button>
-                        <span className="text-lg sm:text-xl font-semibold text-[#14402E] w-6 sm:w-8 text-center">
-                          {item.quantity}
-                        </span>
-                        <button
-                          onClick={async () => {
-                            console.log("🔴 PLUS BUTTON CLICKED!");
-                            console.log("Item details:", {
-                              id: item.id,
-                              quantity: item.quantity,
-                              product_id: item.product_id,
-                            });
-                            console.log(
-                              "Increasing quantity for item:",
-                              item.id,
-                              "from",
-                              item.quantity,
-                              "to",
-                              item.quantity + 1
-                            );
-                            try {
-                              console.log("🔍 Updating quantity for item:", {
-                                cartItemId: item.id,
-                                productId: item.product_id,
-                                currentQuantity: item.quantity,
-                                newQuantity: item.quantity + 1,
-                              });
-                              await updateQty(item.id, item.quantity + 1);
-                              console.log("✅ Quantity updated successfully");
-                            } catch (error) {
-                              console.error(
-                                "❌ Error updating quantity:",
-                                error
-                              );
-                              showError(
-                                "Update Failed",
-                                `Failed to update quantity: ${
-                                  error instanceof Error
-                                    ? error.message
-                                    : "Unknown error"
-                                }`
-                              );
-                            }
-                          }}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-[#14402E] flex items-center justify-center text-[#14402E] hover:bg-[#14402E] hover:text-white transition-colors"
-                        >
-                          <Plus size={14} className="sm:w-4 sm:h-4" />
-                        </button>
-                      </div>
-
-                      {/* Subtotal */}
-                      <div className="text-center sm:text-right min-w-[80px] sm:min-w-[100px]">
-                        <div className="text-base sm:text-lg font-bold text-[#14402E]">
-                          ₹
-                          {getSubtotal(
-                            item.product?.price || 0,
-                            item.quantity
-                          ).toFixed(2)}
-                        </div>
-                        <div className="text-xs sm:text-sm text-gray-500">
-                          ₹{item.product?.price?.toFixed(2) || "0.00"} ×{" "}
-                          {item.quantity}
-                        </div>
-                      </div>
-
-                      {/* Remove Button */}
+                  <div className="col-span-2 sm:col-span-1 flex items-center justify-between sm:justify-end gap-3 sm:gap-6 self-center border-t border-gold-400/10 pt-4 sm:border-0 sm:pt-0">
+                    <div className="flex items-center rounded-full border border-gold-400/30">
                       <button
-                        onClick={async () => {
-                          try {
-                            await removeItem(item.id);
-                          } catch (error) {
-                            showError(
-                              "Remove Failed",
-                              "Failed to remove item. Please try again."
-                            );
-                          }
-                        }}
-                        className="p-1.5 sm:p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Remove item"
+                        onClick={() => changeQty(item.id, item.quantity - 1)}
+                        aria-label={`Decrease quantity of ${name}`}
+                        className="grid h-10 w-10 place-items-center rounded-full text-gold-300 transition-colors hover:bg-gold-400/10"
                       >
-                        <Trash2 size={16} className="sm:w-5 sm:h-5" />
+                        <Minus size={14} />
+                      </button>
+                      <span className="w-7 text-center text-[15px] font-semibold text-cream tabular-nums">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => changeQty(item.id, item.quantity + 1)}
+                        aria-label={`Increase quantity of ${name}`}
+                        className="grid h-10 w-10 place-items-center rounded-full text-gold-300 transition-colors hover:bg-gold-400/10"
+                      >
+                        <Plus size={14} />
                       </button>
                     </div>
+
+                    <div className="ml-auto sm:ml-0 min-w-[5.5rem] text-right">
+                      <div className="font-display text-2xl text-gold-300 tabular-nums">
+                        {rupees(price * item.quantity)}
+                      </div>
+                      <div className="text-xs text-mist tabular-nums">
+                        {rupees(price)} × {item.quantity}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => remove(item.id)}
+                      aria-label={`Remove ${name} from cart`}
+                      title="Remove item"
+                      className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-mist transition-colors hover:bg-[#F0A08C]/10 hover:text-[#F0A08C]"
+                    >
+                      <Trash2 size={18} strokeWidth={1.7} />
+                    </button>
                   </div>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
 
-          {/* Cart Summary */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100 sticky top-24">
-              <h2 className="text-xl sm:text-2xl font-bold text-[#14402E] mb-4 sm:mb-6">
-                Order Summary
-              </h2>
+          {/* Order summary */}
+          <aside className="panel p-6 sm:p-7 lg:sticky lg:top-32">
+            <h2 className="font-display text-2xl text-cream">Order Summary</h2>
 
-              <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-                <div className="flex justify-between text-base sm:text-lg">
-                  <span className="text-gray-700">Items ({totalItems})</span>
-                  <span className="font-semibold text-[#14402E]">
-                    ₹{totalPrice.toFixed(2)}
-                  </span>
-                </div>
-
-                <div className="border-t border-gray-200 pt-3 sm:pt-4">
-                  <div className="flex justify-between text-lg sm:text-xl font-bold">
-                    <span className="text-[#14402E]">Total</span>
-                    <span className="text-[#A37C38]">
-                      ₹{totalPrice.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
+            <dl className="mt-6 space-y-4">
+              <div className="flex justify-between text-[15px]">
+                <dt className="text-mist">Items ({totalItems})</dt>
+                <dd className="font-semibold text-cream tabular-nums">{rupees(totalPrice)}</dd>
               </div>
-
-              {/* Additional Info */}
-              <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6">
-                <p>✓ 30-day money-back guarantee</p>
-                <p>✓ Secure checkout</p>
+              <div className="flex items-baseline justify-between border-t border-gold-400/25 pt-4">
+                <dt className="font-semibold text-cream">Total</dt>
+                <dd className="font-display text-3xl text-gold-300 tabular-nums">
+                  {rupees(totalPrice)}
+                </dd>
               </div>
+            </dl>
 
-              {/* Payment Options */}
-              <div className="space-y-4">
-                {/* Custom Payment Button with Address Validation */}
-                <button
-                  onClick={handlePaymentInitiation}
-                  className="w-full bg-[#14402E] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:bg-[#0B2118] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-base sm:text-lg shadow-lg hover:shadow-xl"
-                >
-                  <span>Go to Checkout - ₹{totalPrice.toFixed(2)}</span>
-                </button>
-              </div>
+            <ul className="mt-6 space-y-2 text-sm text-mist">
+              <li className="flex items-center gap-2">
+                <ShieldCheck size={15} strokeWidth={1.7} className="text-gold-400" />
+                Secure checkout
+              </li>
+            </ul>
 
-              {/* Continue Shopping */}
-              <div className="mt-6">
-                <Link
-                  to="/shop"
-                  className="block w-full text-center py-3 border-2 border-[#14402E] text-[#14402E] rounded-lg font-semibold hover:bg-[#14402E] hover:text-white transition-colors duration-200"
-                >
-                  Continue Shopping
-                </Link>
-              </div>
-            </div>
-          </div>
+            <button
+              onClick={() => setShowCheckoutModal(true)}
+              className="btn-gold group mt-7 w-full !py-4 !text-base"
+            >
+              Go to Checkout · <span className="tabular-nums">{rupees(totalPrice)}</span>
+              <ArrowRight
+                size={17}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
+            </button>
+            <Link to="/shop" className="btn-outline-gold mt-3 w-full !py-3.5">
+              Continue Shopping
+            </Link>
+          </aside>
         </div>
       </div>
 
-      {/* Checkout Modal */}
       <CheckoutModal
         isOpen={showCheckoutModal}
         onClose={() => setShowCheckoutModal(false)}

@@ -1,5 +1,5 @@
-import React from "react";
-import { AlertTriangle, CheckCircle, XCircle, Info } from "lucide-react";
+import React, { useEffect } from "react";
+import { AlertTriangle, CheckCircle2, XCircle, Info } from "lucide-react";
 
 export type ConfirmationType = "warning" | "success" | "error" | "info";
 
@@ -15,6 +15,14 @@ interface ConfirmationModalProps {
   isLoading?: boolean;
 }
 
+// Same icon language as the toasts
+const ICONS: Record<ConfirmationType, { Icon: typeof Info; tone: string }> = {
+  success: { Icon: CheckCircle2, tone: "text-emerald-300" },
+  error: { Icon: XCircle, tone: "text-[#F0A08C]" },
+  warning: { Icon: AlertTriangle, tone: "text-[#F0A08C]" },
+  info: { Icon: Info, tone: "text-gold-300" },
+};
+
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
@@ -26,72 +34,67 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   type = "warning",
   isLoading = false,
 }) => {
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && !isLoading && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [isOpen, isLoading, onClose]);
+
   if (!isOpen) return null;
 
-  const getIcon = () => {
-    switch (type) {
-      case "success":
-        return <CheckCircle className="w-6 h-6 text-green-500" />;
-      case "error":
-        return <XCircle className="w-6 h-6 text-red-500" />;
-      case "warning":
-        return <AlertTriangle className="w-6 h-6 text-yellow-500" />;
-      case "info":
-        return <Info className="w-6 h-6 text-blue-500" />;
-      default:
-        return <AlertTriangle className="w-6 h-6 text-yellow-500" />;
-    }
-  };
-
-  const getConfirmButtonStyle = () => {
-    switch (type) {
-      case "success":
-        return "bg-green-600 hover:bg-green-700 text-white";
-      case "error":
-        return "bg-red-600 hover:bg-red-700 text-white";
-      case "warning":
-        return "bg-yellow-600 hover:bg-yellow-700 text-white";
-      case "info":
-        return "bg-blue-600 hover:bg-blue-700 text-white";
-      default:
-        return "bg-yellow-600 hover:bg-yellow-700 text-white";
-    }
-  };
+  const { Icon, tone } = ICONS[type] ?? ICONS.warning;
+  // destructive confirmations (delete) read in coral, everything else in gold
+  const destructive = type === "warning" || type === "error";
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
-        <div className="p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            {getIcon()}
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          </div>
+    <div
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4"
+      onClick={() => !isLoading && onClose()}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-[14px] border border-gold-400/25 bg-emerald-900 p-6 sm:p-7 text-cream shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)]"
+      >
+        <div className="flex items-center gap-3">
+          <Icon size={22} strokeWidth={1.8} className={tone} aria-hidden="true" />
+          <h3 id="confirm-title" className="font-display text-2xl leading-tight">
+            {title}
+          </h3>
+        </div>
 
-          <p className="text-gray-600 mb-6">{message}</p>
+        <p className="mt-4 text-[15px] leading-relaxed text-mist">{message}</p>
 
-          <div className="flex space-x-3">
-            <button
-              onClick={onClose}
-              disabled={isLoading}
-              className="flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {cancelText}
-            </button>
-            <button
-              onClick={onConfirm}
-              disabled={isLoading}
-              className={`flex-1 py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${getConfirmButtonStyle()}`}
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Processing...
-                </div>
-              ) : (
-                confirmText
-              )}
-            </button>
-          </div>
+        <div className="mt-7 flex flex-col-reverse sm:flex-row gap-3">
+          <button
+            onClick={onClose}
+            disabled={isLoading}
+            className="btn-outline-gold flex-1 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {cancelText}
+          </button>
+          <button
+            onClick={onConfirm}
+            disabled={isLoading}
+            autoFocus
+            className={
+              destructive
+                ? "inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#F0A08C] px-6 py-3 text-sm font-semibold text-emerald-950 transition-colors hover:bg-[#F4B5A4] disabled:cursor-not-allowed disabled:opacity-50"
+                : "btn-gold flex-1 disabled:cursor-not-allowed disabled:opacity-50"
+            }
+          >
+            {isLoading ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-950/30 border-t-emerald-950" />
+                Processing…
+              </>
+            ) : (
+              confirmText
+            )}
+          </button>
         </div>
       </div>
     </div>

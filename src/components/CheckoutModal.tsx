@@ -401,33 +401,33 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-50">
+      <div className="bg-emerald-900 rounded-xl shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gold-400/20">
           <div className="flex items-center space-x-2 sm:space-x-3">
             <img src={logo} alt="Logo" className="h-6 w-6 sm:h-8 sm:w-8" />
-            <h2 className="text-lg sm:text-xl font-bold text-[#14402E]">
+            <h2 className="text-lg sm:text-xl font-display font-semibold text-cream">
               Devanagari
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+            className="text-mist/80 hover:text-mist transition-colors p-1"
           >
             <X size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>
 
         {/* Progress Indicator */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gold-400/20">
           <div className="flex items-center justify-center space-x-4 sm:space-x-8">
             <div className="flex items-center space-x-1 sm:space-x-2">
               <div
                 className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm ${
                   currentStep >= 1
-                    ? "bg-[#14402E] text-white"
-                    : "bg-gray-200 text-gray-500"
+                    ? "bg-gold-400 text-emerald-950"
+                    : "bg-emerald-800 text-mist"
                 }`}
               >
                 {currentStep > 1 ? (
@@ -438,19 +438,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
               </div>
               <span
                 className={`text-xs sm:text-sm font-medium ${
-                  currentStep >= 1 ? "text-[#14402E]" : "text-gray-500"
+                  currentStep >= 1 ? "text-cream" : "text-mist"
                 }`}
               >
                 Address
               </span>
             </div>
-            <div className="w-4 sm:w-8 h-0.5 bg-gray-200"></div>
+            <div className="w-4 sm:w-8 h-0.5 bg-emerald-800"></div>
             <div className="flex items-center space-x-1 sm:space-x-2">
               <div
                 className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm ${
                   currentStep >= 2
-                    ? "bg-[#14402E] text-white"
-                    : "bg-gray-200 text-gray-500"
+                    ? "bg-gold-400 text-emerald-950"
+                    : "bg-emerald-800 text-mist"
                 }`}
               >
                 {currentStep > 2 ? (
@@ -461,7 +461,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
               </div>
               <span
                 className={`text-xs sm:text-sm font-medium ${
-                  currentStep >= 2 ? "text-[#14402E]" : "text-gray-500"
+                  currentStep >= 2 ? "text-cream" : "text-mist"
                 }`}
               >
                 Pay
@@ -471,12 +471,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Order Summary */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gold-400/20">
           <button
             onClick={() => setIsOrderSummaryOpen(!isOrderSummaryOpen)}
             className="flex items-center justify-between w-full text-left"
           >
-            <span className="font-semibold text-[#14402E] text-sm sm:text-base">
+            <span className="font-semibold text-cream text-sm sm:text-base">
               Order Summary
             </span>
             <ChevronDown
@@ -490,13 +490,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             <div className="mt-3 sm:mt-4 space-y-3 sm:space-y-4">
               {/* Product Details */}
               <div className="space-y-2 sm:space-y-3">
-                <h4 className="font-semibold text-[#14402E] text-xs sm:text-sm">
+                <h4 className="font-semibold text-cream text-xs sm:text-sm">
                   Items in your order:
                 </h4>
                 {cartItems.map((item) => (
                   <div
                     key={item.id}
-                    className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 bg-emerald-950/50 rounded-lg"
                   >
                     <img
                       src={
@@ -509,10 +509,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                       className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded"
                     />
                     <div className="flex-1 min-w-0">
-                      <h5 className="font-medium text-xs sm:text-sm text-gray-900 truncate">
+                      <h5 className="font-medium text-xs sm:text-sm text-cream truncate">
                         {item.product?.name || "Product"}
                       </h5>
-                      <p className="text-xs text-gray-600">
+                      <p className="text-xs text-mist">
                         {item.product?.weight}g pack × {item.quantity}
                       </p>
                     </div>
@@ -529,24 +529,24 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
               </div>
 
               {/* Price Breakdown */}
-              <div className="space-y-2 border-t border-gray-200 pt-3">
+              <div className="space-y-2 border-t border-gold-400/20 pt-3">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
+                  <span className="text-mist">Subtotal</span>
                   <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {promoApplied && (
-                  <div className="flex justify-between text-green-600">
+                  <div className="flex justify-between text-emerald-300">
                     <span>Discount</span>
                     <span>-₹{discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Shipping</span>
+                  <span className="text-mist">Shipping</span>
                   <span className="font-semibold">
                     {isFreeDelivery ? "Free" : `₹${shipping}`}
                   </span>
                 </div>
-                <div className="border-t border-gray-200 pt-2">
+                <div className="border-t border-gold-400/20 pt-2">
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
                     <span>₹{total.toFixed(2)}</span>
@@ -563,7 +563,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             {/* Welcome Message */}
             <div className="flex items-center justify-between">
               <div className="flex-1 min-w-0">
-                <h3 className="text-base sm:text-lg font-semibold text-[#14402E] truncate">
+                <h3 className="text-base sm:text-lg font-display font-semibold text-cream truncate">
                   Hey! Welcome back{" "}
                   {user?.user_metadata?.full_name?.split(" ")[0] ||
                     user?.user_metadata?.name?.split(" ")[0] ||
@@ -571,17 +571,17 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                     "Customer"}
                 </h3>
               </div>
-              <button className="text-[#14402E] text-xs sm:text-sm font-medium ml-2 flex-shrink-0">
+              <button className="text-cream text-xs sm:text-sm font-medium ml-2 flex-shrink-0">
                 Edit
               </button>
             </div>
 
             {/* Promo Code Section */}
-            <div className="bg-[#ECE2CE] rounded-lg p-3 sm:p-4">
+            <div className="bg-emerald-950/60 border border-gold-400/20 rounded-lg p-3 sm:p-4">
               <div className="flex items-center space-x-2 mb-2 sm:mb-3">
-                <Tag className="text-[#14402E]" size={16} />
-                <span className="font-semibold text-[#14402E] text-xs sm:text-sm">
-                  ENTER COUPON CODE
+                <Tag className="text-cream" size={16} />
+                <span className="font-semibold text-cream text-xs sm:text-sm">
+                  Coupon code
                 </span>
               </div>
               <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
@@ -590,24 +590,24 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value)}
                   placeholder="Enter coupon code"
-                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                  className="flex-1 px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                   disabled={promoApplied}
                 />
                 <button
                   onClick={handlePromoCode}
                   disabled={promoApplied || !promoCode.trim()}
-                  className="px-3 sm:px-4 py-2 bg-[#14402E] text-white text-sm rounded-lg hover:bg-[#0B2118] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 sm:px-4 py-2 bg-gold-400 text-emerald-950 text-sm rounded-full hover:bg-gold-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {promoApplied ? "Applied" : "Apply"}
                 </button>
               </div>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-2 space-y-1 sm:space-y-0">
-                <span className="text-xs sm:text-sm text-gray-600">
+                <span className="text-xs sm:text-sm text-mist">
                   {offers.length} coupons available
                 </span>
                 <button
                   onClick={() => setShowOffersModal(true)}
-                  className="text-[#14402E] text-xs sm:text-sm font-medium hover:underline text-left sm:text-right"
+                  className="text-cream text-xs sm:text-sm font-medium hover:underline text-left sm:text-right"
                 >
                   View Coupons →
                 </button>
@@ -617,12 +617,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             {/* Shipping Address Section */}
             <div>
               <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <h3 className="text-base sm:text-lg font-semibold text-[#14402E]">
+                <h3 className="text-base sm:text-lg font-display font-semibold text-cream">
                   Shipping Address
                 </h3>
                 <button
                   onClick={() => setShowAddressForm(true)}
-                  className="text-[#14402E] text-xs sm:text-sm font-medium flex-shrink-0"
+                  className="text-cream text-xs sm:text-sm font-medium flex-shrink-0"
                 >
                   + Add address
                 </button>
@@ -630,20 +630,20 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
               {loading ? (
                 <div className="text-center py-6 sm:py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-[#14402E] mx-auto mb-3 sm:mb-4"></div>
-                  <p className="text-gray-600 text-sm sm:text-base">
+                  <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-gold-400 mx-auto mb-3 sm:mb-4"></div>
+                  <p className="text-mist text-sm sm:text-base">
                     Loading addresses...
                   </p>
                 </div>
               ) : addresses.length === 0 ? (
-                <div className="text-center py-6 sm:py-8 bg-gray-50 rounded-lg">
-                  <MapPin className="h-10 w-10 sm:h-12 sm:w-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
-                  <p className="text-gray-600 mb-3 sm:mb-4 text-sm sm:text-base">
+                <div className="text-center py-6 sm:py-8 bg-emerald-950/50 rounded-lg">
+                  <MapPin className="h-10 w-10 sm:h-12 sm:w-12 text-mist/80 mx-auto mb-3 sm:mb-4" />
+                  <p className="text-mist mb-3 sm:mb-4 text-sm sm:text-base">
                     No addresses found
                   </p>
                   <button
                     onClick={() => setShowAddressForm(true)}
-                    className="text-[#14402E] text-xs sm:text-sm font-medium"
+                    className="text-cream text-xs sm:text-sm font-medium"
                   >
                     Add your first address
                   </button>
@@ -655,8 +655,8 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                       key={address.id}
                       className={`p-3 sm:p-4 border rounded-lg cursor-pointer transition-colors ${
                         selectedAddress?.id === address.id
-                          ? "border-[#14402E] bg-green-50"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-gold-400 bg-gold-400/10"
+                          : "border-gold-400/20 hover:border-gold-400/40"
                       }`}
                       onClick={() => setSelectedAddress(address)}
                     >
@@ -666,19 +666,19 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                             <div
                               className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 flex-shrink-0 ${
                                 selectedAddress?.id === address.id
-                                  ? "border-[#14402E] bg-[#14402E]"
-                                  : "border-gray-300"
+                                  ? "border-gold-400 bg-gold-400"
+                                  : "border-gold-400/30"
                               }`}
                             >
                               {selectedAddress?.id === address.id && (
-                                <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                                <div className="w-full h-full rounded-full bg-emerald-900 scale-50"></div>
                               )}
                             </div>
-                            <h4 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                            <h4 className="font-semibold text-cream text-sm sm:text-base truncate">
                               {address.name}
                             </h4>
                           </div>
-                          <div className="text-xs sm:text-sm text-gray-600 space-y-1">
+                          <div className="text-xs sm:text-sm text-mist space-y-1">
                             <p className="break-words">
                               {address.address_line_1}
                             </p>
@@ -701,7 +701,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                               e.stopPropagation();
                               handleEditAddress(address);
                             }}
-                            className="text-[#14402E] text-xs sm:text-sm font-medium hover:underline"
+                            className="text-cream text-xs sm:text-sm font-medium hover:underline"
                           >
                             Edit
                           </button>
@@ -710,7 +710,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                               e.stopPropagation();
                               handleDeleteAddress(address.id);
                             }}
-                            className="text-red-500 text-xs sm:text-sm font-medium hover:underline"
+                            className="text-[#F0A08C] text-xs sm:text-sm font-medium hover:underline"
                           >
                             Delete
                           </button>
@@ -726,7 +726,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             <button
               onClick={handleContinue}
               disabled={!selectedAddress}
-              className="w-full bg-[#14402E] text-white py-3 sm:py-4 rounded-lg font-semibold hover:bg-[#0B2118] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
+              className="w-full bg-gold-400 text-emerald-950 py-3 sm:py-4 rounded-full font-semibold hover:bg-gold-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
             >
               <span>Continue</span>
               <ArrowRight size={16} className="sm:w-5 sm:h-5" />
@@ -738,39 +738,39 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
         {currentStep === 2 && (
           <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
             <div className="text-center">
-              <h3 className="text-lg sm:text-xl font-semibold text-[#14402E] mb-2">
+              <h3 className="text-lg sm:text-xl font-display font-semibold text-cream mb-2">
                 Payment Details
               </h3>
-              <p className="text-gray-600 text-sm sm:text-base">
+              <p className="text-mist text-sm sm:text-base">
                 Complete your order with secure payment
               </p>
             </div>
 
             {/* Order Summary for Payment Step */}
-            <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
-              <h4 className="font-semibold text-[#14402E] mb-2 sm:mb-3 text-sm sm:text-base">
+            <div className="bg-emerald-950/50 rounded-lg p-3 sm:p-4">
+              <h4 className="font-semibold text-cream mb-2 sm:mb-3 text-sm sm:text-base">
                 Order Summary
               </h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm sm:text-base">
-                  <span className="text-gray-600">
+                  <span className="text-mist">
                     Items ({cartItems.length})
                   </span>
                   <span className="font-semibold">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {promoApplied && (
-                  <div className="flex justify-between text-green-600 text-sm sm:text-base">
+                  <div className="flex justify-between text-emerald-300 text-sm sm:text-base">
                     <span>Discount</span>
                     <span>-₹{discount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm sm:text-base">
-                  <span className="text-gray-600">Shipping</span>
+                  <span className="text-mist">Shipping</span>
                   <span className="font-semibold">
                     {isFreeDelivery ? "Free" : `₹${shipping}`}
                   </span>
                 </div>
-                <div className="border-t border-gray-200 pt-2">
+                <div className="border-t border-gold-400/20 pt-2">
                   <div className="flex justify-between font-bold text-base sm:text-lg">
                     <span>Total</span>
                     <span>₹{total.toFixed(2)}</span>
@@ -781,11 +781,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
             {/* Selected Address */}
             {selectedAddress && (
-              <div className="bg-green-50 rounded-lg p-3 sm:p-4">
-                <h4 className="font-semibold text-[#14402E] mb-2 text-sm sm:text-base">
+              <div className="bg-gold-400/10 rounded-lg p-3 sm:p-4">
+                <h4 className="font-semibold text-cream mb-2 text-sm sm:text-base">
                   Delivery Address
                 </h4>
-                <div className="text-xs sm:text-sm text-gray-600 space-y-1">
+                <div className="text-xs sm:text-sm text-mist space-y-1">
                   <p className="font-medium">{selectedAddress.name}</p>
                   <p className="break-words">
                     {selectedAddress.address_line_1}
@@ -809,11 +809,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             <button
               onClick={handlePayment}
               disabled={paymentLoading}
-              className="w-full bg-[#14402E] text-white py-3 sm:py-4 rounded-lg font-semibold hover:bg-[#0B2118] disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
+              className="w-full bg-gold-400 text-emerald-950 py-3 sm:py-4 rounded-full font-semibold hover:bg-gold-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center space-x-2 text-sm sm:text-base"
             >
               {paymentLoading ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-emerald-950"></div>
                   <span>Processing...</span>
                 </>
               ) : (
@@ -827,7 +827,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
             {/* Back Button */}
             <button
               onClick={() => setCurrentStep(1)}
-              className="w-full text-[#14402E] py-2 font-medium hover:bg-gray-50 rounded-lg transition-colors text-sm sm:text-base"
+              className="w-full text-cream py-2 font-medium hover:bg-gold-400/5 rounded-lg transition-colors text-sm sm:text-base"
             >
               ← Back to Address
             </button>
@@ -835,12 +835,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
         )}
 
         {/* Footer */}
-        <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-200 bg-gray-50">
-          <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 space-y-2 sm:space-y-0">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-t border-gold-400/20 bg-emerald-950/50">
+          <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-mist space-y-2 sm:space-y-0">
             <div className="flex space-x-4">
               <button
                 onClick={() => setShowPolicyModal(true)}
-                className="hover:text-[#14402E] transition-colors"
+                className="hover:text-gold-200 transition-colors"
               >
                 Terms and Policies
               </button>
@@ -856,16 +856,16 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
       {/* Offers Modal */}
       {showOffersModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-60">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] sm:max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-60">
+          <div className="bg-emerald-900 rounded-xl shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] max-w-md w-full max-h-[85vh] sm:max-h-[80vh] overflow-y-auto">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-lg sm:text-xl font-bold text-[#14402E]">
+                <h3 className="text-lg sm:text-xl font-display font-semibold text-cream">
                   Available Offers
                 </h3>
                 <button
                   onClick={() => setShowOffersModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                  className="text-mist/80 hover:text-mist transition-colors p-1"
                 >
                   <X size={20} className="sm:w-6 sm:h-6" />
                 </button>
@@ -878,27 +878,27 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                     onClick={() => handleOfferSelect(offer)}
                     className={`border rounded-lg p-3 sm:p-4 transition-colors cursor-pointer ${
                       offer.applicable
-                        ? "border-gray-200 hover:border-[#14402E] hover:bg-green-50"
-                        : "border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed"
+                        ? "border-gold-400/20 hover:border-gold-400/60 hover:bg-gold-400/10"
+                        : "border-gold-400/20 bg-emerald-950/50 opacity-60 cursor-not-allowed"
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <h4
                         className={`font-semibold text-sm sm:text-base ${
-                          offer.applicable ? "text-[#14402E]" : "text-gray-500"
+                          offer.applicable ? "text-cream" : "text-mist"
                         }`}
                       >
                         {offer.code}
                       </h4>
                       <div className="flex items-center space-x-2">
                         {offer.applicable ? (
-                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-emerald-300/15 text-emerald-300 px-2 py-1 rounded-full text-xs font-medium">
                             {offer.type === "shipping"
                               ? "FREE SHIPPING"
                               : `${offer.discount}% OFF`}
                           </span>
                         ) : (
-                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-[#F0A08C]/15 text-[#F0A08C] px-2 py-1 rounded-full text-xs font-medium">
                             NOT APPLICABLE
                           </span>
                         )}
@@ -906,7 +906,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <p
                       className={`text-xs sm:text-sm mb-2 ${
-                        offer.applicable ? "text-gray-600" : "text-gray-500"
+                        offer.applicable ? "text-mist" : "text-mist"
                       }`}
                     >
                       {offer.description}
@@ -914,7 +914,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-1 sm:space-y-0">
                       <p
                         className={`text-xs ${
-                          offer.applicable ? "text-gray-500" : "text-red-500"
+                          offer.applicable ? "text-mist" : "text-[#F0A08C]"
                         }`}
                       >
                         {offer.applicable
@@ -924,7 +924,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                           : `Requires minimum order of ₹${offer.minOrder}`}
                       </p>
                       {offer.applicable && (
-                        <span className="text-xs text-[#14402E] font-medium">
+                        <span className="text-xs text-cream font-medium">
                           Click to apply →
                         </span>
                       )}
@@ -933,10 +933,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                 ))}
               </div>
 
-              <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200">
+              <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gold-400/20">
                 <button
                   onClick={() => setShowOffersModal(false)}
-                  className="w-full bg-[#14402E] text-white py-2 sm:py-3 rounded-lg font-semibold hover:bg-[#0B2118] transition-colors text-sm sm:text-base"
+                  className="w-full bg-gold-400 text-emerald-950 py-2 sm:py-3 rounded-full font-semibold hover:bg-gold-300 transition-colors text-sm sm:text-base"
                 >
                   Close
                 </button>
@@ -948,16 +948,16 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
       {/* Policy Modal */}
       {showPolicyModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-60">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] sm:max-h-[80vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-60">
+          <div className="bg-emerald-900 rounded-xl shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] max-w-md w-full max-h-[85vh] sm:max-h-[80vh] overflow-y-auto">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-lg sm:text-xl font-bold text-[#14402E]">
+                <h3 className="text-lg sm:text-xl font-display font-semibold text-cream">
                   Policies & Terms
                 </h3>
                 <button
                   onClick={() => setShowPolicyModal(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                  className="text-mist/80 hover:text-mist transition-colors p-1"
                 >
                   <X size={20} className="sm:w-6 sm:h-6" />
                 </button>
@@ -965,70 +965,70 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
               <div className="space-y-3 sm:space-y-4">
                 {/* Terms and Conditions */}
-                <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-[#14402E] transition-colors">
+                <div className="border border-gold-400/20 rounded-lg p-3 sm:p-4 hover:border-gold-400/60 transition-colors">
                   <a
                     href="https://merchant.razorpay.com/policy/RHjsekRLxMzas4/terms"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <h4 className="font-semibold text-[#14402E] mb-2 text-sm sm:text-base">
+                    <h4 className="font-semibold text-cream mb-2 text-sm sm:text-base">
                       Terms and Conditions
                     </h4>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                    <p className="text-xs sm:text-sm text-mist mb-2">
                       Read our terms of service and user agreement
                     </p>
-                    <span className="text-xs text-[#14402E] font-medium">
+                    <span className="text-xs text-cream font-medium">
                       View Terms →
                     </span>
                   </a>
                 </div>
 
                 {/* Cancellation and Refund Policy */}
-                <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-[#14402E] transition-colors">
+                <div className="border border-gold-400/20 rounded-lg p-3 sm:p-4 hover:border-gold-400/60 transition-colors">
                   <a
                     href="https://merchant.razorpay.com/policy/RHjsekRLxMzas4/refund"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <h4 className="font-semibold text-[#14402E] mb-2 text-sm sm:text-base">
+                    <h4 className="font-semibold text-cream mb-2 text-sm sm:text-base">
                       Cancellation and Refund Policy
                     </h4>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                    <p className="text-xs sm:text-sm text-mist mb-2">
                       Learn about our refund and cancellation policies
                     </p>
-                    <span className="text-xs text-[#14402E] font-medium">
+                    <span className="text-xs text-cream font-medium">
                       View Policy →
                     </span>
                   </a>
                 </div>
 
                 {/* Shipping and Delivery Policy */}
-                <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-[#14402E] transition-colors">
+                <div className="border border-gold-400/20 rounded-lg p-3 sm:p-4 hover:border-gold-400/60 transition-colors">
                   <a
                     href="https://merchant.razorpay.com/policy/RHjsekRLxMzas4/shipping"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <h4 className="font-semibold text-[#14402E] mb-2 text-sm sm:text-base">
+                    <h4 className="font-semibold text-cream mb-2 text-sm sm:text-base">
                       Shipping and Delivery Policy
                     </h4>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-2">
+                    <p className="text-xs sm:text-sm text-mist mb-2">
                       Information about shipping, delivery times, and charges
                     </p>
-                    <span className="text-xs text-[#14402E] font-medium">
+                    <span className="text-xs text-cream font-medium">
                       View Policy →
                     </span>
                   </a>
                 </div>
               </div>
 
-              <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gray-200">
+              <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-gold-400/20">
                 <button
                   onClick={() => setShowPolicyModal(false)}
-                  className="w-full bg-[#14402E] text-white py-2 sm:py-3 rounded-lg font-semibold hover:bg-[#0B2118] transition-colors text-sm sm:text-base"
+                  className="w-full bg-gold-400 text-emerald-950 py-2 sm:py-3 rounded-full font-semibold hover:bg-gold-300 transition-colors text-sm sm:text-base"
                 >
                   Close
                 </button>
@@ -1040,16 +1040,16 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
       {/* Address Form Modal */}
       {showAddressForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-60">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-60">
+          <div className="bg-emerald-900 rounded-xl shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] max-w-md w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-base sm:text-lg font-semibold text-[#14402E]">
+                <h3 className="text-base sm:text-lg font-display font-semibold text-cream">
                   {editingAddress ? "Edit Address" : "Add New Address"}
                 </h3>
                 <button
                   onClick={resetAddressForm}
-                  className="text-gray-400 hover:text-gray-600 p-1"
+                  className="text-mist/80 hover:text-mist p-1"
                 >
                   <X size={20} className="sm:w-6 sm:h-6" />
                 </button>
@@ -1060,7 +1060,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                 className="space-y-3 sm:space-y-4"
               >
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                     Full Name *
                   </label>
                   <input
@@ -1073,12 +1073,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                         name: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                     Phone Number *
                   </label>
                   <input
@@ -1091,12 +1091,12 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                         phone: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                     Address Line 1 *
                   </label>
                   <input
@@ -1109,13 +1109,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                         address_line_1: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                     placeholder="Street address, P.O. box, etc."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                     Address Line 2
                   </label>
                   <input
@@ -1127,14 +1127,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                         address_line_2: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                     placeholder="Apartment, suite, unit, building, floor, etc."
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                       City *
                     </label>
                     <input
@@ -1147,11 +1147,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                           city: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                       State *
                     </label>
                     <input
@@ -1164,14 +1164,14 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                           state: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                       Postal Code *
                     </label>
                     <input
@@ -1184,11 +1184,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                           postal_code: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-xs sm:text-sm font-medium text-cream mb-1">
                       Country *
                     </label>
                     <select
@@ -1200,7 +1200,7 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                           country: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#14402E] focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-gold-400/30 rounded-lg focus:ring-2 focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 focus:border-transparent"
                     >
                       <option value="India">India</option>
                       <option value="United States">United States</option>
@@ -1222,11 +1222,11 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                         is_default: e.target.checked,
                       })
                     }
-                    className="h-4 w-4 text-[#14402E] focus:ring-[#14402E] border-gray-300 rounded"
+                    className="h-4 w-4 text-cream focus:ring-gold-400 bg-emerald-950 text-cream placeholder:text-mist/60 border-gold-400/30 rounded"
                   />
                   <label
                     htmlFor="is_default"
-                    className="ml-2 text-xs sm:text-sm text-gray-700"
+                    className="ml-2 text-xs sm:text-sm text-cream"
                   >
                     Set as default address
                   </label>
@@ -1236,13 +1236,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
                   <button
                     type="button"
                     onClick={resetAddressForm}
-                    className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex-1 px-3 sm:px-4 py-2 border border-gold-400/30 text-cream text-sm rounded-lg hover:bg-gold-400/5 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-3 sm:px-4 py-2 bg-[#14402E] text-white text-sm rounded-lg hover:bg-[#0B2118] transition-colors flex items-center justify-center gap-x-2"
+                    className="flex-1 px-3 sm:px-4 py-2 bg-gold-400 text-emerald-950 text-sm rounded-full hover:bg-gold-300 transition-colors flex items-center justify-center gap-x-2"
                   >
                     <Check className="h-3 w-3 sm:h-4 sm:w-4" />
                     {editingAddress ? "Update Address" : "Add Address"}
@@ -1256,22 +1256,22 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-70">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 sm:p-4 z-70">
+          <div className="bg-emerald-900 rounded-xl shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] max-w-md w-full">
             <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-3 sm:mb-4">
-                <h3 className="text-base sm:text-lg font-semibold text-red-600">
+                <h3 className="text-base sm:text-lg font-semibold text-[#F0A08C]">
                   Delete Address
                 </h3>
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="text-gray-400 hover:text-gray-600 p-1"
+                  className="text-mist/80 hover:text-mist p-1"
                 >
                   <X size={20} className="sm:w-6 sm:h-6" />
                 </button>
               </div>
 
-              <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
+              <p className="text-mist mb-4 sm:mb-6 text-sm sm:text-base">
                 Are you sure you want to delete this address? This action cannot
                 be undone.
               </p>
@@ -1279,13 +1279,13 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
               <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-3 sm:px-4 py-2 border border-gold-400/30 text-cream text-sm rounded-lg hover:bg-gold-400/5 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={confirmDeleteAddress}
-                  className="flex-1 px-3 sm:px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-[#F0A08C] text-emerald-950 text-sm rounded-lg hover:bg-[#F4B5A4] transition-colors"
                 >
                   Delete
                 </button>
