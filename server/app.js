@@ -961,37 +961,37 @@ app.use(express.static(distPath));
 const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sreeshivanifoods.com/</loc>
+    <loc>https://sreeshivanifoods.in/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://sreeshivanifoods.com/shop</loc>
+    <loc>https://sreeshivanifoods.in/shop</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://sreeshivanifoods.com/cart</loc>
+    <loc>https://sreeshivanifoods.in/cart</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sreeshivanifoods.com/checkout</loc>
+    <loc>https://sreeshivanifoods.in/checkout</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sreeshivanifoods.com/about</loc>
+    <loc>https://sreeshivanifoods.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://sreeshivanifoods.com/contact</loc>
+    <loc>https://sreeshivanifoods.in/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://sreeshivanifoods.com/terms</loc>
+    <loc>https://sreeshivanifoods.in/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>

@@ -26,6 +26,24 @@
         ],
         "createdAt": "2026-11-19T13:11:05.120Z",
         "reason": "Claude: pre-existing transactional email HTML; email clients need web-safe fonts, not the site's web fonts"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "arial",
+        "files": [
+          "server/app.js"
+        ],
+        "createdAt": "2026-11-19T19:06:37.302Z",
+        "reason": "Claude: pre-existing transactional email HTML; email clients need web-safe fonts, not the site's web fonts"
+      },
+      {
+        "rule": "overused-font",
+        "value": "arial",
+        "files": [
+          "server/app.js"
+        ],
+        "createdAt": "2026-11-19T19:06:37.330Z",
+        "reason": "Claude: pre-existing transactional email HTML; email clients need web-safe fonts"
       }
     ]
   }

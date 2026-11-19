@@ -1,0 +1,4 @@
+{
+  "prompt": "Origin: pre-existing project photo src/assets/millet.png (hands pouring millet). Crop 0,330-2560,1330, resized to 2400w; graded in linear light: luminance remapped Lmin=0.165 + (1-Lmin)*L^0.9 (hue kept), deepest shadows (L<0.08) leaned 45% toward gold #D4A63E; every pixel >=3.5:1 against #0A1F16. Clipped to the hero wordmark. Not generated.",
+  "createdAt": "2026-11-19T19:03:52.616Z"
+}

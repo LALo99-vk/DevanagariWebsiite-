@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
-import Notification, { NotificationType } from "../components/Notification";
+import Notification, {
+  NotificationAction,
+  NotificationType,
+} from "../components/Notification";
 
 interface NotificationData {
   id: string;
@@ -7,6 +10,8 @@ interface NotificationData {
   title: string;
   message: string;
   duration?: number;
+  /** optional button inside the toast, e.g. "Sign in with Google" */
+  action?: NotificationAction;
 }
 
 interface NotificationContextType {
@@ -79,8 +84,11 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
       }}
     >
       {children}
-      {/* Render notifications */}
-      <div className="fixed top-4 right-4 z-50 space-y-2">
+      {/* Toast stack: under the navbar, top right; full width on phones */}
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed inset-x-4 top-28 z-[60] flex flex-col gap-3 sm:inset-x-auto sm:right-6 sm:w-[24rem]"
+      >
         {notifications.map((notification) => (
           <Notification
             key={notification.id}

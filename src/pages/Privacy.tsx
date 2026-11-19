@@ -39,12 +39,12 @@ const Privacy: React.FC = () => {
               we collect, use, and protect your personal information when you
               visit and use our website{" "}
               <a
-                href="https://www.sreeshivanifoods.com"
+                href="https://sreeshivanifoods.in"
                 className="text-[#14402E] hover:underline font-semibold"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                www.sreeshivanifoods.com
+                sreeshivanifoods.in
               </a>
               . By accessing or using our Website, you agree to the terms of
               this Privacy Policy.

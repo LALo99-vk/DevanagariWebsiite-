@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  ShoppingBag,
   Leaf,
   Shield,
   Bone,
@@ -12,13 +11,25 @@ import type { CSSProperties } from "react";
 import millets from "../assets/millet.png";
 import grinding from "../assets/grinding1.png";
 import finepowder from "../assets/powderMix.png .png";
-import productShot from "../assets/heromain4.png";
+import grainPhoto from "../assets/hero-grain.webp";
+import grainPhotoMobile from "../assets/hero-grain-mobile.webp";
 import { CountUp, IngredientHoneycomb } from "../components/IngredientHoneycomb";
-import { Rangoli, SectionRangoli, StarMark, useInView } from "../components/Rangoli";
+import { SectionRangoli, useInView } from "../components/Rangoli";
 
 // Staggered delay, read by the CSS transitions as --d
 const delay = (seconds: number) => ({ ["--d" as string]: `${seconds}s` }) as CSSProperties;
-const rise = (step: number) => ({ animationDelay: `${0.45 + step * 0.08}s` });
+
+// The hero wordmark: the grain photo is clipped to this text
+const wordProps = {
+  x: 670,
+  y: 262,
+  textAnchor: "middle",
+  textLength: 1334,
+  lengthAdjust: "spacing",
+  fontFamily: "'Source Serif 4', Georgia, serif",
+  fontWeight: 800,
+  fontSize: 300,
+} as const;
 
 const Home = () => {
   const [stepsRef, stepsIn] = useInView<HTMLOListElement>();
@@ -76,75 +87,65 @@ const Home = () => {
 
   return (
     <div className="bg-emerald-950 text-cream">
-      {/* ───────────── Hero ───────────── */}
-      <section className="relative overflow-hidden pt-24">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 grid lg:grid-cols-12 items-center gap-10 lg:gap-6 lg:min-h-[calc(100svh-6rem)] py-14 lg:py-16">
-          {/* Copy */}
-          <div className="lg:col-span-6 relative z-10">
-            <h1 className="font-display font-light text-[3rem] leading-[1.0] sm:text-6xl xl:text-[5.5rem] tracking-[-0.025em] text-cream">
-              <span className="line-mask"><span style={delay(0.1)}>Wellness,</span></span>
-              <span className="line-mask">
-                <span style={delay(0.2)}>
-                  <span className="ink-underline italic text-gold-400" style={delay(1)}>Rooted in</span>
-                </span>
-              </span>
-              <span className="line-mask"><span style={delay(0.3)}>Tradition</span></span>
-            </h1>
-
-            <p
-              className="animate-rise mt-8 flex items-center gap-4 text-sm font-semibold tracking-[0.12em] text-gold-300"
-              style={rise(0)}
+      {/* ───────────── Hero: the name, made of grain ───────────── */}
+      <section className="relative pt-24">
+        <div className="mx-auto max-w-[90rem] px-5 sm:px-8 lg:px-14 flex flex-col pt-14 pb-16 sm:pt-20 sm:pb-20 lg:min-h-[calc(100svh-6rem)] lg:justify-center lg:py-10">
+          <h1>
+            <span className="sr-only">Devanagari</span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 1340 345"
+              className="block h-auto w-full"
             >
-              <StarMark className="h-3.5 w-3.5 text-gold-400" />
-              FUELS HEALTH. POWERS LIFE.
+              <defs>
+                <clipPath id="hero-word">
+                  <text {...wordProps}>Devanagari</text>
+                </clipPath>
+              </defs>
+              {/* phones get a tighter crop, so the brightest grain sits under the small word */}
+              <image
+                href={grainPhotoMobile}
+                className="sm:hidden"
+                x="0"
+                y="0"
+                width="1340"
+                height="345"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath="url(#hero-word)"
+              />
+              <image
+                href={grainPhoto}
+                className="hidden sm:inline"
+                x="0"
+                y="0"
+                width="1340"
+                height="345"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath="url(#hero-word)"
+              />
+            </svg>
+          </h1>
+
+          <p className="mt-3 text-right font-display font-semibold text-lg sm:mt-2 sm:text-2xl text-gold-400">
+            by Sree Shivani Foods, Davangere
+          </p>
+
+          <div className="mt-6 sm:mt-8 flex flex-col gap-8 border-t border-gold-400/45 pt-8 sm:pt-10 md:flex-row md:items-center md:justify-between">
+            <p className="max-w-[46rem] font-display font-medium text-[26px] leading-[1.22] sm:text-[34px] text-cream">
+              Grains, millets and spices,{" "}
+              <span className="text-gold-400">ground in small batches</span>{" "}
+              for every family.
             </p>
-
-            <p
-              className="animate-rise mt-5 max-w-[34rem] text-[17px] leading-[1.7] text-mist"
-              style={rise(1)}
+            <Link
+              to="/shop"
+              className="btn-gold group !px-8 !py-4 !text-base justify-center self-stretch sm:self-start md:self-auto"
             >
-              Discover the power of{" "}
-              <span className="font-semibold text-cream">21 natural grains</span>,
-              millets, and pulses in a single, nourishing mix. Inspired by nature
-              and rooted in tradition, Devanagari Health Mix is your gateway to
-              vibrant wellness.
-            </p>
-
-            <div
-              className="animate-rise mt-10 flex flex-col sm:flex-row sm:items-center gap-6"
-              style={rise(2)}
-            >
-              <Link to="/shop" className="btn-gold group !px-7 !py-3.5 !text-[15px] self-start">
-                <ShoppingBag size={18} strokeWidth={1.8} />
-                Shop Now
-                <ArrowRight
-                  size={16}
-                  className="-ml-0.5 transition-transform duration-200 group-hover:translate-x-1"
-                />
-              </Link>
-              <ul className="flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-mist">
-                {["Certified Organic", "No Preservatives", "Gluten Free"].map((t) => (
-                  <li key={t} className="flex items-center gap-1.5">
-                    <StarMark className="h-2.5 w-2.5 text-gold-400" />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* The pack at the centre of a rangoli */}
-          <div className="lg:col-span-6 flex justify-center lg:justify-end">
-            <div className="relative aspect-square w-[min(92vw,620px)]">
-              <Rangoli spin className="absolute inset-0 h-full w-full text-gold-400/60" />
-              <div className="absolute inset-[18%] overflow-hidden rounded-full border border-gold-400/70 bg-emerald-900">
-                <img
-                  src={productShot}
-                  alt="Devanagari Health Mix Product"
-                  className="settle h-full w-full object-cover object-[62%_55%] scale-[1.0]"
-                />
-              </div>
-            </div>
+              Shop now
+              <ArrowRight
+                size={17}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+              />
+            </Link>
           </div>
         </div>
       </section>

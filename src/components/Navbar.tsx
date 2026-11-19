@@ -10,7 +10,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
-import { LickingWordmark } from "./LickingWordmark";
+import { LickingLogo } from "./LickingWordmark";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -132,8 +132,8 @@ const Navbar = () => {
         <div className="md:hidden px-4 sm:px-6">
           <div className="flex justify-between items-center h-24">
             {location.pathname === "/" ? (
-              <Link to="/" className="flex items-center pb-2" aria-label="Devanagari home">
-                <LickingWordmark className="text-[36px]" k={1.7} />
+              <Link to="/" className="flex items-center -mt-1" aria-label="Devanagari home">
+                <LickingLogo className="w-[118px]" k={2.2} />
               </Link>
             ) : (
               <Link
@@ -185,8 +185,8 @@ const Navbar = () => {
 
           {/* Center — logo */}
           <div className="flex justify-center">
-            <Link to="/" className="flex items-center pb-2" aria-label="Devanagari home">
-              <LickingWordmark className="text-[52px]" k={1.45} />
+            <Link to="/" className="flex items-center -mt-1" aria-label="Devanagari home">
+              <LickingLogo className="w-[148px]" k={2.2} />
             </Link>
           </div>
 

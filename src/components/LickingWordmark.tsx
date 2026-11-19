@@ -1,11 +1,43 @@
 import { useEffect, useId, useRef } from "react";
+import logoBadge from "../assets/logo-badge.webp";
 
 /**
  * The brand swoosh under the wordmark, drawn as a smile. A drop of milk hangs
  * from the lip, stretches and falls; the tongue reaches out, catches it on its
  * tip, curls up to lick, and slides back. A fresh drop forms for the next round.
  */
-const LIP = "M28 24 Q587 134 1147 24"; // centre line of the smile band
+/**
+ * Two smile shapes share one animation. Each band runs corner to corner from
+ * x=28 to x=1147; a quadratic curve per edge, given by its corner y and its
+ * control y. "wordmark" is the thin gold smile under the lettering; "logo"
+ * matches the thicker, deeper green swoosh of the Devanagari badge logo.
+ */
+const SHAPES = {
+  wordmark: { top: [30, 112], mid: [24, 134], bottom: [18, 156] },
+  logo: { top: [30, 154], mid: [24, 212], bottom: [18, 270] },
+} as const;
+type Shape = keyof typeof SHAPES;
+const curveY = ([end, ctrl]: readonly [number, number], x: number) => {
+  const t = (x - 28) / 1119;
+  return (1 - t) ** 2 * end + 2 * t * (1 - t) * ctrl + t * t * end;
+};
+const geometry = (shape: Shape) => {
+  const g = SHAPES[shape];
+  const [tEnd, tCtrl] = g.top;
+  const [bEnd, bCtrl] = g.bottom;
+  const [mEnd, mCtrl] = g.mid;
+  return {
+    // the crescent: bottom edge out, top edge back
+    band: `M28 ${bEnd} Q587 ${bCtrl} 1147 ${bEnd} Q1158 ${bEnd - 4} 1150 ${tEnd} Q587 ${tCtrl} 26 ${tEnd} Q18 ${bEnd + 4} 28 ${bEnd} Z`,
+    lip: `M28 ${mEnd} Q587 ${mCtrl} 1147 ${mEnd}`, // centre line of the band
+    lipY: (x: number) => curveY(g.mid, x),
+    // underside of the band, where drops hang from
+    lipBottom: (x: number) => curveY(g.bottom, x),
+    // how much lower than the wordmark smile this shape sits at x
+    drop: (x: number) => curveY(g.bottom, x) - curveY(SHAPES.wordmark.bottom, x),
+    centreY: (curveY(g.top, 587) + curveY(g.bottom, 587)) / 2,
+  };
+};
 const CYCLE = "5.2s";
 const EASE = "0.45 0 0.2 1";
 const splines = (n: number) => Array(n).fill(EASE).join(";");
@@ -54,19 +86,10 @@ const TONGUE_SEQ: Pose[] = ["straight", "straight", "reach", "curl", "flick", "c
 const TONGUE_KEYS = "0;0.1;0.23;0.29;0.33;0.38;0.45;0.6;1";
 
 // Where the drop hangs, and the tongue tip in its reach pose (local units)
-const DROP = { x: 758, y: 78, h: 29 };
+const DROP = { x: 758, y: 78, h: 29 }; // y is for the wordmark shape
 const REACH_TIP = { x: -46, y: 84 };
 const HOME = 0.788; // tongue's resting spot along the lip
 const SWEEP = "0.42 0 0.58 1"; // symmetric ease for the lick sweep
-const lipY = (x: number) => {
-  const t = (x - 28) / 1119;
-  return (1 - t) ** 2 * 24 + 2 * t * (1 - t) * 134 + t * t * 24;
-};
-// underside of the smile band, where drops hang from
-const lipBottom = (x: number) => {
-  const t = (x - 28) / 1119;
-  return (1 - t) ** 2 * 18 + 2 * t * (1 - t) * 156 + t * t * 18;
-};
 const DROP_PATH = "M0 0 C-4 8 -9 14 -9 20 A9 9 0 0 0 9 20 C9 14 4 8 0 0 Z";
 // tiny droplets thrown up by a splash
 const SPRAY = [
@@ -81,13 +104,26 @@ const LickingSmile = ({
   repeat,
   playRef,
   k = 1,
+  shape = "wordmark",
+  className = "licking-smile",
 }: {
   active: boolean;
   repeat: boolean;
   playRef?: React.MutableRefObject<(() => void) | null>;
   /** size of tongue, milk and sparkles relative to the letters */
   k?: number;
+  shape?: Shape;
+  className?: string;
 }) => {
+  const geo = geometry(shape);
+  const { lipY, lipBottom } = geo;
+  const LIP = geo.lip;
+  // On the logo the tongue is drawn larger, so hang the drop where the tongue
+  // parks at the same point on the lip as on the wordmark (k = 1.45): the
+  // sweep keeps its direction and length at any size.
+  const dropX = shape === "logo" ? 839 + REACH_TIP.x * 1.22 * k : DROP.x;
+  const dropY = shape === "logo" ? lipBottom(dropX) - 2.6 : DROP.y; // hangs just under the lip
+  const sparkleShift = dropX - DROP.x;
   const ref = useRef<SVGSVGElement>(null);
   const uid = useId().replace(/:/g, "");
   const id = (name: string) => `${name}-${uid}`;
@@ -97,14 +133,14 @@ const LickingSmile = ({
   // Park the tongue so its tip sits right under the drop, and drop it that far
   const tipX = REACH_TIP.x * 1.22 * k;
   const tipY = REACH_TIP.y * 1.22 * k;
-  const anchorX = DROP.x - tipX;
+  const anchorX = dropX - tipX;
   const catchAt = (anchorX - 28) / 1119;
   // a symmetric ease reaches halfway at the midpoint (t = 0.23), so aim the
   // far end of the sweep twice as far out: the tongue passes the catch point
   // at exactly the moment the drop lands, without stopping
   const farLeft = (HOME - 2 * (HOME - catchAt)).toFixed(3);
-  const fall = ((lipY(anchorX) + tipY - (DROP.y + DROP.h * k)) / k).toFixed(1);
-  const catchY = DROP.y + (DROP.h + Number(fall)) * k;
+  const fall = ((lipY(anchorX) + tipY - (dropY + DROP.h * k)) / k).toFixed(1);
+  const catchY = dropY + (DROP.h + Number(fall)) * k;
 
   // second drop: hangs where the curled tip sweeps up onto the lip (t ≈ 0.3,
   // when the sweep is ~88% of the way out)
@@ -176,20 +212,30 @@ const LickingSmile = ({
       ref={ref}
       viewBox="0 0 1175 160"
       preserveAspectRatio="xMidYMid meet"
-      className={`licking-smile ${active ? "is-on" : ""}`}
+      className={`${className} ${active ? "is-on" : ""}`}
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id={id("smile-gold")} x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#D9B26A" />
-          <stop offset="0.4" stopColor="#F3E6C6" />
-          <stop offset="0.7" stopColor="#C9A45C" />
-          <stop offset="1" stopColor="#A37C38" />
-        </linearGradient>
+        {shape === "logo" ? (
+          // the logo's own leaf green, lit a little in the middle
+          <linearGradient id={id("smile-gold")} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#4BB523" />
+            <stop offset="0.45" stopColor="#7FDC4C" />
+            <stop offset="0.7" stopColor="#57CE26" />
+            <stop offset="1" stopColor="#42A51E" />
+          </linearGradient>
+        ) : (
+          <linearGradient id={id("smile-gold")} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#E0B04A" />
+            <stop offset="0.4" stopColor="#F6E2A8" />
+            <stop offset="0.7" stopColor="#D4A63E" />
+            <stop offset="1" stopColor="#A8791F" />
+          </linearGradient>
+        )}
         <radialGradient id={id("sparkle-halo")}>
           <stop offset="0" stopColor="#FFF8E6" stopOpacity="0.85" />
-          <stop offset="0.45" stopColor="#F3E6C6" stopOpacity="0.28" />
-          <stop offset="1" stopColor="#F3E6C6" stopOpacity="0" />
+          <stop offset="0.45" stopColor="#F6E2A8" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#F6E2A8" stopOpacity="0" />
         </radialGradient>
         <linearGradient id={id("glint")} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#FFFFFF" stopOpacity="0" />
@@ -197,7 +243,7 @@ const LickingSmile = ({
           <stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
         </linearGradient>
         <clipPath id={id("smile-clip")}>
-          <path d="M28 18 Q587 156 1147 18 Q1158 14 1150 30 Q587 112 26 30 Q18 22 28 18 Z" />
+          <path d={geo.band} />
         </clipPath>
         <radialGradient id={id("milk")} cx="0.35" cy="0.35" r="0.75">
           <stop offset="0" stopColor="#FFFFFF" />
@@ -261,7 +307,7 @@ const LickingSmile = ({
       </g>
 
       {/* a drop of milk: hangs, stretches, falls onto the tongue tip, re-forms */}
-      <g transform={`translate(${DROP.x} ${DROP.y}) scale(${k})`}>
+      <g transform={`translate(${dropX} ${dropY}) scale(${k})`}>
         <g>
           <animateTransform
             attributeName="transform"
@@ -291,7 +337,7 @@ const LickingSmile = ({
           </g>
         </g>
       </g>
-      <Splash x={DROP.x} y={catchY} at={0.235} />
+      <Splash x={dropX} y={catchY} at={0.235} />
 
       {/* second drop: wobbles on the lip, scooped up by the curling tip */}
       <g transform={`translate(${dropBx} ${dropBy}) scale(${0.7 * k})`}>
@@ -342,7 +388,7 @@ const LickingSmile = ({
 
       {/* smile: a crescent, thick in the middle and tapering at the corners.
           After the lick it gives a quick, satisfied grin. */}
-      <g transform="translate(587 70)">
+      <g transform={`translate(587 ${geo.centreY})`}>
         <g>
           <animateTransform
             attributeName="transform"
@@ -355,10 +401,10 @@ const LickingSmile = ({
             calcMode="spline"
             keySplines={splines(7)}
           />
-          <g transform="translate(-587 -70)">
+          <g transform={`translate(-587 ${-geo.centreY})`}>
             <path
               className="ls-smile"
-              d="M28 18 Q587 156 1147 18 Q1158 14 1150 30 Q587 112 26 30 Q18 22 28 18 Z"
+              d={geo.band}
               fill={url("smile-gold")}
             />
           </g>
@@ -367,7 +413,7 @@ const LickingSmile = ({
 
       {/* a gold glint runs along the smile, from the milk to the corner */}
       <g clipPath={url("smile-clip")}>
-        <rect x="-140" y="0" width="140" height="160" fill={url("glint")} opacity="0">
+        <rect x="-140" y="0" width="140" height="300" fill={url("glint")} opacity="0">
           <animate
             attributeName="x"
             begin="indefinite"
@@ -390,7 +436,7 @@ const LickingSmile = ({
       </g>
 
       {/* ring burst from the corner sparkle */}
-      <circle cx={BURST.x} cy={BURST.y} r="4" fill="none" stroke="#F3E6C6" strokeWidth={2 * k} opacity="0">
+      <circle cx={BURST.x} cy={BURST.y} r="4" fill="none" stroke="#F6E2A8" strokeWidth={2 * k} opacity="0">
         <animate
           attributeName="r"
           begin="indefinite"
@@ -413,7 +459,7 @@ const LickingSmile = ({
 
       {/* sparkles where the milk was, and at the corner of the mouth */}
       {SPARKLES.map((sp, i) => (
-        <g key={i} transform={`translate(${sp.x} ${sp.y})`}>
+        <g key={i} transform={sp.x < 1000 ? `translate(${sp.x + sparkleShift} ${sp.y + geo.drop(sp.x + sparkleShift)})` : `translate(${sp.x} ${sp.y})`}>
           <g transform="scale(0)">
             <animateTransform
               attributeName="transform"
@@ -468,11 +514,52 @@ export const LickingWordmark = ({
   const playRef = useRef<(() => void) | null>(null);
   return (
     <span
-      className={`relative inline-block font-display font-light italic leading-[0.95] tracking-[-0.03em] ${className}`}
+      className={`relative inline-block font-wordmark font-light italic leading-[0.95] tracking-[-0.03em] ${className}`}
       onMouseEnter={() => playRef.current?.()}
     >
       <span className="text-foil px-[0.12em]">Devanagari</span>
       <LickingSmile active={active} repeat={repeat} playRef={playRef} k={k} />
+    </span>
+  );
+};
+
+/**
+ * The client's Devanagari badge logo, with its green swoosh brought to life:
+ * the printed swoosh is removed from the image and redrawn as the licking
+ * smile, laid exactly where it sat on the logo.
+ */
+export const LickingLogo = ({
+  className = "",
+  active = true,
+  repeat = false,
+  k = 1,
+}: {
+  className?: string;
+  active?: boolean;
+  repeat?: boolean;
+  k?: number;
+}) => {
+  const playRef = useRef<(() => void) | null>(null);
+  return (
+    <span
+      className={`relative inline-block aspect-[1197/629] ${className}`}
+      onMouseEnter={() => playRef.current?.()}
+    >
+      <img
+        src={logoBadge}
+        alt="Devanagari"
+        width={600}
+        height={275}
+        className="absolute left-0 top-0 block w-full h-auto"
+      />
+      <LickingSmile
+        active={active}
+        repeat={repeat}
+        playRef={playRef}
+        k={k}
+        shape="logo"
+        className="logo-smile"
+      />
     </span>
   );
 };

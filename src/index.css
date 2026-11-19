@@ -13,8 +13,8 @@
     --emerald-950: #0a1f16;
     --emerald-900: #0f2a1f;
     --emerald-800: #14352a;
-    --gold-400: #c9a45c;
-    --gold-300: #dcc089;
+    --gold-400: #d4a63e;
+    --gold-300: #e3bc5c;
     --cream: #efe6d2;
   }
 
@@ -72,15 +72,21 @@
 
 @layer components {
   .font-display {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* The animated navbar wordmark keeps its original face */
+  .font-wordmark {
     font-family: 'Fraunces', Georgia, serif;
     font-optical-sizing: auto;
-    font-weight: 350;
-    letter-spacing: -0.015em;
   }
 
   /* Gold foil, used only on the animated "Devanagari" wordmark */
   .text-foil {
-    background: linear-gradient(100deg, #a37c38 0%, #e6c987 25%, #f3e6c6 40%, #d9b26a 58%, #a37c38 80%, #e6c987 100%);
+    background: linear-gradient(100deg, #a8791f 0%, #ebc66a 25%, #f6e2a8 40%, #e0b04a 58%, #a8791f 80%, #ebc66a 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -316,13 +322,13 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #c9a45c;
+  color: #d4a63e;
   font-variant-numeric: tabular-nums;
   transition: color 0.45s;
 }
 .hc-name {
   margin-top: 4px;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Source Serif 4', Georgia, serif;
   font-size: calc(var(--w) * 0.112);
   line-height: 1.15;
   color: #efe6d2;
@@ -335,7 +341,7 @@
   transition: color 0.45s;
 }
 .hc-cell.is-on {
-  background: #dcc089;
+  background: #e3bc5c;
 }
 /* honey rises into the highlighted cell */
 .hc-inner::before {
@@ -344,8 +350,8 @@
   inset: -6% -2% 0;
   z-index: -1;
   background:
-    radial-gradient(60% 10% at 50% 2%, #f3e6c6 0%, transparent 70%),
-    linear-gradient(180deg, #e6c987 0%, #c9a45c 45%, #b08b45 100%);
+    radial-gradient(60% 10% at 50% 2%, #f6e2a8 0%, transparent 70%),
+    linear-gradient(180deg, #ebc66a 0%, #d4a63e 45%, #b88a2a 100%);
   border-radius: 45% 55% 0 0 / 6% 6% 0 0;
   transform: translateY(102%);
   transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
@@ -370,10 +376,22 @@
   height: auto;
   overflow: visible;
 }
-.licking-smile .ls-smile {
+/* the logo's swoosh: the band's corners (x 28 and 1147 of 1175) land on the
+   printed swoosh tips at 221px and 975px of the 1197 x 629 logo */
+.logo-smile {
+  position: absolute;
+  left: 16.88%;
+  width: 66.14%;
+  top: 81.54%;
+  height: auto;
+  overflow: visible;
+}
+.licking-smile .ls-smile,
+.logo-smile .ls-smile {
   clip-path: inset(0 100% 0 0);
 }
-.licking-smile.is-on .ls-smile {
+.licking-smile.is-on .ls-smile,
+.logo-smile.is-on .ls-smile {
   animation: ls-draw 1.1s cubic-bezier(0.25, 1, 0.5, 1) 0.5s forwards;
 }
 @keyframes ls-draw {
@@ -382,10 +400,12 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .licking-smile .ls-smile {
+  .licking-smile .ls-smile,
+  .logo-smile .ls-smile {
     clip-path: none;
   }
-  .licking-smile.is-on .ls-smile {
+  .licking-smile.is-on .ls-smile,
+  .logo-smile.is-on .ls-smile {
     animation: none;
   }
 }
@@ -395,7 +415,7 @@
    On wide screens the row paints the gold column, so label and value can
    share a baseline; on phones the label cell is its own gold band. */
 .label-cell {
-  background: linear-gradient(#c9a45c, #c9a45c) no-repeat left center / 100% 100%;
+  background: linear-gradient(#d4a63e, #d4a63e) no-repeat left center / 100% 100%;
   transition:
     background-size 0.6s cubic-bezier(0.25, 1, 0.5, 1),
     color 0.3s ease-out;
@@ -414,7 +434,7 @@
     position: absolute;
     inset: 0 auto 0 0;
     width: 12.5rem;
-    background: #c9a45c;
+    background: #d4a63e;
     transform-origin: left center;
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
     transition-delay: var(--d, 0s);

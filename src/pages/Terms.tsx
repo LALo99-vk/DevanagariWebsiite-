@@ -38,12 +38,12 @@ const Terms = () => {
               Welcome to <strong>SREE SHIVANI FOODS</strong>. By accessing or
               using our website,{" "}
               <a
-                href="https://www.sreeshivanifoods.com"
+                href="https://sreeshivanifoods.in"
                 className="text-[#14402E] hover:underline font-semibold"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                www.sreeshivanifoods.com
+                sreeshivanifoods.in
               </a>
               , you agree to comply with and be bound by the following Terms and
               Conditions. Please read them carefully before using our Website or

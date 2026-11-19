@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { CheckCircle, XCircle, AlertCircle, Info, X } from "lucide-react";
+import React, { useCallback, useEffect, useState } from "react";
+import { CheckCircle2, XCircle, AlertCircle, Info, X } from "lucide-react";
 
 export type NotificationType = "success" | "error" | "warning" | "info";
+
+export interface NotificationAction {
+  label: string;
+  onClick: () => void;
+}
 
 interface NotificationProps {
   id: string;
@@ -9,8 +14,17 @@ interface NotificationProps {
   title: string;
   message: string;
   duration?: number;
+  action?: NotificationAction;
   onClose: (id: string) => void;
 }
+
+// One emerald toast for every message; only the icon changes with the type
+const ICONS: Record<NotificationType, { Icon: typeof Info; tone: string }> = {
+  success: { Icon: CheckCircle2, tone: "text-emerald-300" },
+  error: { Icon: XCircle, tone: "text-[#F0A08C]" },
+  warning: { Icon: AlertCircle, tone: "text-gold-400" },
+  info: { Icon: Info, tone: "text-gold-300" },
+};
 
 const Notification: React.FC<NotificationProps> = ({
   id,
@@ -18,87 +32,72 @@ const Notification: React.FC<NotificationProps> = ({
   title,
   message,
   duration = 5000,
+  action,
   onClose,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
+  const [paused, setPaused] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setIsLeaving(true);
+    window.setTimeout(() => onClose(id), 250);
+  }, [id, onClose]);
 
   useEffect(() => {
-    // Show notification with animation
-    const showTimer = setTimeout(() => setIsVisible(true), 100);
+    const showTimer = window.setTimeout(() => setIsVisible(true), 20);
+    return () => window.clearTimeout(showTimer);
+  }, []);
 
-    // Auto-hide notification
-    const hideTimer = setTimeout(() => {
-      handleClose();
-    }, duration);
+  // Auto-hide, held while the pointer or keyboard focus is on the toast
+  useEffect(() => {
+    if (paused) return;
+    const hideTimer = window.setTimeout(handleClose, duration);
+    return () => window.clearTimeout(hideTimer);
+  }, [duration, paused, handleClose]);
 
-    return () => {
-      clearTimeout(showTimer);
-      clearTimeout(hideTimer);
-    };
-  }, [duration]);
-
-  const handleClose = () => {
-    setIsLeaving(true);
-    setTimeout(() => {
-      onClose(id);
-    }, 300);
-  };
-
-  const getIcon = () => {
-    switch (type) {
-      case "success":
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case "error":
-        return <XCircle className="w-5 h-5 text-red-500" />;
-      case "warning":
-        return <AlertCircle className="w-5 h-5 text-yellow-500" />;
-      case "info":
-        return <Info className="w-5 h-5 text-blue-500" />;
-      default:
-        return <Info className="w-5 h-5 text-blue-500" />;
-    }
-  };
-
-  const getStyles = () => {
-    switch (type) {
-      case "success":
-        return "bg-green-50 border-green-200 text-green-800";
-      case "error":
-        return "bg-red-50 border-red-200 text-red-800";
-      case "warning":
-        return "bg-yellow-50 border-yellow-200 text-yellow-800";
-      case "info":
-        return "bg-blue-50 border-blue-200 text-blue-800";
-      default:
-        return "bg-blue-50 border-blue-200 text-blue-800";
-    }
-  };
+  const { Icon, tone } = ICONS[type] ?? ICONS.info;
+  const shown = isVisible && !isLeaving;
 
   return (
     <div
-      className={`fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border-l-4 transform transition-all duration-300 ease-in-out ${
-        isVisible && !isLeaving
-          ? "translate-x-0 opacity-100"
-          : "translate-x-full opacity-0"
-      } ${getStyles()}`}
+      role={type === "error" ? "alert" : "status"}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      className={`pointer-events-auto w-full rounded-[14px] border border-gold-400/25 bg-emerald-900 text-cream shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)] transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none ${
+        shown ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
+      }`}
     >
-      <div className="p-4">
-        <div className="flex items-start">
-          <div className="flex-shrink-0">{getIcon()}</div>
-          <div className="ml-3 w-0 flex-1">
-            <p className="text-sm font-medium">{title}</p>
-            <p className="mt-1 text-sm opacity-90">{message}</p>
-          </div>
-          <div className="ml-4 flex-shrink-0 flex">
+      <div className="flex items-start gap-3 p-4 pr-3">
+        <Icon size={20} strokeWidth={1.8} className={`mt-0.5 shrink-0 ${tone}`} aria-hidden="true" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-semibold leading-snug text-cream">{title}</p>
+          {message && (
+            <p className="mt-1 text-sm leading-relaxed text-mist">{message}</p>
+          )}
+          {action && (
             <button
-              className="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              onClick={handleClose}
+              type="button"
+              onClick={() => {
+                action.onClick();
+                handleClose();
+              }}
+              className="btn-gold mt-3 !px-4 !py-2 !text-sm"
             >
-              <X className="w-4 h-4" />
+              {action.label}
             </button>
-          </div>
+          )}
         </div>
+        <button
+          type="button"
+          aria-label="Dismiss"
+          onClick={handleClose}
+          className="-mt-1 grid h-8 w-8 shrink-0 place-items-center rounded-full text-mist transition-colors hover:bg-gold-400/10 hover:text-cream"
+        >
+          <X size={16} />
+        </button>
       </div>
     </div>
   );

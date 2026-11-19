@@ -40,8 +40,8 @@ const Shop = () => {
     null
   );
   const { addItem } = useCart();
-  const { user } = useAuth();
-  const { showError, showWarning } = useNotification();
+  const { user, loginWithGoogle } = useAuth();
+  const { showError, showWarning, showNotification } = useNotification();
 
   useEffect(() => {
     const initializeShop = async () => {
@@ -100,13 +100,20 @@ const Shop = () => {
 
   const handleAddToCart = async (product: Product, quantity: number = 1) => {
     if (!user) {
-      const shouldSignIn = confirm(
-        "Please sign in to add items to your cart. Would you like to sign in now?"
-      );
-      if (shouldSignIn) {
-        // Trigger Google sign-in
-        window.location.href = "/";
-      }
+      showNotification({
+        type: "info",
+        title: "Sign in to add items to your cart",
+        message: "Sign in with your Google account to keep your cart and check out.",
+        duration: 9000,
+        action: {
+          label: "Sign in with Google",
+          onClick: () => {
+            loginWithGoogle().catch(() =>
+              showError("Sign-in failed", "Please try again in a moment.")
+            );
+          },
+        },
+      });
       return;
     }
 

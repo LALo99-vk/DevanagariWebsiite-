@@ -6,7 +6,9 @@ export default {
       fontFamily: {
         inter: ['Figtree', 'system-ui', 'sans-serif'],
         sans: ['Figtree', 'system-ui', 'sans-serif'],
-        display: ['Fraunces', 'Georgia', 'serif'],
+        display: ['"Source Serif 4"', 'Georgia', 'serif'],
+        // Only the animated navbar wordmark keeps Fraunces
+        wordmark: ['Fraunces', 'Georgia', 'serif'],
       },
       colors: {
         primary: '#14402E',
@@ -25,12 +27,12 @@ export default {
           300: '#8CCBA9',
         },
         gold: {
-          100: '#F3E6C6',
-          200: '#E6D09D',
-          300: '#DCC089',
-          400: '#C9A45C',
-          500: '#B08B45',
-          600: '#8F6F33',
+          100: '#F6E2A8',
+          200: '#EDCB78',
+          300: '#E3BC5C',
+          400: '#D4A63E',
+          500: '#B88A2A',
+          600: '#946C1E',
         },
         cream: '#EFE6D2',
         mist: '#B7C2B1',
