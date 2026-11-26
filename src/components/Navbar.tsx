@@ -133,7 +133,7 @@ const Navbar = () => {
           <div className="flex justify-between items-center h-24">
             {location.pathname === "/" ? (
               <Link to="/" className="flex items-center -mt-1" aria-label="Devanagari home">
-                <LickingLogo className="w-[118px]" k={2.2} />
+                <LickingLogo className="w-[118px]" />
               </Link>
             ) : (
               <Link
@@ -186,7 +186,7 @@ const Navbar = () => {
           {/* Center — logo */}
           <div className="flex justify-center">
             <Link to="/" className="flex items-center -mt-1" aria-label="Devanagari home">
-              <LickingLogo className="w-[148px]" k={2.2} />
+              <LickingLogo className="w-[148px]" />
             </Link>
           </div>
 

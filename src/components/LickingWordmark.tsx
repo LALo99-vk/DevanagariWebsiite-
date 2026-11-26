@@ -524,27 +524,15 @@ export const LickingWordmark = ({
 };
 
 /**
- * The client's Devanagari badge logo, with its green swoosh brought to life:
- * the printed swoosh is removed from the image and redrawn as the licking
- * smile, laid exactly where it sat on the logo.
+ * The client's Devanagari badge logo. The printed swoosh is removed from the
+ * image and redrawn here as a still green smile, laid exactly where it sat on
+ * the logo. It draws in once on load (see .logo-smile in index.css).
  */
-export const LickingLogo = ({
-  className = "",
-  active = true,
-  repeat = false,
-  k = 1,
-}: {
-  className?: string;
-  active?: boolean;
-  repeat?: boolean;
-  k?: number;
-}) => {
-  const playRef = useRef<(() => void) | null>(null);
+export const LickingLogo = ({ className = "" }: { className?: string }) => {
+  const band = geometry("logo").band;
+  const gradientId = `logo-green-${useId().replace(/:/g, "")}`;
   return (
-    <span
-      className={`relative inline-block aspect-[1197/629] ${className}`}
-      onMouseEnter={() => playRef.current?.()}
-    >
+    <span className={`relative inline-block aspect-[1197/629] ${className}`}>
       <img
         src={logoBadge}
         alt="Devanagari"
@@ -552,14 +540,23 @@ export const LickingLogo = ({
         height={275}
         className="absolute left-0 top-0 block w-full h-auto"
       />
-      <LickingSmile
-        active={active}
-        repeat={repeat}
-        playRef={playRef}
-        k={k}
-        shape="logo"
-        className="logo-smile"
-      />
+      <svg
+        viewBox="0 0 1175 160"
+        preserveAspectRatio="xMidYMid meet"
+        className="logo-smile is-on"
+        aria-hidden="true"
+      >
+        <defs>
+          {/* the logo's own leaf green, lit a little in the middle */}
+          <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#4BB523" />
+            <stop offset="0.45" stopColor="#7FDC4C" />
+            <stop offset="0.7" stopColor="#57CE26" />
+            <stop offset="1" stopColor="#42A51E" />
+          </linearGradient>
+        </defs>
+        <path className="ls-smile" d={band} fill={`url(#${gradientId})`} />
+      </svg>
     </span>
   );
 };
