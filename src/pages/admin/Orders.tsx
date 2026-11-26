@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Search,
   Filter,
@@ -9,10 +10,9 @@ import {
   Package,
   Calendar,
   User,
-  DollarSign,
+  IndianRupee,
   RefreshCw,
   Clock,
-  Menu,
   Download,
   MapPin,
   CreditCard,
@@ -74,6 +74,8 @@ interface Order {
     email: string;
   };
   order_items: Array<{
+    product_name?: string;
+    product_price?: number;
     id: string;
     product_id: string;
     quantity: number;
@@ -94,11 +96,23 @@ const Orders: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  // Deep link from the shelf: ?order=<id> opens that order's details.
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const orderId = searchParams.get("order");
+    if (loading || !orderId) return;
+    const order = orders.find((o) => o.id === orderId);
+    if (order) {
+      setSelectedOrder(order);
+      setShowModal(true);
+    }
+    setSearchParams({}, { replace: true });
+  }, [loading, searchParams]);
 
   // Debug selectedOrder changes
   useEffect(() => {
@@ -212,38 +226,38 @@ const Orders: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-4 w-4 text-yellow-500" />;
+        return <Clock className="h-4 w-4 text-adm-amber-ink" />;
       case "processing":
-        return <Package className="h-4 w-4 text-blue-500" />;
+        return <Package className="h-4 w-4 text-adm-forest" />;
       case "shipped":
-        return <Truck className="h-4 w-4 text-purple-500" />;
+        return <Truck className="h-4 w-4 text-adm-forest" />;
       case "delivered":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-adm-sage-ink" />;
       case "cancelled":
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-adm-brick" />;
       case "refunded":
-        return <RefreshCw className="h-4 w-4 text-blue-500" />;
+        return <RefreshCw className="h-4 w-4 text-adm-forest" />;
       default:
-        return <Clock className="h-4 w-4 text-gray-500" />;
+        return <Clock className="h-4 w-4 text-adm-ink-3" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "adm-chip-amber";
       case "processing":
-        return "bg-blue-100 text-blue-800";
+        return "adm-chip-amber";
       case "shipped":
-        return "bg-purple-100 text-purple-800";
+        return "adm-chip-plain";
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "adm-chip-sage";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "adm-chip-brick";
       case "refunded":
-        return "bg-blue-100 text-blue-800";
+        return "adm-chip-brick";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "adm-chip-plain";
     }
   };
 
@@ -259,13 +273,14 @@ const Orders: React.FC = () => {
     return matchesSearch && matchesStatus;
   });
 
+  // Earned = paid and not cancelled or refunded; the shelf and earnings page match.
   const totalRevenue = orders
-    .filter((order) => order.status === "delivered")
-    .reduce((sum, order) => sum + order.total, 0);
+    .filter((order) => order.payment_status === "paid" && order.status !== "cancelled")
+    .reduce((sum, order) => sum + Number(order.total), 0);
 
   const totalOrders = orders.length;
   const pendingOrders = orders.filter(
-    (order) => order.status === "pending"
+    (order) => order.status === "pending" || order.status === "processing"
   ).length;
   const deliveredOrders = orders.filter(
     (order) => order.status === "delivered"
@@ -355,9 +370,9 @@ const Orders: React.FC = () => {
               order.created_at
             )}</p>
             <p style="margin: 5px 0;"><strong>Status:</strong> <span style="text-transform: capitalize; color: ${
-              getStatusColor(order.status).includes("green")
+              getStatusColor(order.status).includes("sage")
                 ? "#059669"
-                : getStatusColor(order.status).includes("red")
+                : getStatusColor(order.status).includes("brick")
                 ? "#dc2626"
                 : "#d97706"
             };">${esc(order.status)}</span></p>
@@ -446,13 +461,13 @@ const Orders: React.FC = () => {
                     (item) => `
                 <tr>
                   <td style="border: 1px solid #e5e7eb; padding: 12px;">
-                    <strong>${esc(item.product?.name || "Unknown Product")}</strong>
+                    <strong>${esc(item.product?.name || item.product_name || "Unknown Product")}</strong>
                   </td>
                   <td style="border: 1px solid #e5e7eb; padding: 12px; text-align: center;">${esc(
                     item.quantity
                   )}</td>
                   <td style="border: 1px solid #e5e7eb; padding: 12px; text-align: right;">₹${
-                    item.price?.toFixed(2) || "0.00"
+                    Number(item.product_price ?? item.price ?? 0).toFixed(2)
                   }</td>
                   <td style="border: 1px solid #e5e7eb; padding: 12px; text-align: right;">₹${
                     item.total_price?.toFixed(2) || "0.00"
@@ -554,109 +569,26 @@ const Orders: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-adm-forest"></div>
       </div>
     );
   }
 
   return (
     <div>
-      {/* Mobile sidebar */}
-      <div
-        className={`fixed inset-0 z-50 lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`}
-      >
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
-          onClick={() => setSidebarOpen(false)}
-        />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            <a
-              href="/"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-b border-gray-200 mb-2"
-            >
-              🏠 Return to Home
-            </a>
-            <a
-              href="/admin"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📊 Dashboard
-            </a>
-            <a
-              href="/admin/products"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📦 Products
-            </a>
-            <a
-              href="/admin/orders"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md bg-blue-100 text-blue-900"
-            >
-              🛒 Orders
-            </a>
-            <a
-              href="/admin/users"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              👥 Users
-            </a>
-            <a
-              href="/admin/analytics"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📈 Analytics
-            </a>
-            <a
-              href="/admin/refunds"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              💰 Refunds
-            </a>
-            <a
-              href="/admin/settings"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              ⚙️ Settings
-            </a>
-          </nav>
-        </div>
-      </div>
-
-      {/* Hamburger button */}
-      <div className="mb-6">
-        <button
-          type="button"
-          className="lg:hidden -m-2.5 p-2.5 text-gray-700"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-      </div>
 
       {/* Header */}
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="adm-title"><em>Orders</em></h1>
+          <p className="adm-lede">
             Manage customer orders and track fulfillment
           </p>
         </div>
         <div className="mt-4 sm:mt-0">
           <button
             onClick={fetchOrders}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 border border-adm-rule rounded-lg border border-adm-rule text-sm font-medium text-adm-ink-2 bg-adm-raised hover:bg-adm-sunk focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
@@ -666,18 +598,18 @@ const Orders: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Package className="h-6 w-6 text-gray-400" />
+                <Package className="h-6 w-6 text-adm-ink-3" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
                     Total Orders
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {totalOrders}
                   </dd>
                 </dl>
@@ -686,18 +618,18 @@ const Orders: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Clock className="h-6 w-6 text-yellow-400" />
+                <Clock className="h-6 w-6 text-adm-amber-ink" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Pending Orders
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
+                    To ship
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {pendingOrders}
                   </dd>
                 </dl>
@@ -706,18 +638,18 @@ const Orders: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <CheckCircle className="h-6 w-6 text-green-400" />
+                <CheckCircle className="h-6 w-6 text-adm-forest" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
                     Delivered
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {deliveredOrders}
                   </dd>
                 </dl>
@@ -726,19 +658,19 @@ const Orders: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <DollarSign className="h-6 w-6 text-green-400" />
+                <IndianRupee className="h-6 w-6 text-adm-forest" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Revenue
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
+                    Earned
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
-                    ₹{totalRevenue.toFixed(2)} INR
+                  <dd className="text-lg font-medium text-adm-ink">
+                    ₹{totalRevenue.toFixed(2)}
                   </dd>
                 </dl>
               </div>
@@ -750,21 +682,21 @@ const Orders: React.FC = () => {
       {/* Filters */}
       <div className="mt-6 flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-adm-ink-3" />
           <input
             type="text"
             placeholder="Search orders by customer name, email, or order ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full pl-10 pr-3 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised placeholder:text-adm-ink-3 focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
           />
         </div>
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-adm-ink-3" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full pl-10 pr-10 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
@@ -781,26 +713,26 @@ const Orders: React.FC = () => {
       <div className="mt-8 flex flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
+            <div className="overflow-hidden border border-adm-rule ring-1 ring-black ring-opacity-5 md:rounded-lg">
+              <table className="min-w-full divide-y divide-adm-rule-soft">
+                <thead className="bg-adm-sunk">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Order ID
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Customer
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Total
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Payment
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Date
                     </th>
                     <th className="relative px-6 py-3">
@@ -808,37 +740,37 @@ const Orders: React.FC = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-adm-raised divide-y divide-adm-rule-soft">
                   {filteredOrders.map((order) => (
                     <tr key={order.id}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-adm-ink">
                         #{order.id.slice(-8)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-8 w-8">
-                            <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                              <User className="h-4 w-4 text-gray-600" />
+                            <div className="h-8 w-8 rounded-full bg-adm-rule flex items-center justify-center">
+                              <User className="h-4 w-4 text-adm-ink-2" />
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-adm-ink">
                               {order.user?.name || "Unknown"}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-adm-ink-3">
                               {order.user?.email || "No email"}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ₹{order.total.toFixed(2)} {order.currency || "INR"}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink">
+                        ₹{order.total.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                            order.status
-                          )}`}
+ order.status
+ )}`}
                         >
                           {getStatusIcon(order.status)}
                           <span className="ml-1 capitalize">
@@ -846,32 +778,30 @@ const Orders: React.FC = () => {
                           </span>
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            order.payment_status === "paid"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
+ order.payment_status === "paid"
+ ? "bg-adm-sage-wash text-adm-sage-ink"
+ : order.payment_status === "refunded" || order.payment_status === "failed"
+ ? "bg-adm-brick-wash text-adm-brick-ink"
+ : "bg-adm-amber-wash text-adm-amber-ink"
+ }`}
                         >
                           {order.payment_status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink-3">
                         {new Date(order.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex space-x-2">
                           <button
                             onClick={() => {
-                              console.log(
-                                "🔍 Eye button clicked for order:",
-                                order
-                              );
                               setSelectedOrder(order);
                               setShowModal(true);
                             }}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-adm-forest hover:text-adm-forest-deep"
                           >
                             <Eye className="h-4 w-4" />
                           </button>
@@ -882,7 +812,7 @@ const Orders: React.FC = () => {
                                 onChange={(e) =>
                                   updateOrderStatus(order.id, e.target.value)
                                 }
-                                className="text-sm border border-gray-300 rounded px-2 py-1"
+                                className="text-sm border border-adm-rule rounded px-2 py-1"
                               >
                                 <option value="pending">Pending</option>
                                 <option value="processing">Processing</option>
@@ -907,18 +837,18 @@ const Orders: React.FC = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className="fixed inset-0 bg-adm-ink bg-opacity-50 transition-opacity"
               onClick={() => setShowModal(false)}
             />
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div className="inline-block align-bottom bg-adm-raised rounded-lg text-left overflow-hidden shadow-[0_24px_48px_-12px_rgba(11,33,24,0.35)] transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+              <div className="bg-adm-raised px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  <h3 className="adm-h2">
                     Order Details - #{selectedOrder.id.slice(-8)}
                   </h3>
                   <button
                     onClick={() => exportOrderToPDF(selectedOrder)}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg border border-adm-rule text-white bg-adm-forest hover:bg-adm-forest-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Export PDF
@@ -928,11 +858,11 @@ const Orders: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Customer Information */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                    <h4 className="font-medium text-adm-ink mb-3 flex items-center">
                       <User className="h-4 w-4 mr-2" />
                       Customer Information
                     </h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-adm-sunk p-4 rounded-lg">
                       <p className="mb-2">
                         <strong>Name:</strong>{" "}
                         {selectedOrder.user?.name || "Unknown"}
@@ -947,11 +877,11 @@ const Orders: React.FC = () => {
 
                   {/* Order Information */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                    <h4 className="font-medium text-adm-ink mb-3 flex items-center">
                       <Package className="h-4 w-4 mr-2" />
                       Order Information
                     </h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-adm-sunk p-4 rounded-lg">
                       <p className="mb-2">
                         <strong>Order ID:</strong> #{selectedOrder.id.slice(-8)}
                       </p>
@@ -976,8 +906,8 @@ const Orders: React.FC = () => {
                         <strong>Status:</strong>{" "}
                         <span
                           className={`px-2 py-1 rounded text-xs ${getStatusColor(
-                            selectedOrder.status
-                          )}`}
+ selectedOrder.status
+ )}`}
                         >
                           {selectedOrder.status}
                         </span>
@@ -1002,11 +932,11 @@ const Orders: React.FC = () => {
 
                   {/* Shipping Address */}
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                    <h4 className="font-medium text-adm-ink mb-3 flex items-center">
                       <MapPin className="h-4 w-4 mr-2" />
                       Shipping Address
                     </h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-adm-sunk p-4 rounded-lg">
                       {selectedOrder.shipping_address ? (
                         <>
                           <p className="mb-2">
@@ -1026,7 +956,7 @@ const Orders: React.FC = () => {
                               "Not provided"}
                           </p>
                           {selectedOrder.shipping_address.address_line_2 && (
-                            <p className="mb-2 pl-4 text-gray-600">
+                            <p className="mb-2 pl-4 text-adm-ink-2">
                               {selectedOrder.shipping_address.address_line_2}
                             </p>
                           )}
@@ -1051,7 +981,7 @@ const Orders: React.FC = () => {
                           </p>
                         </>
                       ) : (
-                        <p className="text-gray-500 italic">
+                        <p className="text-adm-ink-3 italic">
                           No shipping address provided
                         </p>
                       )}
@@ -1062,11 +992,11 @@ const Orders: React.FC = () => {
                 {/* Refund Information */}
                 {selectedOrder.refund_id && (
                   <div className="mt-6">
-                    <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                    <h4 className="font-medium text-adm-ink mb-3 flex items-center">
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Refund Information
                     </h4>
-                    <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+                    <div className="bg-adm-brick-wash border border-adm-brick p-4 rounded-lg">
                       <p className="mb-2">
                         <strong>Refund ID:</strong> {selectedOrder.refund_id}
                       </p>
@@ -1078,12 +1008,12 @@ const Orders: React.FC = () => {
                         <strong>Refund Status:</strong>{" "}
                         <span
                           className={`px-2 py-1 rounded text-xs ${
-                            selectedOrder.refund_status === "processed"
-                              ? "bg-green-100 text-green-800"
-                              : selectedOrder.refund_status === "failed"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}
+ selectedOrder.refund_status === "processed"
+ ? "bg-adm-sage-wash text-adm-sage-ink"
+ : selectedOrder.refund_status === "failed"
+ ? "bg-adm-brick-wash text-adm-brick-ink"
+ : "bg-adm-amber-wash text-adm-amber-ink"
+ }`}
                         >
                           {selectedOrder.refund_status}
                         </span>
@@ -1105,15 +1035,15 @@ const Orders: React.FC = () => {
                 )}
 
                 <div className="mt-6">
-                  <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                  <h4 className="font-medium text-adm-ink mb-3 flex items-center">
                     <Package className="h-4 w-4 mr-2" />
                     Order Items
                   </h4>
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-adm-sunk p-4 rounded-lg">
                     {selectedOrder.order_items?.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between py-3 border-b border-gray-200 last:border-b-0"
+                        className="flex items-center justify-between py-3 border-b border-adm-rule last:border-b-0"
                       >
                         <div className="flex items-center flex-1">
                           <img
@@ -1127,30 +1057,27 @@ const Orders: React.FC = () => {
                             className="h-12 w-12 rounded-lg object-cover mr-4"
                           />
                           <div className="flex-1">
-                            <p className="font-medium text-gray-900">
-                              {item.product?.name || "Unknown Product"}
+                            <p className="font-medium text-adm-ink">
+                              {item.product?.name || item.product_name || "Unknown Product"}
                             </p>
-                            <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex items-center space-x-4 text-sm text-adm-ink-3">
                               <span>Qty: {item.quantity}</span>
                               <span>
-                                ₹{item.price?.toFixed(2) || "0.00"} each
+                                ₹{Number(item.product_price ?? item.price ?? 0).toFixed(2)} each
                               </span>
                             </div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-adm-ink">
                             ₹{item.total_price?.toFixed(2) || "0.00"}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {selectedOrder.currency || "INR"}
                           </p>
                         </div>
                       </div>
                     ))}
                     {(!selectedOrder.order_items ||
                       selectedOrder.order_items.length === 0) && (
-                      <p className="text-center text-gray-500 py-4">
+                      <p className="text-center text-adm-ink-3 py-4">
                         No items found
                       </p>
                     )}
@@ -1158,11 +1085,11 @@ const Orders: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="bg-adm-sunk px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-lg border border-transparent border border-adm-rule px-4 py-2 bg-adm-forest text-base font-medium text-white hover:bg-adm-forest-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Close
                 </button>

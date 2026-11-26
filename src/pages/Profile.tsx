@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Package, RefreshCw, Settings } from "lucide-react";
+import { ArrowRight, Package, RefreshCw, Settings, ShieldCheck } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useAdmin } from "../context/AdminContext";
 import { useNotification } from "../context/NotificationContext";
 import { ordersService, Order, OrderItem } from "../services/supabase";
 import BackButton from "../components/BackButton";
@@ -9,6 +10,7 @@ import ConfirmationModal from "../components/ConfirmationModal";
 
 const Profile = () => {
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const { showError } = useNotification();
   const [orders, setOrders] = useState<
     (Order & { order_items: OrderItem[] })[]
@@ -138,10 +140,19 @@ const Profile = () => {
               <p className="mt-1 text-sm sm:text-[15px] text-mist break-all">{user.email}</p>
             </div>
           </div>
-          <Link to="/settings" className="btn-outline-gold !py-2.5">
-            <Settings size={16} strokeWidth={1.8} />
-            Settings
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            {/* Only admin accounts get a shortcut to the admin panel */}
+            {isAdmin && (
+              <Link to="/admin" className="btn-gold !py-2.5">
+                <ShieldCheck size={16} strokeWidth={1.8} />
+                Admin Panel
+              </Link>
+            )}
+            <Link to="/settings" className="btn-outline-gold !py-2.5">
+              <Settings size={16} strokeWidth={1.8} />
+              Settings
+            </Link>
+          </div>
         </div>
 
         {/* Profile information */}

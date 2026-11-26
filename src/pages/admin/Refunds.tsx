@@ -4,13 +4,12 @@ import {
   Filter,
   Eye,
   RefreshCw,
-  DollarSign,
+  IndianRupee,
   Calendar,
   User,
   AlertCircle,
   CheckCircle,
   XCircle,
-  Menu,
 } from "lucide-react";
 import { useAdmin } from "../../context/AdminContext";
 import { supabase } from "../../lib/supabaseClient";
@@ -46,7 +45,6 @@ const Refunds: React.FC = () => {
     null
   );
   const [showModal, setShowModal] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     fetchRefunds();
@@ -148,26 +146,26 @@ const Refunds: React.FC = () => {
   const getRefundStatusIcon = (status: string | null | undefined) => {
     switch (status) {
       case "processed":
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
+        return <CheckCircle className="h-4 w-4 text-adm-sage-ink" />;
       case "failed":
-        return <XCircle className="h-4 w-4 text-red-500" />;
+        return <XCircle className="h-4 w-4 text-adm-brick" />;
       case "pending":
-        return <RefreshCw className="h-4 w-4 text-yellow-500" />;
+        return <RefreshCw className="h-4 w-4 text-adm-amber-ink" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-500" />;
+        return <AlertCircle className="h-4 w-4 text-adm-ink-3" />;
     }
   };
 
   const getRefundStatusColor = (status: string | null | undefined) => {
     switch (status) {
       case "processed":
-        return "bg-green-100 text-green-800";
+        return "adm-chip-sage";
       case "failed":
-        return "bg-red-100 text-red-800";
+        return "adm-chip-brick";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "adm-chip-amber";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "adm-chip-plain";
     }
   };
 
@@ -217,104 +215,21 @@ const Refunds: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-adm-forest"></div>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Mobile sidebar */}
-      <div
-        className={`fixed inset-0 z-50 lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`}
-      >
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
-          onClick={() => setSidebarOpen(false)}
-        />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            <a
-              href="/"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-b border-gray-200 mb-2"
-            >
-              🏠 Return to Home
-            </a>
-            <a
-              href="/admin"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📊 Dashboard
-            </a>
-            <a
-              href="/admin/products"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📦 Products
-            </a>
-            <a
-              href="/admin/orders"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              🛒 Orders
-            </a>
-            <a
-              href="/admin/users"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              👥 Users
-            </a>
-            <a
-              href="/admin/analytics"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📈 Analytics
-            </a>
-            <a
-              href="/admin/refunds"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md bg-blue-100 text-blue-900"
-            >
-              💰 Refunds
-            </a>
-            <a
-              href="/admin/settings"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              ⚙️ Settings
-            </a>
-          </nav>
-        </div>
-      </div>
-
-      {/* Hamburger button */}
-      <div className="mb-6">
-        <button
-          type="button"
-          className="lg:hidden -m-2.5 p-2.5 text-gray-700"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-      </div>
 
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
-            Refund Management
+          <h1 className="adm-title">
+            <em>Refunds</em>
           </h1>
-          <p className="text-gray-600">
+          <p className="adm-lede">
             Manage and track order refunds and their status
           </p>
         </div>
@@ -322,58 +237,58 @@ const Refunds: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-adm-raised p-6 rounded-lg border border-adm-rule">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <DollarSign className="h-6 w-6 text-blue-600" />
+            <div className="p-2 bg-adm-sage-wash rounded-lg">
+              <IndianRupee className="h-6 w-6 text-adm-forest" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-adm-ink-2">
                 Total Refunded
               </p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-adm-ink">
                 {formatCurrency(totalRefundAmount)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-adm-raised p-6 rounded-lg border border-adm-rule">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <CheckCircle className="h-6 w-6 text-green-600" />
+            <div className="p-2 bg-adm-sage-wash rounded-lg">
+              <CheckCircle className="h-6 w-6 text-adm-sage-ink" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Processed</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-adm-ink-2">Processed</p>
+              <p className="text-2xl font-bold text-adm-ink">
                 {processedRefunds}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-adm-raised p-6 rounded-lg border border-adm-rule">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <RefreshCw className="h-6 w-6 text-yellow-600" />
+            <div className="p-2 bg-adm-amber-wash rounded-lg">
+              <RefreshCw className="h-6 w-6 text-adm-amber-ink" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Pending</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-adm-ink-2">Pending</p>
+              <p className="text-2xl font-bold text-adm-ink">
                 {pendingRefunds}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-adm-raised p-6 rounded-lg border border-adm-rule">
           <div className="flex items-center">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <XCircle className="h-6 w-6 text-red-600" />
+            <div className="p-2 bg-adm-brick-wash rounded-lg">
+              <XCircle className="h-6 w-6 text-adm-brick" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Failed</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-adm-ink-2">Failed</p>
+              <p className="text-2xl font-bold text-adm-ink">
                 {failedRefunds}
               </p>
             </div>
@@ -382,17 +297,17 @@ const Refunds: React.FC = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow">
+      <div className="bg-adm-raised p-6 rounded-lg border border-adm-rule">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-adm-ink-3" />
               <input
                 type="text"
                 placeholder="Search refunds by ID, customer, or payment ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
               />
             </div>
           </div>
@@ -400,7 +315,7 @@ const Refunds: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="block w-full pl-10 pr-10 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -412,35 +327,35 @@ const Refunds: React.FC = () => {
       </div>
 
       {/* Refunds Table */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-adm-raised border border-adm-rule overflow-hidden sm:rounded-md">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-adm-rule-soft">
+            <thead className="bg-adm-sunk">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                   Refund ID
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                   Customer
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                   Refunded At
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-adm-raised divide-y divide-adm-rule-soft">
               {filteredRefunds.map((refund) => (
-                <tr key={refund.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                <tr key={refund.id} className="hover:bg-adm-sunk">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-adm-ink">
                     {refund.refund_id
                       ? `${refund.refund_id.slice(0, 12)}...`
                       : "N/A"}
@@ -448,28 +363,28 @@ const Refunds: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-8 w-8">
-                        <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                          <User className="h-4 w-4 text-gray-600" />
+                        <div className="h-8 w-8 rounded-full bg-adm-rule flex items-center justify-center">
+                          <User className="h-4 w-4 text-adm-ink-2" />
                         </div>
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-adm-ink">
                           {refund.user?.name || "Unknown"}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-adm-ink-3">
                           {refund.user?.email || "No email"}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink">
                     {formatCurrency(refund.refund_amount || 0)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRefundStatusColor(
-                        refund.refund_status
-                      )}`}
+ refund.refund_status
+ )}`}
                     >
                       {getRefundStatusIcon(refund.refund_status)}
                       <span className="ml-1 capitalize">
@@ -477,7 +392,7 @@ const Refunds: React.FC = () => {
                       </span>
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink-3">
                     {refund.refunded_at
                       ? new Date(refund.refunded_at).toLocaleDateString()
                       : "N/A"}
@@ -488,7 +403,7 @@ const Refunds: React.FC = () => {
                         setSelectedRefund(refund);
                         setShowModal(true);
                       }}
-                      className="text-blue-600 hover:text-blue-900 flex items-center"
+                      className="text-adm-forest hover:text-adm-forest-deep flex items-center"
                     >
                       <Eye className="h-4 w-4 mr-1" />
                       View Details
@@ -506,12 +421,12 @@ const Refunds: React.FC = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className="fixed inset-0 bg-adm-ink bg-opacity-50 transition-opacity"
               onClick={() => setShowModal(false)}
             />
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <div className="inline-block align-bottom bg-adm-raised rounded-lg text-left overflow-hidden shadow-[0_24px_48px_-12px_rgba(11,33,24,0.35)] transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+              <div className="bg-adm-raised px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 className="adm-h2 mb-4">
                   Refund Details -{" "}
                   {selectedRefund.refund_id
                     ? `${selectedRefund.refund_id.slice(0, 12)}...`
@@ -520,10 +435,10 @@ const Refunds: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">
+                    <h4 className="font-medium text-adm-ink mb-2">
                       Customer Information
                     </h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-adm-sunk p-4 rounded-lg">
                       <p>
                         <strong>Name:</strong>{" "}
                         {selectedRefund.user?.name || "Unknown"}
@@ -536,10 +451,10 @@ const Refunds: React.FC = () => {
                   </div>
 
                   <div>
-                    <h4 className="font-medium text-gray-900 mb-2">
+                    <h4 className="font-medium text-adm-ink mb-2">
                       Refund Information
                     </h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-adm-sunk p-4 rounded-lg">
                       <p>
                         <strong>Refund ID:</strong>{" "}
                         {selectedRefund.refund_id || "N/A"}
@@ -552,8 +467,8 @@ const Refunds: React.FC = () => {
                         <strong>Status:</strong>{" "}
                         <span
                           className={`px-2 py-1 rounded text-xs ${getRefundStatusColor(
-                            selectedRefund.refund_status
-                          )}`}
+ selectedRefund.refund_status
+ )}`}
                         >
                           {selectedRefund.refund_status}
                         </span>
@@ -575,10 +490,10 @@ const Refunds: React.FC = () => {
                 </div>
 
                 <div className="mt-6">
-                  <h4 className="font-medium text-gray-900 mb-2">
+                  <h4 className="font-medium text-adm-ink mb-2">
                     Order Information
                   </h4>
-                  <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="bg-adm-sunk p-4 rounded-lg">
                     <p>
                       <strong>Order ID:</strong> {selectedRefund.id}
                     </p>
@@ -600,10 +515,10 @@ const Refunds: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="bg-adm-sunk px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-lg border border-transparent border border-adm-rule px-4 py-2 bg-adm-forest text-base font-medium text-white hover:bg-adm-forest-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={() => setShowModal(false)}
                 >
                   Close

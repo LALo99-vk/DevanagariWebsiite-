@@ -44,6 +44,33 @@
         ],
         "createdAt": "2026-11-19T19:06:37.330Z",
         "reason": "Claude: pre-existing transactional email HTML; email clients need web-safe fonts"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/ledger.html"
+        ],
+        "createdAt": "2026-11-26T12:15:31.594Z",
+        "reason": "user chose the 'Light ivory' register (DESIGN.md ivory #F6F0E4) for admin in the ask round"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/shelf.html"
+        ],
+        "createdAt": "2026-11-26T12:15:31.623Z",
+        "reason": "user chose the 'Light ivory' register (DESIGN.md ivory #F6F0E4) for admin in the ask round"
+      },
+      {
+        "rule": "cream-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/week.html"
+        ],
+        "createdAt": "2026-11-26T12:15:31.651Z",
+        "reason": "user chose the 'Light ivory' register (DESIGN.md ivory #F6F0E4) for admin in the ask round"
       }
     ]
   }

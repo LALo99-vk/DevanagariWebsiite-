@@ -121,6 +121,112 @@
   }
 }
 
+/* ---------------- Admin panel: ivory paper, forest ink ----------------
+   AdminLayout puts .admin-mode on <html> while an admin route is open, so the
+   browser surfaces (scrollbar, selection, caret, focus) follow the admin palette. */
+html.admin-mode {
+  scrollbar-color: #cdbf9e #f6f0e4;
+}
+html.admin-mode body {
+  background: #f6f0e4;
+  color: #0b2118;
+  caret-color: #14402e;
+}
+html.admin-mode ::selection {
+  background: #14402e;
+  color: #f6f0e4;
+}
+html.admin-mode :focus-visible {
+  outline: 2px solid #14402e;
+  outline-offset: 2px;
+}
+html.admin-mode input[type="checkbox"],
+html.admin-mode input[type="radio"] {
+  accent-color: #14402e;
+}
+html.admin-mode ::-webkit-scrollbar-track {
+  background: #f6f0e4;
+}
+html.admin-mode ::-webkit-scrollbar-thumb {
+  background: #cdbf9e;
+  border-color: #f6f0e4;
+}
+html.admin-mode ::-webkit-scrollbar-thumb:hover {
+  background: #b9a984;
+}
+
+/* The stock pouch fills up from the bottom once, when the page opens. */
+.pouch-fill {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: pouch-fill 0.9s cubic-bezier(0.25, 1, 0.5, 1) 0.15s both;
+}
+@keyframes pouch-fill {
+  from {
+    transform: scaleY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pouch-fill {
+    animation: none;
+  }
+}
+
+@layer components {
+  .adm-title {
+    @apply font-display text-[2rem] font-normal leading-tight text-adm-ink sm:text-[2.25rem];
+    letter-spacing: -0.015em;
+  }
+  .adm-title em {
+    @apply font-normal italic text-adm-forest;
+  }
+  .adm-lede {
+    @apply mt-1.5 max-w-[60ch] text-[15px] text-adm-ink-2;
+  }
+  .adm-h2 {
+    @apply font-display text-xl font-normal text-adm-ink;
+  }
+  .adm-panel {
+    @apply rounded-xl border border-adm-rule bg-adm-raised;
+  }
+  .adm-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-adm-forest px-4 py-2.5 text-sm font-semibold text-adm-paper transition-colors duration-150 hover:bg-adm-forest-deep disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .adm-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border-[1.5px] border-adm-forest px-4 py-2 text-sm font-semibold text-adm-forest transition-colors duration-150 hover:bg-adm-sage-wash disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .adm-btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-adm-brick px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-150 hover:bg-adm-brick-ink disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .adm-link {
+    @apply font-semibold text-adm-forest underline decoration-adm-forest/40 underline-offset-4 hover:decoration-adm-forest;
+  }
+  .adm-label {
+    @apply mb-1.5 block text-[13px] font-semibold text-adm-ink-2;
+  }
+  .adm-input {
+    @apply block w-full rounded-lg border border-adm-rule bg-white px-3 py-2.5 text-[15px] text-adm-ink placeholder:text-adm-ink-3 transition-colors focus:border-adm-forest focus:outline-none focus:ring-2 focus:ring-adm-forest/20;
+  }
+  .adm-chip {
+    @apply inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-bold;
+  }
+  .adm-chip-amber {
+    @apply bg-adm-amber-wash text-adm-amber-ink;
+  }
+  .adm-chip-sage {
+    @apply bg-adm-sage-wash text-adm-sage-ink;
+  }
+  .adm-chip-brick {
+    @apply bg-adm-brick-wash text-adm-brick-ink;
+  }
+  .adm-chip-plain {
+    @apply bg-adm-sunk text-adm-ink-2;
+  }
+  .adm-num {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
 /* ---------------- Rangoli: drawn like chalk, then a slow turn ---------------- */
 .rangoli .r-line {
   stroke-dasharray: 1;

@@ -1,554 +1,359 @@
-import React, { useState, useEffect } from "react";
-import {
-  Package,
-  ShoppingCart,
-  Users,
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-  Eye,
-  Clock,
-  Menu,
-} from "lucide-react";
-import { useAdmin } from "../../context/AdminContext";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { AlertTriangle, ArrowRight, Plus, RefreshCw } from "lucide-react";
 import { supabase } from "../../lib/supabaseClient";
-import { mockAdminData, simulateDbDelay } from "../../utils/mockData";
-import { supabaseRestApi } from "../../utils/supabaseRestApi";
+import { useAdmin } from "../../context/AdminContext";
+import StockPouch, { LOW_STOCK } from "../../components/admin/StockPouch";
 
-interface DashboardStats {
-  totalProducts: number;
-  totalOrders: number;
-  totalUsers: number;
-  totalRevenue: number;
-  recentOrders: any[];
-  recentUsers: any[];
-  recentActions: any[];
-}
+type ShelfProduct = {
+  id: string;
+  name: string;
+  price: number;
+  stock: number;
+  weight: number;
+  is_active?: boolean;
+};
+
+type ShelfOrder = {
+  id: string;
+  order_number: string | null;
+  created_at: string;
+  status: string;
+  payment_status: string | null;
+  subtotal: number;
+  discount_amount: number | null;
+  total: number;
+  refund_status: string | null;
+  order_items: { product_id: string; quantity: number; total_price: number }[];
+};
+
+type ShelfPromo = {
+  id: string;
+  code: string;
+  description: string | null;
+  discount_type: "percentage" | "fixed" | "shipping";
+  discount_value: number;
+  used_count: number;
+  usage_limit: number | null;
+  is_active: boolean;
+};
+
+const rupees = (n: number) =>
+  `₹${Math.round(n).toLocaleString("en-IN")}`;
+
+const shortDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+
+const orderLabel = (o: ShelfOrder) => o.order_number || `#${o.id.slice(0, 8)}`;
+
+/** Money that stayed with the shop: paid, not cancelled, not refunded. */
+const counts = (o: ShelfOrder) =>
+  o.payment_status === "paid" && o.status !== "cancelled";
+
+const STATUS_CHIP: Record<string, { label: string; tone: string }> = {
+  pending: { label: "To ship", tone: "adm-chip-amber" },
+  processing: { label: "To ship", tone: "adm-chip-amber" },
+  shipped: { label: "Shipped", tone: "adm-chip-plain" },
+  delivered: { label: "Delivered", tone: "adm-chip-sage" },
+  cancelled: { label: "Cancelled", tone: "adm-chip-brick" },
+};
+
+export const StatusChip = ({ status }: { status: string }) => {
+  const chip = STATUS_CHIP[status] || { label: status, tone: "adm-chip-plain" };
+  return <span className={`adm-chip ${chip.tone}`}>{chip.label}</span>;
+};
+
+const promoSummary = (p: ShelfPromo) => {
+  const off =
+    p.discount_type === "percentage"
+      ? `${p.discount_value}% off`
+      : p.discount_type === "fixed"
+      ? `${rupees(p.discount_value)} off`
+      : "Free delivery";
+  const used = `used ${p.used_count} ${p.used_count === 1 ? "time" : "times"}`;
+  return p.usage_limit ? `${off} · ${used} of ${p.usage_limit}` : `${off} · ${used}`;
+};
+
+/** "Health Mix 450g" → ["Health Mix", "450g"], so the size can take the italic turn. */
+const splitName = (name: string) => {
+  const m = name.replace(/^Devanagari\s+/i, "").match(/^(.*?)(\s+\d+\s?(?:g|kg|ml|l))$/i);
+  return m ? [m[1], m[2].trim()] : [name.replace(/^Devanagari\s+/i, ""), ""];
+};
 
 const Dashboard: React.FC = () => {
-  const { adminActions } = useAdmin();
-  const [stats, setStats] = useState<DashboardStats>({
-    totalProducts: 0,
-    totalOrders: 0,
-    totalUsers: 0,
-    totalRevenue: 0,
-    recentOrders: [],
-    recentUsers: [],
-    recentActions: [],
-  });
+  const { logAdminAction } = useAdmin();
+  const [products, setProducts] = useState<ShelfProduct[]>([]);
+  const [orders, setOrders] = useState<ShelfOrder[]>([]);
+  const [promos, setPromos] = useState<ShelfPromo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [busyPromo, setBusyPromo] = useState<string | null>(null);
+
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    const [p, o, pr] = await Promise.all([
+      supabase.from("products").select("id, name, price, stock, weight, is_active").order("price"),
+      supabase
+        .from("orders")
+        .select(
+          "id, order_number, created_at, status, payment_status, subtotal, discount_amount, total, refund_status, order_items(product_id, quantity, total_price)"
+        )
+        .order("created_at", { ascending: false }),
+      supabase.from("promo_codes").select("*").order("created_at", { ascending: false }),
+    ]);
+    if (p.error || o.error) {
+      setError("The shelf could not be loaded. Check your connection and try again.");
+    } else {
+      setProducts((p.data as ShelfProduct[]) || []);
+      setOrders((o.data as ShelfOrder[]) || []);
+      setPromos((pr.data as ShelfPromo[]) || []);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    fetchDashboardData();
+    load();
   }, []);
 
-  const fetchDashboardData = async () => {
-    try {
-      setLoading(true);
-      console.log("🔄 Fetching dashboard data...");
-
-      // Try authenticated Supabase client first (bypasses RLS issues)
-      try {
-        console.log(
-          "📡 Using authenticated Supabase client to fetch real data..."
-        );
-
-        // Get products count
-        const { count: productsCount, error: productsError } = await supabase
-          .from("products")
-          .select("*", { count: "exact", head: true });
-
-        if (productsError) throw productsError;
-
-        // Get orders with user data
-        const { data: ordersData, error: ordersError } = await supabase
-          .from("orders")
-          .select(
-            `
-            *,
-            user:users(name,email),
-            order_items(*,product:products(name,image_url))
-          `
-          )
-          .order("created_at", { ascending: false });
-
-        if (ordersError) throw ordersError;
-
-        // Get users count
-        const { count: usersCount, error: usersError } = await supabase
-          .from("users")
-          .select("*", { count: "exact", head: true });
-
-        if (usersError) throw usersError;
-
-        // Get recent users
-        const { data: recentUsers, error: recentUsersError } = await supabase
-          .from("users")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(5);
-
-        if (recentUsersError) throw recentUsersError;
-
-        const recentOrders = ordersData?.slice(0, 5) || [];
-
-        console.log("✅ Dashboard data loaded from authenticated Supabase");
-
-        // Calculate total revenue
-        const totalRevenue = (ordersData || [])
-          .filter((order: any) => order.status === "delivered")
-          .reduce((sum: number, order: any) => sum + order.total, 0);
-
-        console.log(
-          "✅ Dashboard data loaded (real data from authenticated Supabase)"
-        );
-        setStats({
-          totalProducts: productsCount || 0,
-          totalOrders: ordersData?.length || 0,
-          totalUsers: usersCount || 0,
-          totalRevenue,
-          recentOrders: recentOrders,
-          recentUsers: recentUsers || [],
-          recentActions: adminActions.slice(0, 5),
-        });
-      } catch (supabaseError) {
-        console.warn(
-          "⚠️ Authenticated Supabase failed, trying REST API:",
-          supabaseError
-        );
-
-        // Fallback to REST API
-        try {
-          console.log("📡 Using REST API as fallback...");
-
-          const [
-            productsCount,
-            ordersData,
-            usersCount,
-            recentOrders,
-            recentUsers,
-          ] = await Promise.all([
-            supabaseRestApi.getProductsCount(),
-            supabaseRestApi.getOrders(),
-            supabaseRestApi.getUsersCount(),
-            supabaseRestApi.getOrders().then((orders) => orders.slice(0, 5)),
-            supabaseRestApi.getUsers().then((users) => users.slice(0, 5)),
-          ]);
-
-          console.log("✅ Dashboard data loaded from REST API");
-
-          // Calculate total revenue
-          const totalRevenue = ordersData
-            .filter((order: any) => order.status === "delivered")
-            .reduce((sum: number, order: any) => sum + order.total, 0);
-
-          console.log("✅ Dashboard data loaded (real data from REST API)");
-          setStats({
-            totalProducts: productsCount,
-            totalOrders: ordersData.length,
-            totalUsers: usersCount,
-            totalRevenue,
-            recentOrders: recentOrders,
-            recentUsers: recentUsers,
-            recentActions: adminActions.slice(0, 5),
-          });
-        } catch (restApiError) {
-          console.warn(
-            "⚠️ REST API also failed, using mock data:",
-            restApiError
-          );
-
-          // Fallback to mock data
-          console.log("📦 Using mock data as fallback");
-          await simulateDbDelay(500);
-
-          setStats({
-            totalProducts: mockAdminData.products.count,
-            totalOrders: mockAdminData.orders.count,
-            totalUsers: mockAdminData.users.count,
-            totalRevenue: 0,
-            recentOrders: mockAdminData.orders.data,
-            recentUsers: mockAdminData.users.data,
-            recentActions: adminActions.slice(0, 5),
-          });
-        }
+  const shelf = useMemo(() => {
+    const per = new Map<string, { units: number; earned: number; latest: ShelfOrder[] }>();
+    for (const product of products) per.set(product.id, { units: 0, earned: 0, latest: [] });
+    for (const order of orders) {
+      const share =
+        Number(order.subtotal) > 0
+          ? Math.max(0, 1 - Number(order.discount_amount || 0) / Number(order.subtotal))
+          : 1;
+      for (const item of order.order_items || []) {
+        const row = per.get(item.product_id);
+        if (!row) continue;
+        if (!row.latest.includes(order) && row.latest.length < 3) row.latest.push(order);
+        if (!counts(order)) continue;
+        row.units += item.quantity;
+        row.earned += Number(item.total_price) * share;
       }
-    } catch (error) {
-      console.error("❌ Error fetching dashboard data:", error);
-      // Set default values on error
-      setStats({
-        totalProducts: 0,
-        totalOrders: 0,
-        totalUsers: 0,
-        totalRevenue: 0,
-        recentOrders: [],
-        recentUsers: [],
-        recentActions: adminActions.slice(0, 5),
+    }
+    return per;
+  }, [products, orders]);
+
+  const kept = orders.filter(counts);
+  const earned = kept.reduce((sum, o) => sum + Number(o.total), 0);
+  const coupons = kept.reduce((sum, o) => sum + Number(o.discount_amount || 0), 0);
+  const toShip = orders.filter((o) => o.status === "pending" || o.status === "processing").length;
+  const refundsWaiting = orders.filter((o) => o.refund_status === "pending").length;
+  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const cancelledThisMonth = orders.filter(
+    (o) => o.status === "cancelled" && new Date(o.created_at) >= monthStart
+  ).length;
+
+  const togglePromo = async (promo: ShelfPromo) => {
+    setBusyPromo(promo.id);
+    const { error: updateError } = await supabase
+      .from("promo_codes")
+      .update({ is_active: !promo.is_active })
+      .eq("id", promo.id);
+    if (!updateError) {
+      setPromos((list) => list.map((p) => (p.id === promo.id ? { ...p, is_active: !p.is_active } : p)));
+      await logAdminAction({
+        action_type: "update",
+        resource_type: "promo_code",
+        resource_id: promo.id,
+        old_values: { is_active: promo.is_active },
+        new_values: { is_active: !promo.is_active },
+        ip_address: null,
+        user_agent: navigator.userAgent,
       });
-    } finally {
-      setLoading(false);
     }
+    setBusyPromo(null);
   };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-    }).format(amount);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-IN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "shipped":
-        return "bg-blue-100 text-blue-800";
-      case "processing":
-        return "bg-yellow-100 text-yellow-800";
-      case "pending":
-        return "bg-gray-100 text-gray-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      case "refunded":
-        return "bg-blue-100 text-blue-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div>
-      {/* Mobile sidebar */}
-      <div
-        className={`fixed inset-0 z-50 lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`}
-      >
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
-          onClick={() => setSidebarOpen(false)}
-        />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            <a
-              href="/"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-b border-gray-200 mb-2"
-            >
-              🏠 Return to Home
-            </a>
-            <a
-              href="/admin"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md bg-blue-100 text-blue-900"
-            >
-              📊 Dashboard
-            </a>
-            <a
-              href="/admin/products"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📦 Products
-            </a>
-            <a
-              href="/admin/orders"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              🛒 Orders
-            </a>
-            <a
-              href="/admin/users"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              👥 Users
-            </a>
-            <a
-              href="/admin/analytics"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📈 Analytics
-            </a>
-            <a
-              href="/admin/refunds"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              💰 Refunds
-            </a>
-            <a
-              href="/admin/settings"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              ⚙️ Settings
-            </a>
-          </nav>
-        </div>
-      </div>
-
-      {/* Hamburger button */}
-      <div className="mb-6">
-        <button
-          type="button"
-          className="lg:hidden -m-2.5 p-2.5 text-gray-700"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-      </div>
-
-      <div className="mb-8">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            Overview of your e-commerce platform
+          <h1 className="adm-title">
+            The <em>shelf</em>
+          </h1>
+          <p className="adm-lede">
+            Your packs: price, stock left, and what each one earned after coupons.
           </p>
         </div>
+        <dl className="flex gap-8 lg:text-right">
+          <div>
+            <dd className="adm-num font-display text-[28px] font-normal leading-none">{loading ? "…" : rupees(earned)}</dd>
+            <dt className="mt-1.5 text-[13px] font-semibold text-adm-ink-2">
+              Earned{coupons > 0 ? `, after ${rupees(coupons)} coupons` : ""}
+            </dt>
+          </div>
+          <div>
+            <dd className="adm-num font-display text-[28px] font-normal leading-none">{loading ? "…" : kept.length}</dd>
+            <dt className="mt-1.5 text-[13px] font-semibold text-adm-ink-2">Paid orders</dt>
+          </div>
+          <div>
+            <dd className="adm-num font-display text-[28px] font-normal leading-none">
+              <Link to="/admin/orders" className="hover:text-adm-forest">{loading ? "…" : toShip}</Link>
+            </dd>
+            <dt className="mt-1.5 text-[13px] font-semibold text-adm-ink-2">To ship</dt>
+          </div>
+        </dl>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Package className="h-6 w-6 text-gray-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Products
-                  </dt>
-                  <dd className="text-lg font-medium text-gray-900">
-                    {stats.totalProducts}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
+      {error && (
+        <div className="mt-6 flex items-center justify-between gap-4 rounded-xl border border-adm-brick/40 bg-adm-brick-wash px-5 py-4 text-adm-brick-ink">
+          <span className="font-semibold">{error}</span>
+          <button onClick={load} className="adm-btn-ghost !border-adm-brick-ink !text-adm-brick-ink">
+            <RefreshCw size={15} /> Try again
+          </button>
         </div>
+      )}
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <ShoppingCart className="h-6 w-6 text-gray-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Orders
-                  </dt>
-                  <dd className="text-lg font-medium text-gray-900">
-                    {stats.totalOrders}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
+      <section aria-label="Products" className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {loading &&
+          [0, 1, 2].map((i) => <div key={i} className="adm-panel h-[330px] animate-pulse" />)}
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <Users className="h-6 w-6 text-gray-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Users
-                  </dt>
-                  <dd className="text-lg font-medium text-gray-900">
-                    {stats.totalUsers}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
+        {!loading &&
+          products.map((product) => {
+            const row = shelf.get(product.id) || { units: 0, earned: 0, latest: [] };
+            const low = product.stock < LOW_STOCK;
+            const [base, size] = splitName(product.name);
+            return (
+              <article
+                key={product.id}
+                className={`adm-panel grid grid-cols-[1fr_auto] gap-x-4 p-5 ${low ? "!border-adm-brick" : ""}`}
+              >
+                <div className="min-w-0">
+                  <h2 className="font-display text-2xl font-normal leading-tight">
+                    {base} {size && <em className="italic text-adm-forest">{size}</em>}
+                  </h2>
+                  <p className="adm-num mt-1 text-lg font-bold">
+                    {rupees(product.price)}{" "}
+                    <Link to={`/admin/products?edit=${product.id}`} className="adm-link ml-1 text-[13px]">
+                      Edit
+                    </Link>
+                  </p>
+                  {product.is_active === false && (
+                    <span className="adm-chip adm-chip-plain mt-2">Hidden from shop</span>
+                  )}
+                  <dl className="mt-5 grid grid-cols-2 gap-3">
+                    <div className="border-t border-adm-rule pt-2">
+                      <dd className="adm-num text-lg font-bold">{row.units}</dd>
+                      <dt className="text-xs font-semibold text-adm-ink-2">Units sold</dt>
+                    </div>
+                    <div className="border-t border-adm-rule pt-2">
+                      <dd className="adm-num text-lg font-bold">{rupees(row.earned)}</dd>
+                      <dt className="text-xs font-semibold text-adm-ink-2">Earned</dt>
+                    </div>
+                  </dl>
+                </div>
+                <div className="relative row-span-2">
+                  <StockPouch stock={product.stock} />
+                  <span className="adm-num absolute left-1/2 top-6 -translate-x-1/2 rounded-full bg-adm-ink px-2.5 text-[13px] font-bold leading-6 text-adm-paper">
+                    {product.stock}
+                  </span>
+                  <span className="mt-1 block text-center text-xs font-semibold text-adm-ink-2">left</span>
+                </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <DollarSign className="h-6 w-6 text-gray-400" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Revenue
-                  </dt>
-                  <dd className="text-lg font-medium text-gray-900">
-                    {formatCurrency(stats.totalRevenue)}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                {low && (
+                  <p className="col-span-2 mt-4 flex items-center gap-2 rounded-lg bg-adm-brick-wash px-3 py-2 text-[13px] font-semibold text-adm-brick-ink">
+                    <AlertTriangle size={15} />
+                    {product.stock === 0 ? "Out of stock. Customers can't order it." : `Only ${product.stock} left. Restock soon.`}
+                  </p>
+                )}
 
-      {/* Recent Activity */}
-      <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-3">
-        {/* Recent Orders */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Recent Orders
-            </h3>
-            <div className="flow-root">
-              {stats.recentOrders.length > 0 ? (
-                <ul className="-my-5 divide-y divide-gray-200">
-                  {stats.recentOrders.map((order) => (
-                    <li key={order.id} className="py-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <ShoppingCart className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {order.users?.name || order.users?.email}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formatCurrency(order.total)}
-                          </p>
-                        </div>
-                        <div className="flex-shrink-0">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                              order.status
-                            )}`}
+                <div className="col-span-2 mt-4 border-t border-adm-rule pt-3">
+                  <h3 className="mb-1 text-xs font-bold text-adm-ink-2">Latest orders</h3>
+                  {row.latest.length === 0 ? (
+                    <p className="py-1.5 text-sm text-adm-ink-3">No orders yet</p>
+                  ) : (
+                    <ul>
+                      {row.latest.map((order) => (
+                        <li key={order.id}>
+                          <Link
+                            to={`/admin/orders?order=${order.id}`}
+                            className="flex items-center justify-between gap-3 border-b border-adm-rule-soft py-1.5 text-sm last:border-0 hover:text-adm-forest"
                           >
-                            {order.status}
-                          </span>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="text-center py-8">
-                  <ShoppingCart className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No recent orders
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Orders will appear here once customers start placing them.
-                  </p>
+                            <span className="adm-num truncate">
+                              {orderLabel(order)} · {shortDate(order.created_at)}
+                            </span>
+                            <StatusChip status={order.status} />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+              </article>
+            );
+          })}
 
-        {/* Recent Users */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Recent Users
-            </h3>
-            <div className="flow-root">
-              {stats.recentUsers.length > 0 ? (
-                <ul className="-my-5 divide-y divide-gray-200">
-                  {stats.recentUsers.map((user) => (
-                    <li key={user.id} className="py-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <Users className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {user.name || user.email}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formatDate(user.created_at)}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="text-center py-8">
-                  <Users className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No recent users
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    New user registrations will appear here.
-                  </p>
-                </div>
-              )}
-            </div>
+        {!loading && !error && products.length === 0 && (
+          <div className="adm-panel col-span-full p-8 text-center">
+            <p className="font-display text-xl">The shelf is empty</p>
+            <p className="mt-1 text-adm-ink-2">Add your first pack and it will appear here.</p>
+            <Link to="/admin/products?new=1" className="adm-btn mt-4">
+              <Plus size={16} /> Add product
+            </Link>
           </div>
-        </div>
+        )}
+      </section>
 
-        {/* Recent Admin Actions */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-              Recent Actions
-            </h3>
-            <div className="flow-root">
-              {stats.recentActions.length > 0 ? (
-                <ul className="-my-5 divide-y divide-gray-200">
-                  {stats.recentActions.map((action) => (
-                    <li key={action.id} className="py-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <Clock className="h-5 w-5 text-gray-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {action.action_type} {action.resource_type}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {formatDate(action.created_at)}
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div className="text-center py-8">
-                  <Clock className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">
-                    No recent actions
-                  </h3>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Admin actions will appear here as you manage the system.
-                  </p>
-                </div>
-              )}
-            </div>
+      <div className="mt-5 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+        <section className="adm-panel p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="adm-h2">Promo codes</h2>
+            <Link to="/admin/promo-codes" className="adm-link text-sm">
+              All codes
+            </Link>
           </div>
-        </div>
+          {!loading && promos.length === 0 && (
+            <p className="mt-3 border-t border-adm-rule-soft pt-3 text-sm text-adm-ink-3">No promo codes yet.</p>
+          )}
+          <ul className="mt-2">
+            {promos.slice(0, 4).map((promo) => (
+              <li
+                key={promo.id}
+                className="grid grid-cols-[minmax(7rem,auto)_1fr_auto] items-center gap-4 border-t border-adm-rule-soft py-2.5 text-sm"
+              >
+                <span className={`font-bold tracking-[0.02em] ${promo.is_active ? "" : "text-adm-ink-3 line-through"}`}>
+                  {promo.code}
+                </span>
+                <span className="adm-num text-adm-ink-2">{promoSummary(promo)}</span>
+                <button
+                  onClick={() => togglePromo(promo)}
+                  disabled={busyPromo === promo.id}
+                  className="adm-btn-ghost !px-3 !py-1.5 text-[13px]"
+                >
+                  {promo.is_active ? "Pause" : "Turn on"}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <Link to="/admin/promo-codes?new=1" className="adm-btn mt-3">
+            <Plus size={16} /> New promo code
+          </Link>
+        </section>
+
+        <section className="adm-panel p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="adm-h2">Refunds</h2>
+            <Link to="/admin/refunds" className="adm-link text-sm">
+              Open refunds
+            </Link>
+          </div>
+          <dl className="mt-2 text-sm">
+            <div className="flex justify-between border-t border-adm-rule-soft py-2.5">
+              <dt>Refunds in progress</dt>
+              <dd className={`adm-num font-bold ${refundsWaiting ? "text-adm-amber-ink" : ""}`}>{refundsWaiting}</dd>
+            </div>
+            <div className="flex justify-between border-t border-adm-rule-soft py-2.5">
+              <dt>Cancelled this month</dt>
+              <dd className="adm-num font-bold">{cancelledThisMonth}</dd>
+            </div>
+          </dl>
+          <Link to="/admin/orders" className="adm-link mt-3 inline-flex items-center gap-1.5 text-sm">
+            Go to orders <ArrowRight size={15} />
+          </Link>
+        </section>
       </div>
     </div>
   );

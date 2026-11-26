@@ -11,7 +11,6 @@ import {
   Calendar,
   Shield,
   RefreshCw,
-  Menu,
 } from "lucide-react";
 import { useAdmin } from "../../context/AdminContext";
 import { supabase } from "../../lib/supabaseClient";
@@ -40,7 +39,6 @@ const Users: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [newUser, setNewUser] = useState({
     email: "",
@@ -202,22 +200,22 @@ const Users: React.FC = () => {
   const getRoleIcon = (role: string) => {
     switch (role) {
       case "super_admin":
-        return <Shield className="h-4 w-4 text-red-500" />;
+        return <Shield className="h-4 w-4 text-adm-brick" />;
       case "admin":
-        return <Shield className="h-4 w-4 text-blue-500" />;
+        return <Shield className="h-4 w-4 text-adm-forest" />;
       default:
-        return <UserCheck className="h-4 w-4 text-gray-500" />;
+        return <UserCheck className="h-4 w-4 text-adm-ink-3" />;
     }
   };
 
   const getRoleColor = (role: string) => {
     switch (role) {
       case "super_admin":
-        return "bg-red-100 text-red-800";
+        return "adm-chip-amber";
       case "admin":
-        return "bg-blue-100 text-blue-800";
+        return "adm-chip-sage";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "adm-chip-plain";
     }
   };
 
@@ -250,102 +248,19 @@ const Users: React.FC = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-adm-forest"></div>
       </div>
     );
   }
 
   return (
     <div>
-      {/* Mobile sidebar */}
-      <div
-        className={`fixed inset-0 z-50 lg:hidden ${
-          sidebarOpen ? "block" : "hidden"
-        }`}
-      >
-        <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
-          onClick={() => setSidebarOpen(false)}
-        />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              ✕
-            </button>
-          </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
-            <a
-              href="/"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-b border-gray-200 mb-2"
-            >
-              🏠 Return to Home
-            </a>
-            <a
-              href="/admin"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📊 Dashboard
-            </a>
-            <a
-              href="/admin/products"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📦 Products
-            </a>
-            <a
-              href="/admin/orders"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              🛒 Orders
-            </a>
-            <a
-              href="/admin/users"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md bg-blue-100 text-blue-900"
-            >
-              👥 Users
-            </a>
-            <a
-              href="/admin/analytics"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              📈 Analytics
-            </a>
-            <a
-              href="/admin/refunds"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              💰 Refunds
-            </a>
-            <a
-              href="/admin/settings"
-              className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              ⚙️ Settings
-            </a>
-          </nav>
-        </div>
-      </div>
-
-      {/* Hamburger button */}
-      <div className="mb-6">
-        <button
-          type="button"
-          className="lg:hidden -m-2.5 p-2.5 text-gray-700"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-      </div>
 
       {/* Header */}
       <div className="sm:flex sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="adm-title"><em>Customers</em></h1>
+          <p className="adm-lede">
             Manage user accounts and permissions
           </p>
         </div>
@@ -353,7 +268,7 @@ const Users: React.FC = () => {
           {isSuperAdmin && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg border border-adm-rule text-sm font-medium text-white bg-adm-forest hover:bg-adm-forest-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest"
             >
               <UserPlus className="h-4 w-4 mr-2" />
               Add User
@@ -361,7 +276,7 @@ const Users: React.FC = () => {
           )}
           <button
             onClick={fetchUsers}
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 border border-adm-rule rounded-lg border border-adm-rule text-sm font-medium text-adm-ink-2 bg-adm-raised hover:bg-adm-sunk focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
@@ -371,18 +286,18 @@ const Users: React.FC = () => {
 
       {/* Stats Cards */}
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <UserCheck className="h-6 w-6 text-gray-400" />
+                <UserCheck className="h-6 w-6 text-adm-ink-3" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
                     Total Users
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {totalUsers}
                   </dd>
                 </dl>
@@ -391,18 +306,18 @@ const Users: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <UserCheck className="h-6 w-6 text-green-400" />
+                <UserCheck className="h-6 w-6 text-adm-forest" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
                     Active Users
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {activeUsers}
                   </dd>
                 </dl>
@@ -411,18 +326,18 @@ const Users: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Shield className="h-6 w-6 text-blue-400" />
+                <Shield className="h-6 w-6 text-adm-forest" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
                     Admin Users
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {adminUsers}
                   </dd>
                 </dl>
@@ -431,18 +346,18 @@ const Users: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
+        <div className="bg-adm-raised overflow-hidden border border-adm-rule rounded-lg">
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Calendar className="h-6 w-6 text-purple-400" />
+                <Calendar className="h-6 w-6 text-adm-forest" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-adm-ink-3 truncate">
                     New This Week
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-adm-ink">
                     {recentUsers}
                   </dd>
                 </dl>
@@ -455,21 +370,21 @@ const Users: React.FC = () => {
       {/* Filters */}
       <div className="mt-6 flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-adm-ink-3" />
           <input
             type="text"
             placeholder="Search users by name or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full pl-10 pr-3 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised placeholder:text-adm-ink-3 focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
           />
         </div>
         <div className="relative">
-          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-adm-ink-3" />
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full pl-10 pr-10 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
           >
             <option value="all">All Roles</option>
             <option value="user">Users</option>
@@ -481,7 +396,7 @@ const Users: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full pl-3 pr-10 py-2 border border-adm-rule rounded-lg leading-5 bg-adm-raised focus:outline-none focus:ring-1 focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -494,23 +409,23 @@ const Users: React.FC = () => {
       <div className="mt-8 flex flex-col">
         <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
+            <div className="overflow-hidden border border-adm-rule ring-1 ring-black ring-opacity-5 md:rounded-lg">
+              <table className="min-w-full divide-y divide-adm-rule-soft">
+                <thead className="bg-adm-sunk">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       User
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Role
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Last Login
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-adm-ink-3">
                       Created
                     </th>
                     <th className="relative px-6 py-3">
@@ -518,7 +433,7 @@ const Users: React.FC = () => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-adm-raised divide-y divide-adm-rule-soft">
                   {filteredUsers.map((user) => (
                     <tr key={user.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -538,11 +453,11 @@ const Users: React.FC = () => {
                               />
                             ) : null}
                             <div
-                              className={`h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center ${
-                                user.avatar_url ? "hidden" : ""
-                              }`}
+                              className={`h-10 w-10 rounded-full bg-adm-rule flex items-center justify-center ${
+ user.avatar_url ? "hidden" : ""
+ }`}
                             >
-                              <span className="text-sm font-bold text-gray-600">
+                              <span className="text-sm font-bold text-adm-ink-2">
                                 {(user.name || user.email || "U")
                                   .charAt(0)
                                   .toUpperCase()}
@@ -550,10 +465,10 @@ const Users: React.FC = () => {
                             </div>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-adm-ink">
                               {user.name || "No name"}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-sm text-adm-ink-3">
                               {user.email}
                             </div>
                           </div>
@@ -562,8 +477,8 @@ const Users: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(
-                            user.role
-                          )}`}
+ user.role
+ )}`}
                         >
                           {getRoleIcon(user.role)}
                           <span className="ml-1 capitalize">
@@ -574,10 +489,10 @@ const Users: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.is_active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
+ user.is_active
+ ? "bg-adm-sage-wash text-adm-sage-ink"
+ : "bg-adm-brick-wash text-adm-brick-ink"
+ }`}
                         >
                           {user.is_active ? (
                             <>
@@ -592,12 +507,12 @@ const Users: React.FC = () => {
                           )}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink-3">
                         {user.last_login
                           ? new Date(user.last_login).toLocaleDateString()
                           : "Never"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-adm-ink-3">
                         {new Date(user.created_at).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -607,7 +522,7 @@ const Users: React.FC = () => {
                               setSelectedUser(user);
                               setShowModal(true);
                             }}
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-adm-forest hover:text-adm-forest-deep"
                           >
                             <Eye className="h-4 w-4" />
                           </button>
@@ -618,17 +533,17 @@ const Users: React.FC = () => {
                                   setEditingUser(user);
                                   setShowModal(true);
                                 }}
-                                className="text-green-600 hover:text-green-900"
+                                className="text-adm-sage-ink hover:text-adm-forest-deep"
                               >
                                 <Edit className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() => toggleUserStatus(user.id)}
                                 className={`${
-                                  user.is_active
-                                    ? "text-red-600 hover:text-red-900"
-                                    : "text-green-600 hover:text-green-900"
-                                }`}
+ user.is_active
+ ? "text-adm-brick hover:text-adm-brick-ink"
+ : "text-adm-sage-ink hover:text-adm-forest-deep"
+ }`}
                               >
                                 {user.is_active ? (
                                   <UserX className="h-4 w-4" />
@@ -654,12 +569,12 @@ const Users: React.FC = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className="fixed inset-0 bg-adm-ink bg-opacity-50 transition-opacity"
               onClick={() => setShowModal(false)}
             />
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <div className="inline-block align-bottom bg-adm-raised rounded-lg text-left overflow-hidden shadow-[0_24px_48px_-12px_rgba(11,33,24,0.35)] transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+              <div className="bg-adm-raised px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <h3 className="adm-h2 mb-4">
                   User Details
                 </h3>
 
@@ -679,21 +594,21 @@ const Users: React.FC = () => {
                       />
                     ) : null}
                     <div
-                      className={`h-16 w-16 rounded-full bg-gray-300 flex items-center justify-center ${
-                        selectedUser.avatar_url ? "hidden" : ""
-                      }`}
+                      className={`h-16 w-16 rounded-full bg-adm-rule flex items-center justify-center ${
+ selectedUser.avatar_url ? "hidden" : ""
+ }`}
                     >
-                      <span className="text-2xl font-bold text-gray-600">
+                      <span className="text-2xl font-bold text-adm-ink-2">
                         {(selectedUser.name || selectedUser.email || "U")
                           .charAt(0)
                           .toUpperCase()}
                       </span>
                     </div>
                     <div>
-                      <h4 className="text-lg font-medium text-gray-900">
+                      <h4 className="text-lg font-medium text-adm-ink">
                         {selectedUser.name || "No name"}
                       </h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-adm-ink-3">
                         {selectedUser.email}
                       </p>
                     </div>
@@ -701,42 +616,42 @@ const Users: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium text-gray-500">
+                      <label className="text-sm font-medium text-adm-ink-3">
                         Role
                       </label>
-                      <p className="text-sm text-gray-900 capitalize">
+                      <p className="text-sm text-adm-ink capitalize">
                         {selectedUser.role.replace("_", " ")}
                       </p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-500">
+                      <label className="text-sm font-medium text-adm-ink-3">
                         Status
                       </label>
                       <p
                         className={`text-sm ${
-                          selectedUser.is_active
-                            ? "text-green-600"
-                            : "text-red-600"
-                        }`}
+ selectedUser.is_active
+ ? "text-adm-sage-ink"
+ : "text-adm-brick"
+ }`}
                       >
                         {selectedUser.is_active ? "Active" : "Inactive"}
                       </p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-500">
+                      <label className="text-sm font-medium text-adm-ink-3">
                         Last Login
                       </label>
-                      <p className="text-sm text-gray-900">
+                      <p className="text-sm text-adm-ink">
                         {selectedUser.last_login
                           ? new Date(selectedUser.last_login).toLocaleString()
                           : "Never"}
                       </p>
                     </div>
                     <div>
-                      <label className="text-sm font-medium text-gray-500">
+                      <label className="text-sm font-medium text-adm-ink-3">
                         Created
                       </label>
-                      <p className="text-sm text-gray-900">
+                      <p className="text-sm text-adm-ink">
                         {new Date(selectedUser.created_at).toLocaleString()}
                       </p>
                     </div>
@@ -744,11 +659,11 @@ const Users: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <div className="bg-adm-sunk px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                  className="w-full inline-flex justify-center rounded-lg border border-transparent border border-adm-rule px-4 py-2 bg-adm-forest text-base font-medium text-white hover:bg-adm-forest-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   Close
                 </button>
@@ -763,19 +678,19 @@ const Users: React.FC = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              className="fixed inset-0 bg-adm-ink bg-opacity-50 transition-opacity"
               onClick={() => setShowCreateModal(false)}
             />
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div className="inline-block align-bottom bg-adm-raised rounded-lg text-left overflow-hidden shadow-[0_24px_48px_-12px_rgba(11,33,24,0.35)] transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
               <form onSubmit={createUser}>
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                <div className="bg-adm-raised px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <h3 className="adm-h2 mb-4">
                     Create New User
                   </h3>
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-adm-ink-2">
                         Email
                       </label>
                       <input
@@ -785,11 +700,11 @@ const Users: React.FC = () => {
                         onChange={(e) =>
                           setNewUser({ ...newUser, email: e.target.value })
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-adm-rule rounded-lg border border-adm-rule focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-adm-ink-2">
                         Name
                       </label>
                       <input
@@ -799,11 +714,11 @@ const Users: React.FC = () => {
                         onChange={(e) =>
                           setNewUser({ ...newUser, name: e.target.value })
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-adm-rule rounded-lg border border-adm-rule focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700">
+                      <label className="block text-sm font-medium text-adm-ink-2">
                         Role
                       </label>
                       <select
@@ -814,7 +729,7 @@ const Users: React.FC = () => {
                             role: e.target.value as any,
                           })
                         }
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-adm-rule rounded-lg border border-adm-rule focus:ring-adm-forest focus:border-adm-forest sm:text-sm"
                       >
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
@@ -832,11 +747,11 @@ const Users: React.FC = () => {
                             is_active: e.target.checked,
                           })
                         }
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-adm-forest focus:ring-adm-forest border-adm-rule rounded"
                       />
                       <label
                         htmlFor="is_active"
-                        className="ml-2 block text-sm text-gray-900"
+                        className="ml-2 block text-sm text-adm-ink"
                       >
                         Active user
                       </label>
@@ -844,17 +759,17 @@ const Users: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div className="bg-adm-sunk px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <button
                     type="submit"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                    className="w-full inline-flex justify-center rounded-lg border border-transparent border border-adm-rule px-4 py-2 bg-adm-forest text-base font-medium text-white hover:bg-adm-forest-deep focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest sm:ml-3 sm:w-auto sm:text-sm"
                   >
                     Create User
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowCreateModal(false)}
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    className="mt-3 w-full inline-flex justify-center rounded-lg border border-adm-rule border border-adm-rule px-4 py-2 bg-adm-raised text-base font-medium text-adm-ink-2 hover:bg-adm-sunk focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-adm-forest sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                   >
                     Cancel
                   </button>
