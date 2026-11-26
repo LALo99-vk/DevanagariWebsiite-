@@ -242,14 +242,15 @@ const razorpayService = {
     onSuccess?: (response: RazorpayPaymentResponse) => void,
     onError?: (error: Error) => void
   ): Promise<void> {
-    return new Promise(async (resolve, reject) => {
+    // Every failure is reported once, through onError; the promise itself always resolves.
+    return new Promise(async (resolve) => {
       if (!window.Razorpay) {
         const error = new Error(
           "Razorpay SDK not loaded. Please refresh the page and try again."
         );
         console.error("❌ Razorpay SDK not found");
         onError?.(error);
-        reject(error);
+        resolve();
         return;
       }
 
@@ -260,17 +261,20 @@ const razorpayService = {
       } catch (error) {
         console.error("❌ Failed to get Razorpay config:", error);
         onError?.(error as Error);
-        reject(error);
+        resolve();
         return;
       }
+
+      let lastFailure: string | null = null;
 
       const options: RazorpayOptions = {
         key: config.key_id,
         amount: order.amount,
         currency: order.currency,
-        name: "Devanagari Web",
-        description: "Purchase from Devanagari Web Store",
-        image: "/logo.png",
+        name: "Devanagari",
+        description: "Sree Shivani Foods, Davangere",
+        // Checkout runs on Razorpay's domain, so the logo needs a full URL.
+        image: `${window.location.origin}/icon-512.png`,
         order_id: order.id,
         handler: (response: RazorpayPaymentResponse) => {
           onSuccess?.(response);
@@ -286,14 +290,21 @@ const razorpayService = {
           country: "IN",
         },
         theme: {
-          color: "#3B82F6",
+          color: "#0F2A1F", // emerald-900, the site's brand surface
         },
         modal: {
+          // The customer closed the window. If an attempt failed before that,
+          // report the failure; otherwise it was a plain cancel.
           ondismiss: () => {
-            const error = new Error("Payment cancelled by user");
-            console.log("❌ Payment cancelled");
+            const error = new Error(
+              lastFailure
+                ? `Payment failed: ${lastFailure}`
+                : "Payment cancelled. You have not been charged."
+            );
+            if (!lastFailure) error.name = "PaymentCancelled";
+            console.log("❌ Payment window closed:", error.message);
             onError?.(error);
-            reject(error);
+            resolve();
           },
         },
         retry: {
@@ -313,15 +324,14 @@ const razorpayService = {
 
       const razorpayInstance = new window.Razorpay(options);
 
+      // With retries enabled, the Razorpay window stays open after a failed
+      // attempt and shows the reason itself, so the customer can try again.
+      // Only remember the reason; it is reported if they give up and close it.
       razorpayInstance.on(
         "payment.failed",
         (response: RazorpayFailureResponse) => {
-          const error = new Error(
-            `Payment failed: ${response.error.description}`
-          );
-          console.error("❌ Payment failed:", response.error);
-          onError?.(error);
-          reject(error);
+          console.error("❌ Payment attempt failed:", response.error);
+          lastFailure = response.error.description;
         }
       );
 

@@ -143,7 +143,10 @@ const Checkout = () => {
           }
         },
         (error) => {
-          showError("Payment Failed", error.message);
+          showError(
+            error.name === "PaymentCancelled" ? "Payment Cancelled" : "Payment Failed",
+            error.message
+          );
         }
       );
     } catch (error) {

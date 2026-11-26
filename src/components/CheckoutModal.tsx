@@ -304,7 +304,10 @@ const CheckoutModal: React.FC<CheckoutModalProps> = ({ isOpen, onClose }) => {
           }
         },
         (error) => {
-          showError("Payment Failed", error.message);
+          showError(
+            error.name === "PaymentCancelled" ? "Payment Cancelled" : "Payment Failed",
+            error.message
+          );
         }
       );
     } catch (error) {

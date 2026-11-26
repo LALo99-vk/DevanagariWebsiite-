@@ -72,6 +72,8 @@ const Analytics: React.FC = () => {
           `
           id,
           total,
+          subtotal,
+          discount_amount,
           status,
           created_at,
           user:users(name, email)
@@ -104,7 +106,7 @@ const Analytics: React.FC = () => {
           `
           product_id,
           quantity,
-          price,
+          total_price,
           order_id,
           product:products(name)
         `
@@ -149,9 +151,21 @@ const Analytics: React.FC = () => {
           ? ((totalOrders - prevOrdersCount) / prevOrdersCount) * 100
           : 0;
 
-      // Top products
+      // Top products: same orders as total revenue (delivered), and each item's
+      // share of the order's coupon discount is taken off, so this is what the
+      // customer actually paid for it.
+      const deliveredOrders = new Map(
+        (ordersData || [])
+          .filter((order) => order.status === "delivered")
+          .map((order) => [order.id, order])
+      );
       const productStats = new Map();
       orderItemsData?.forEach((item) => {
+        const order = deliveredOrders.get(item.order_id);
+        if (!order) return;
+        const subtotal = Number(order.subtotal) || 0;
+        const discount = Number(order.discount_amount) || 0;
+        const paidShare = subtotal > 0 ? Math.max(0, 1 - discount / subtotal) : 1;
         const key = item.product_id;
         if (!productStats.has(key)) {
           productStats.set(key, {
@@ -163,7 +177,7 @@ const Analytics: React.FC = () => {
         }
         const stats = productStats.get(key);
         stats.total_quantity += item.quantity;
-        stats.total_revenue += item.total_price;
+        stats.total_revenue += Number(item.total_price) * paidShare;
       });
 
       const topProducts = Array.from(productStats.values())
@@ -514,7 +528,7 @@ const Analytics: React.FC = () => {
                     ></div>
                   </div>
                   <span className="text-sm font-medium text-gray-900">
-                    ${month.revenue.toFixed(0)}
+                    ₹{month.revenue.toFixed(0)}
                   </span>
                 </div>
               </div>
