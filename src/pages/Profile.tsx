@@ -4,7 +4,6 @@ import { ArrowRight, Package, RefreshCw, Settings } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNotification } from "../context/NotificationContext";
 import { ordersService, Order, OrderItem } from "../services/supabase";
-import AddressManagement from "../components/AddressManagement";
 import BackButton from "../components/BackButton";
 import ConfirmationModal from "../components/ConfirmationModal";
 
@@ -167,7 +166,8 @@ const Profile = () => {
           </p>
         </section>
 
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        {/* Addresses are managed in Settings → Address Management */}
+        <div className="mt-8">
           {/* Order history */}
           <section className="panel p-5 sm:p-7">
             <div className="flex items-center justify-between gap-4">
@@ -257,10 +257,6 @@ const Profile = () => {
             )}
           </section>
 
-          {/* Address management */}
-          <section className="panel p-5 sm:p-7">
-            <AddressManagement />
-          </section>
         </div>
       </div>
     </div>
