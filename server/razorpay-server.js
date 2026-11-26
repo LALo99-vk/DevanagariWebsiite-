@@ -20,9 +20,15 @@ const supabaseAdmin =
 
 const app = createApp({ razorpay, supabaseAdmin });
 
-app.listen(PORT, () => {
-  console.log(`🚀 API server running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);
-});
+// Long-running server (local dev, Render). On Vercel this file is imported by
+// api/index.js instead, and the exported app is used as the request handler.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 API server running on port ${PORT} (${process.env.NODE_ENV || 'development'})`);
+  });
 
-process.on('SIGTERM', () => process.exit(0));
-process.on('SIGINT', () => process.exit(0));
+  process.on('SIGTERM', () => process.exit(0));
+  process.on('SIGINT', () => process.exit(0));
+}
+
+module.exports = app;
