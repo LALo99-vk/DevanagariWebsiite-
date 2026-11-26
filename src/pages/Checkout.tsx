@@ -114,7 +114,8 @@ const Checkout = () => {
         order,
         user.email,
         user.user_metadata?.full_name || user.email,
-        user.user_metadata?.phone,
+        // Google sign-ins carry no phone, so use the delivery address's number.
+        shippingAddress.phone || user.user_metadata?.phone,
         async (response) => {
           try {
             // The server verifies the payment and saves the order.
